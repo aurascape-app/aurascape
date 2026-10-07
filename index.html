@@ -68,7 +68,6 @@
   <!-- ================= 1. PITCH-BLACK SPLASH SCREEN ================= -->
   <div id="splashScreen" class="fixed inset-0 z-50 bg-[#000000] flex flex-col items-center justify-center transition-opacity duration-700">
     <div class="text-center space-y-4 px-4">
-      <!-- Minimalist Silver Katana Emblem -->
       <div class="w-14 h-14 mx-auto rounded-full bg-gray-950 border border-gray-800 flex items-center justify-center text-gray-200 shadow-xl">
         <svg class="w-7 h-7 stroke-current text-gray-200" viewBox="0 0 24 24" fill="none" stroke-width="1.2">
           <path d="M19.5 4.5L4.5 19.5" stroke-linecap="round"/>
@@ -90,17 +89,17 @@
     <div class="glass-card max-w-md w-full rounded-3xl p-6 md:p-8 space-y-6">
       <div class="text-center space-y-1">
         <span class="text-[10px] font-bold text-indigo-400 tracking-widest uppercase">Welcome</span>
-        <h2 class="text-xl font-bold">Select Your Preference</h2>
+        <h2 class="text-xl font-bold">Select Your Primary Aura</h2>
       </div>
 
       <div class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Preferred Category</label>
+          <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Preferred Energy Vibe</label>
           <div class="grid grid-cols-2 gap-2 text-xs font-medium">
-            <button onclick="setInitialVibe('dark_fantasy', this)" class="vibe-btn active p-3 bg-gray-900/60 rounded-xl border border-indigo-500 text-left">Dark Fantasy</button>
-            <button onclick="setInitialVibe('cyberpunk', this)" class="vibe-btn p-3 bg-gray-900/60 rounded-xl border border-transparent text-left">Cyberpunk</button>
-            <button onclick="setInitialVibe('lofi', this)" class="vibe-btn p-3 bg-gray-900/60 rounded-xl border border-transparent text-left">Lofi & Chill</button>
-            <button onclick="setInitialVibe('shonen', this)" class="vibe-btn p-3 bg-gray-900/60 rounded-xl border border-transparent text-left">Shonen Action</button>
+            <button onclick="setInitialVibe('hype', this)" class="vibe-btn active p-3 bg-gray-900/60 rounded-xl border border-indigo-500 text-left">🔥 Hype Aura</button>
+            <button onclick="setInitialVibe('calm', this)" class="vibe-btn p-3 bg-gray-900/60 rounded-xl border border-transparent text-left">🌙 Calm Aura</button>
+            <button onclick="setInitialVibe('loud', this)" class="vibe-btn p-3 bg-gray-900/60 rounded-xl border border-transparent text-left">⚡ Loud Aura</button>
+            <button onclick="setInitialVibe('sad', this)" class="vibe-btn p-3 bg-gray-900/60 rounded-xl border border-transparent text-left">🌧️ Sad Aura</button>
           </div>
         </div>
 
@@ -118,7 +117,7 @@
       </div>
 
       <button onclick="finishOnboarding()" class="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-bold text-sm hover:opacity-90 transition">
-        Enter Gallery →
+        Enter Sanctuary →
       </button>
     </div>
   </div>
@@ -127,7 +126,6 @@
   <header class="border-b border-gray-800/60 sticky top-0 z-30 backdrop-blur-md" style="background-color: var(--header-bg);">
     <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
       
-      <!-- Katana Logo & Slim Typography -->
       <div class="flex items-center space-x-3">
         <div class="w-8 h-8 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-300">
           <svg class="w-4 h-4 stroke-current" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
@@ -142,9 +140,7 @@
         </div>
       </div>
 
-      <!-- Controls: Theme Toggle Switch | Stash | Settings -->
       <div class="flex items-center gap-2">
-        <!-- TOP LIGHT/DARK SWITCH -->
         <button id="themeToggleBtn" onclick="toggleTheme()" class="px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-medium flex items-center gap-1.5 hover:border-indigo-500 transition" title="Switch Light/Dark Mode">
           <span id="themeIcon">🌙</span>
         </button>
@@ -161,16 +157,16 @@
     </div>
   </header>
 
-  <!-- ================= 4. MAIN GALLERY & FILTERS ================= -->
+  <!-- ================= 4. MAIN GALLERY & AURA FILTERS ================= -->
   <main class="max-w-6xl mx-auto px-4 pt-6 space-y-6">
 
-    <!-- Category Filter Bar -->
+    <!-- Aura Vibe Filter Bar -->
     <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-      <button onclick="filterVault('all', this)" class="filter-btn active px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">All Assets</button>
-      <button onclick="filterVault('dark_fantasy', this)" class="filter-btn px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">Dark Fantasy</button>
-      <button onclick="filterVault('cyberpunk', this)" class="filter-btn px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">Cyberpunk</button>
-      <button onclick="filterVault('lofi', this)" class="filter-btn px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">Lofi & Chill</button>
-      <button onclick="filterVault('shonen', this)" class="filter-btn px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">Shonen</button>
+      <button onclick="filterVault('all', this)" class="filter-btn active px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">All Auras</button>
+      <button onclick="filterVault('hype', this)" class="filter-btn px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">🔥 Hype</button>
+      <button onclick="filterVault('calm', this)" class="filter-btn px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">🌙 Calm</button>
+      <button onclick="filterVault('loud', this)" class="filter-btn px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">⚡ Loud</button>
+      <button onclick="filterVault('sad', this)" class="filter-btn px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">🌧️ Sad</button>
     </div>
 
     <!-- Wallpaper Grid -->
@@ -184,28 +180,24 @@
   <div id="previewModal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4">
     <div class="relative max-w-sm w-full bg-black rounded-[40px] border-4 border-gray-800 overflow-hidden shadow-2xl h-[650px] flex flex-col justify-between p-6">
       
-      <!-- Phone Background Wallpaper -->
       <img id="previewImage" src="" class="absolute inset-0 w-full h-full object-cover z-0" />
       <div class="absolute inset-0 bg-black/30 z-10"></div>
 
-      <!-- Lock Screen Status Bar -->
       <div class="relative z-20 flex justify-between items-center text-white text-xs px-2 font-semibold">
         <span>9:41</span>
         <div class="w-20 h-4 bg-black/80 rounded-full"></div>
         <span>5G 🔋</span>
       </div>
 
-      <!-- Lock Screen Clock -->
       <div class="relative z-20 text-center text-white space-y-1 mt-8">
         <p class="text-xs font-medium tracking-wider uppercase opacity-90">Wednesday, October 7</p>
         <h2 class="text-6xl font-light tracking-tight font-serif-slim">12:45</h2>
       </div>
 
-      <!-- Lock Screen Footer Controls -->
       <div class="relative z-20 space-y-4 mb-2">
         <div class="glass-card rounded-2xl p-3 text-xs text-white space-y-1">
-          <p class="font-bold">AuraScape 4K Asset</p>
-          <p class="text-[10px] text-gray-300">Tap download below to save to device gallery.</p>
+          <p class="font-bold">AuraScape 4K Wallpaper</p>
+          <p class="text-[10px] text-gray-300">Tap download below to save to gallery.</p>
         </div>
 
         <div class="flex gap-2">
@@ -220,7 +212,7 @@
     </div>
   </div>
 
-  <!-- ================= 6. STREAMLINED SETTINGS DRAWER ================= -->
+  <!-- ================= 6. SETTINGS DRAWER ================= -->
   <div id="settingsModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end">
     <div class="glass-card max-w-sm w-full h-full p-6 space-y-6 flex flex-col justify-between">
       
@@ -230,7 +222,6 @@
           <button onclick="toggleSettingsModal()" class="text-gray-400 font-bold">✕</button>
         </div>
 
-        <!-- Option 1: Theme Switcher -->
         <div class="space-y-2">
           <label class="block text-xs font-bold text-gray-400 uppercase">Appearance</label>
           <div class="grid grid-cols-2 gap-2 text-xs font-medium">
@@ -239,20 +230,18 @@
           </div>
         </div>
 
-        <!-- Option 2: Stash Management -->
         <div class="space-y-2">
-          <label class="block text-xs font-bold text-gray-400 uppercase">Saved Data</label>
+          <label class="block text-xs font-bold text-gray-400 uppercase">Saved Collection</label>
           <button onclick="clearStashData()" class="w-full bg-gray-900/80 border border-gray-800 text-gray-300 py-2.5 rounded-xl text-xs font-medium text-left px-3 flex justify-between items-center">
             <span>Clear Saved Favorites</span>
             <span id="settingsStashBadge" class="text-[10px] bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-full">0</span>
           </button>
         </div>
 
-        <!-- Option 3: App Info -->
         <div class="space-y-1 pt-2">
           <p class="text-xs font-bold text-gray-400 uppercase">About</p>
-          <p class="text-xs text-gray-400">AuraScape 4K Archive v1.2</p>
-          <p class="text-[10px] text-gray-500">Curated high-resolution anime lock screen wallpapers.</p>
+          <p class="text-xs text-gray-400">AuraScape 4K Archive v2.5</p>
+          <p class="text-[10px] text-gray-500">Curated mainstream anime aura collection.</p>
         </div>
       </div>
 
@@ -262,28 +251,50 @@
     </div>
   </div>
 
-  <!-- ================= 7. JAVASCRIPT LOGIC ================= -->
+  <!-- ================= 7. JAVASCRIPT & MAINSTREAM AURA VAULT ================= -->
   <script>
-    // Asset Repository with Postimages Link Included
+    // Vault featuring your Postimages uploads + Mainstream Anime Main Leads
     const vaultAssets = [
-      { id: 1, category: 'dark_fantasy', title: 'Cyber Samurai Girl', url: 'https://i.postimg.cc/6QfJQZNQ/a0e531c6adac9e92be6918d60e249d49.jpg' },
-      { id: 2, category: 'cyberpunk', title: 'Neon Tokyo Alleyway', url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1600&auto=format&fit=crop' },
-      { id: 3, category: 'lofi', title: 'Sunset Lofi Bedroom', url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1600&auto=format&fit=crop' },
-      { id: 4, category: 'shonen', title: 'Flame Warrior Aura', url: 'https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=1600&auto=format&fit=crop' },
-      { id: 5, category: 'cyberpunk', title: 'Futuristic Cyber City', url: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=1600&auto=format&fit=crop' }
+      // --- ALL YOUR EXACT POSTIMAGES LINKS INCLUDED ---
+      { id: 1, category: 'sad', title: 'Cyber Samurai Ronin', url: 'https://i.postimg.cc/6QfJQZNQ/a0e531c6adac9e92be6918d60e249d49.jpg' },
+      { id: 2, category: 'sad', title: 'Shadow Katana Sanctuary', url: 'https://i.postimg.cc/y892fbvK/wp9388402.jpg' },
+      { id: 3, category: 'sad', title: 'Vanguard Shadow Ronin', url: 'https://i.postimg.cc/mrZftSNX/wp10128920.jpg' },
+      { id: 4, category: 'calm', title: 'Celestial Astral Essence', url: 'https://i.postimg.cc/CLp2RNw7/thumb-350-415519.webp' },
+      { id: 5, category: 'hype', title: 'Unbound Power Awakening', url: 'https://i.postimg.cc/L6vVmB5Y/f038004a775997d8344242d246aa3312.jpg' },
+
+      // --- 🌧️ SAD AURA (MAINSTREAM ICONIC LEADS) ---
+      { id: 6, category: 'sad', title: 'Ken Kaneki • Masked Solitude (Tokyo Ghoul)', url: 'https://w.wallhaven.cc/full/m9/wallhaven-m933v1.jpg' },
+      { id: 7, category: 'sad', title: 'Itachi Uchiha • Crow in the Rain (Naruto)', url: 'https://w.wallhaven.cc/full/57/wallhaven-57p213.png' },
+      { id: 8, category: 'sad', title: 'Eren Yeager • Freedom Journey (Attack on Titan)', url: 'https://w.wallhaven.cc/full/8x/wallhaven-8xygpy.jpg' },
+      { id: 9, category: 'sad', title: 'Levi Ackerman • Rain Rain (Attack on Titan)', url: 'https://w.wallhaven.cc/full/x8/wallhaven-x82w3z.jpg' },
+      { id: 10, category: 'sad', title: 'Violet Evergarden • Memory Starlight', url: 'https://w.wallhaven.cc/full/6k/wallhaven-6kme97.jpg' },
+
+      // --- 🔥 HYPE AURA (MAINSTREAM ACTION LEADS) ---
+      { id: 11, category: 'hype', title: 'Goku • Ultra Instinct Energy (Dragon Ball Super)', url: 'https://w.wallhaven.cc/full/9m/wallhaven-9m2p18.jpg' },
+      { id: 12, category: 'hype', title: 'Monkey D. Luffy • Gear 5 Awakening (One Piece)', url: 'https://w.wallhaven.cc/full/kx/wallhaven-kx3x91.jpg' },
+      { id: 13, category: 'hype', title: 'Gojo Satoru • Unlimited Void (Jujutsu Kaisen)', url: 'https://w.wallhaven.cc/full/6k/wallhaven-6kpl2q.jpg' },
+      { id: 14, category: 'hype', title: 'Sung Jin-Woo • Shadow Monarch (Solo Leveling)', url: 'https://w.wallhaven.cc/full/28/wallhaven-28eoxm.jpg' },
+
+      // --- ⚡ LOUD AURA (NEON / HIGH ENERGY) ---
+      { id: 15, category: 'loud', title: 'David & Lucy • Cyber Moon (Edgerunners)', url: 'https://w.wallhaven.cc/full/v9/wallhaven-v9v8lm.jpg' },
+      { id: 16, category: 'loud', title: 'Tengen Uzui • Sound Hashira (Demon Slayer)', url: 'https://w.wallhaven.cc/full/ox/wallhaven-ox38mm.jpg' },
+      { id: 17, category: 'loud', title: 'EVA-01 • Neon Night Awakening (Evangelion)', url: 'https://w.wallhaven.cc/full/md/wallhaven-mdmd81.jpg' },
+
+      // --- 🌙 CALM AURA (LOFI / PEACEFUL) ---
+      { id: 18, category: 'calm', title: 'Frieren • Journey Meadow (Frieren)', url: 'https://w.wallhaven.cc/full/x1/wallhaven-x13pl3.jpg' },
+      { id: 19, category: 'calm', title: 'Totoro & Bus Stop • Midnight Rain (Ghibli)', url: 'https://w.wallhaven.cc/full/xl/wallhaven-xlm2ed.jpg' },
+      { id: 20, category: 'calm', title: 'Tanjiro • Quiet Meditation (Demon Slayer)', url: 'https://w.wallhaven.cc/full/0q/wallhaven-0q3woq.jpg' }
     ];
 
     let userStash = JSON.parse(localStorage.getItem('aurascape_stash') || '[]');
     let activeCategory = 'all';
 
-    // Startup
     window.onload = () => {
       const hasOnboarded = localStorage.getItem('aurascape_onboarded');
       const savedTheme = localStorage.getItem('aurascape_theme') || 'dark';
 
       setThemeMode(savedTheme);
 
-      // Splash Screen Transition
       setTimeout(() => {
         document.getElementById('splashScreen').classList.add('opacity-0');
         setTimeout(() => {
@@ -296,7 +307,6 @@
       renderVault('all');
     };
 
-    // Theme Management
     function setThemeMode(mode) {
       if (mode === 'light') {
         document.documentElement.classList.remove('dark');
@@ -315,7 +325,6 @@
       setThemeMode(current === 'dark' ? 'light' : 'dark');
     }
 
-    // Gallery Render Engine
     function renderVault(category) {
       activeCategory = category;
       const grid = document.getElementById('vaultGrid');
@@ -332,7 +341,7 @@
       if (items.length === 0) {
         grid.innerHTML = `
           <div class="col-span-full text-center py-16 text-gray-500 text-xs font-semibold">
-            No assets found in this view.
+            No visuals found in this Aura energy.
           </div>
         `;
         return;
@@ -340,6 +349,7 @@
 
       items.forEach(item => {
         const isFavorited = userStash.includes(item.id);
+        const displayCategory = item.category.toUpperCase() + ' AURA';
         grid.innerHTML += `
           <div class="glass-card rounded-2xl overflow-hidden group flex flex-col justify-between hover:border-gray-700 transition duration-300">
             <div class="h-80 bg-black overflow-hidden relative cursor-pointer" onclick="openPreviewModal('${item.url}')">
@@ -349,7 +359,7 @@
               </button>
               <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent flex items-end p-4">
                 <div>
-                  <span class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest">${item.category.replace('_', ' ')}</span>
+                  <span class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest">${displayCategory}</span>
                   <h3 class="text-xs font-medium text-white">${item.title}</h3>
                 </div>
               </div>
@@ -359,7 +369,7 @@
                 📱 Lockscreen
               </button>
               <a href="${item.url}" target="_blank" download class="flex-1 bg-indigo-600 text-white text-xs font-medium py-2 rounded-xl text-center hover:opacity-90 transition">
-                ⬇️ 4K Asset
+                ⬇️ 4K Render
               </a>
             </div>
           </div>
@@ -373,7 +383,6 @@
       renderVault(category);
     }
 
-    // Stash Management
     function toggleFavorite(id) {
       if (userStash.includes(id)) {
         userStash = userStash.filter(item => item !== id);
@@ -401,7 +410,6 @@
       renderVault(activeCategory);
     }
 
-    // Modal Handlers
     function openPreviewModal(url) {
       document.getElementById('previewImage').src = url;
       document.getElementById('previewDownloadBtn').href = url;
