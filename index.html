@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AuraScape 4K - Anime Aesthetics</title>
+  <title>AuraScape 4K - Creator & Energy Vault</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -124,9 +124,9 @@
 
   <!-- ================= 3. APP HEADER ================= -->
   <header class="border-b border-gray-800/60 sticky top-0 z-30 backdrop-blur-md" style="background-color: var(--header-bg);">
-    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
       
-      <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-3 shrink-0">
         <div class="w-8 h-8 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-300">
           <svg class="w-4 h-4 stroke-current" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
             <path d="M19.5 4.5L4.5 19.5" stroke-linecap="round"/>
@@ -134,14 +134,23 @@
             <path d="M6 18L3 21" stroke-linecap="round"/>
           </svg>
         </div>
-        <div>
+        <div class="hidden sm:block">
           <h1 class="font-serif-slim text-base tracking-[0.25em] leading-none uppercase">AURA SCAPE</h1>
           <p class="text-[9px] text-gray-400 font-medium tracking-wider mt-0.5">オーラスケープ 4K</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <button id="themeToggleBtn" onclick="toggleTheme()" class="px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-medium flex items-center gap-1.5 hover:border-indigo-500 transition" title="Switch Light/Dark Mode">
+      <!-- Live Search Bar -->
+      <div class="flex-1 max-w-xs mx-2">
+        <input id="searchInput" oninput="handleSearch(this.value)" type="text" placeholder="Search Gojo, Kaneki, Luffy..." class="w-full bg-gray-900/90 border border-gray-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition">
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <button onclick="toggleSubmitModal()" class="px-3 py-1.5 bg-indigo-600 border border-indigo-500 text-white rounded-xl text-xs font-semibold hover:bg-indigo-500 transition shadow-lg shadow-indigo-600/20" title="Submit Art & Earn">
+          🎨 Submit Aura
+        </button>
+
+        <button id="themeToggleBtn" onclick="toggleTheme()" class="px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-medium hover:border-indigo-500 transition">
           <span id="themeIcon">🌙</span>
         </button>
 
@@ -171,12 +180,64 @@
 
     <!-- Wallpaper Grid -->
     <div id="vaultGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-      <!-- Dynamic Wallpaper Cards Rendered Here -->
+      <!-- Dynamic Cards Rendered Here -->
     </div>
 
   </main>
 
-  <!-- ================= 5. PHONE LOCK SCREEN PREVIEW MODAL ================= -->
+  <!-- ================= 5. CREATOR SUBMISSION MODAL ================= -->
+  <div id="submitModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full rounded-3xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+        <div>
+          <h3 class="font-bold text-sm">Submit Your Aura Artwork</h3>
+          <p class="text-[10px] text-gray-400">Share your original work or fan art & join creator monetization.</p>
+        </div>
+        <button onclick="toggleSubmitModal()" class="text-gray-400 font-bold">✕</button>
+      </div>
+
+      <form onsubmit="handleCreatorSubmission(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-gray-400 uppercase font-bold mb-1">Creator Name / Social Handle</label>
+          <input id="creatorHandle" type="text" placeholder="e.g. @aura_artist" required class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-gray-400 uppercase font-bold mb-1">Artwork Title</label>
+          <input id="creatorTitle" type="text" placeholder="e.g. Gojo • Infinity Realm" required class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-gray-400 uppercase font-bold mb-1">Aura Category</label>
+          <select id="creatorCategory" class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500">
+            <option value="hype">🔥 Hype Aura</option>
+            <option value="calm">🌙 Calm Aura</option>
+            <option value="loud">⚡ Loud Aura</option>
+            <option value="sad" selected>🌧️ Sad Aura</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-gray-400 uppercase font-bold mb-1">Upload File OR Direct Image URL</label>
+          <input id="creatorFileInput" type="file" accept="image/*" class="w-full bg-gray-900 border border-gray-800 rounded-xl p-2 text-white mb-2 file:bg-indigo-600 file:border-0 file:rounded-lg file:px-2 file:py-1 file:text-xs file:text-white">
+          <input id="creatorUrlInput" type="url" placeholder="https://i.postimg.cc/..." class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <div class="flex items-start gap-2 pt-2">
+          <input id="rightsCert" type="checkbox" required class="mt-0.5 rounded border-gray-800 bg-gray-900 text-indigo-600">
+          <label for="rightsCert" class="text-[10px] text-gray-400 leading-tight">
+            I certify that I am the creator or authorized distributor of this art and agree to AuraScape terms.
+          </label>
+        </div>
+
+        <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold text-xs hover:opacity-90 transition mt-2">
+          Submit Visual to Vault →
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= 6. PHONE LOCK SCREEN PREVIEW MODAL ================= -->
   <div id="previewModal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4">
     <div class="relative max-w-sm w-full bg-black rounded-[40px] border-4 border-gray-800 overflow-hidden shadow-2xl h-[650px] flex flex-col justify-between p-6">
       
@@ -196,8 +257,8 @@
 
       <div class="relative z-20 space-y-4 mb-2">
         <div class="glass-card rounded-2xl p-3 text-xs text-white space-y-1">
-          <p class="font-bold">AuraScape 4K Wallpaper</p>
-          <p class="text-[10px] text-gray-300">Tap download below to save to gallery.</p>
+          <p id="previewTitleText" class="font-bold">AuraScape 4K Wallpaper</p>
+          <p id="previewArtistCredit" class="text-[10px] text-indigo-300">Curated Collection</p>
         </div>
 
         <div class="flex gap-2">
@@ -212,7 +273,7 @@
     </div>
   </div>
 
-  <!-- ================= 6. SETTINGS DRAWER ================= -->
+  <!-- ================= 7. SETTINGS DRAWER ================= -->
   <div id="settingsModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end">
     <div class="glass-card max-w-sm w-full h-full p-6 space-y-6 flex flex-col justify-between">
       
@@ -240,8 +301,8 @@
 
         <div class="space-y-1 pt-2">
           <p class="text-xs font-bold text-gray-400 uppercase">About</p>
-          <p class="text-xs text-gray-400">AuraScape 4K Archive v2.5</p>
-          <p class="text-[10px] text-gray-500">Curated mainstream anime aura collection.</p>
+          <p class="text-xs text-gray-400">AuraScape 4K Archive v3.5</p>
+          <p class="text-[10px] text-gray-500">Creator Ecosystem & Anime Mood Vault.</p>
         </div>
       </div>
 
@@ -251,43 +312,37 @@
     </div>
   </div>
 
-  <!-- ================= 7. JAVASCRIPT & MAINSTREAM AURA VAULT ================= -->
+  <!-- ================= 8. JAVASCRIPT ARCHIVE & SUBMISSION ENGINE ================= -->
   <script>
-    // Vault featuring your Postimages uploads + Mainstream Anime Main Leads
-    const vaultAssets = [
-      // --- ALL YOUR EXACT POSTIMAGES LINKS INCLUDED ---
-      { id: 1, category: 'sad', title: 'Cyber Samurai Ronin', url: 'https://i.postimg.cc/6QfJQZNQ/a0e531c6adac9e92be6918d60e249d49.jpg' },
-      { id: 2, category: 'sad', title: 'Shadow Katana Sanctuary', url: 'https://i.postimg.cc/y892fbvK/wp9388402.jpg' },
-      { id: 3, category: 'sad', title: 'Vanguard Shadow Ronin', url: 'https://i.postimg.cc/mrZftSNX/wp10128920.jpg' },
-      { id: 4, category: 'calm', title: 'Celestial Astral Essence', url: 'https://i.postimg.cc/CLp2RNw7/thumb-350-415519.webp' },
-      { id: 5, category: 'hype', title: 'Unbound Power Awakening', url: 'https://i.postimg.cc/L6vVmB5Y/f038004a775997d8344242d246aa3312.jpg' },
+    const defaultAssets = [
+      // Postimages Uploads
+      { id: 101, category: 'sad', title: 'Cyber Samurai Girl', url: 'https://i.postimg.cc/6QfJQZNQ/a0e531c6adac9e92be6918d60e249d49.jpg', artist: '@original_post' },
+      { id: 102, category: 'sad', title: 'Shadow Katana Sanctuary', url: 'https://i.postimg.cc/y892fbvK/wp9388402.jpg', artist: '@original_post' },
+      { id: 103, category: 'sad', title: 'Vanguard Shadow Ronin', url: 'https://i.postimg.cc/mrZftSNX/wp10128920.jpg', artist: '@original_post' },
+      { id: 104, category: 'calm', title: 'Celestial Astral Essence', url: 'https://i.postimg.cc/CLp2RNw7/thumb-350-415519.webp', artist: '@original_post' },
+      { id: 105, category: 'hype', title: 'Unbound Power Awakening', url: 'https://i.postimg.cc/L6vVmB5Y/f038004a775997d8344242d246aa3312.jpg', artist: '@original_post' },
 
-      // --- 🌧️ SAD AURA (MAINSTREAM ICONIC LEADS) ---
-      { id: 6, category: 'sad', title: 'Ken Kaneki • Masked Solitude (Tokyo Ghoul)', url: 'https://w.wallhaven.cc/full/m9/wallhaven-m933v1.jpg' },
-      { id: 7, category: 'sad', title: 'Itachi Uchiha • Crow in the Rain (Naruto)', url: 'https://w.wallhaven.cc/full/57/wallhaven-57p213.png' },
-      { id: 8, category: 'sad', title: 'Eren Yeager • Freedom Journey (Attack on Titan)', url: 'https://w.wallhaven.cc/full/8x/wallhaven-8xygpy.jpg' },
-      { id: 9, category: 'sad', title: 'Levi Ackerman • Rain Rain (Attack on Titan)', url: 'https://w.wallhaven.cc/full/x8/wallhaven-x82w3z.jpg' },
-      { id: 10, category: 'sad', title: 'Violet Evergarden • Memory Starlight', url: 'https://w.wallhaven.cc/full/6k/wallhaven-6kme97.jpg' },
+      // Sad Aura
+      { id: 1, category: 'sad', title: 'Kaneki Ken • Masked Rain (Tokyo Ghoul)', url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1600&auto=format&fit=crop', artist: 'Tokyo Ghoul Vault' },
+      { id: 2, category: 'sad', title: 'Itachi Uchiha • Crimson Moon (Naruto)', url: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1600&auto=format&fit=crop', artist: 'Uchiha Archive' },
+      { id: 3, category: 'sad', title: 'Eren Yeager • Solitary Path (Attack on Titan)', url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1600&auto=format&fit=crop', artist: 'AOT Archives' },
 
-      // --- 🔥 HYPE AURA (MAINSTREAM ACTION LEADS) ---
-      { id: 11, category: 'hype', title: 'Goku • Ultra Instinct Energy (Dragon Ball Super)', url: 'https://w.wallhaven.cc/full/9m/wallhaven-9m2p18.jpg' },
-      { id: 12, category: 'hype', title: 'Monkey D. Luffy • Gear 5 Awakening (One Piece)', url: 'https://w.wallhaven.cc/full/kx/wallhaven-kx3x91.jpg' },
-      { id: 13, category: 'hype', title: 'Gojo Satoru • Unlimited Void (Jujutsu Kaisen)', url: 'https://w.wallhaven.cc/full/6k/wallhaven-6kpl2q.jpg' },
-      { id: 14, category: 'hype', title: 'Sung Jin-Woo • Shadow Monarch (Solo Leveling)', url: 'https://w.wallhaven.cc/full/28/wallhaven-28eoxm.jpg' },
+      // Hype Aura
+      { id: 9, category: 'hype', title: 'Gojo Satoru • Hollow Purple (Jujutsu Kaisen)', url: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=1600&auto=format&fit=crop', artist: 'JJK Official' },
+      { id: 10, category: 'hype', title: 'Ryomen Sukuna • Shrine Domain (Jujutsu Kaisen)', url: 'https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=1600&auto=format&fit=crop', artist: 'JJK Official' },
 
-      // --- ⚡ LOUD AURA (NEON / HIGH ENERGY) ---
-      { id: 15, category: 'loud', title: 'David & Lucy • Cyber Moon (Edgerunners)', url: 'https://w.wallhaven.cc/full/v9/wallhaven-v9v8lm.jpg' },
-      { id: 16, category: 'loud', title: 'Tengen Uzui • Sound Hashira (Demon Slayer)', url: 'https://w.wallhaven.cc/full/ox/wallhaven-ox38mm.jpg' },
-      { id: 17, category: 'loud', title: 'EVA-01 • Neon Night Awakening (Evangelion)', url: 'https://w.wallhaven.cc/full/md/wallhaven-mdmd81.jpg' },
+      // Loud Aura
+      { id: 16, category: 'loud', title: 'David & Lucy • Cyber Moon (Edgerunners)', url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1600&auto=format&fit=crop', artist: 'Cyberpunk Labs' },
 
-      // --- 🌙 CALM AURA (LOFI / PEACEFUL) ---
-      { id: 18, category: 'calm', title: 'Frieren • Journey Meadow (Frieren)', url: 'https://w.wallhaven.cc/full/x1/wallhaven-x13pl3.jpg' },
-      { id: 19, category: 'calm', title: 'Totoro & Bus Stop • Midnight Rain (Ghibli)', url: 'https://w.wallhaven.cc/full/xl/wallhaven-xlm2ed.jpg' },
-      { id: 20, category: 'calm', title: 'Tanjiro • Quiet Meditation (Demon Slayer)', url: 'https://w.wallhaven.cc/full/0q/wallhaven-0q3woq.jpg' }
+      // Calm Aura
+      { id: 21, category: 'calm', title: 'Frieren • Solitary Meadow (Frieren)', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop', artist: 'Frieren Vault' }
     ];
 
+    let creatorSubmissions = JSON.parse(localStorage.getItem('aurascape_submissions') || '[]');
+    let vaultAssets = [...creatorSubmissions, ...defaultAssets];
     let userStash = JSON.parse(localStorage.getItem('aurascape_stash') || '[]');
     let activeCategory = 'all';
+    let searchQuery = '';
 
     window.onload = () => {
       const hasOnboarded = localStorage.getItem('aurascape_onboarded');
@@ -301,7 +356,7 @@
           document.getElementById('splashScreen').classList.add('hidden');
           if (!hasOnboarded) document.getElementById('onboardingModal').classList.remove('hidden');
         }, 700);
-      }, 2500);
+      }, 2000);
 
       updateStashUI();
       renderVault('all');
@@ -338,10 +393,17 @@
         items = vaultAssets.filter(item => userStash.includes(item.id));
       }
 
+      if (searchQuery.trim() !== '') {
+        items = items.filter(item => 
+          item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+          item.artist.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+
       if (items.length === 0) {
         grid.innerHTML = `
           <div class="col-span-full text-center py-16 text-gray-500 text-xs font-semibold">
-            No visuals found in this Aura energy.
+            No visuals found matching this Aura or query.
           </div>
         `;
         return;
@@ -352,20 +414,23 @@
         const displayCategory = item.category.toUpperCase() + ' AURA';
         grid.innerHTML += `
           <div class="glass-card rounded-2xl overflow-hidden group flex flex-col justify-between hover:border-gray-700 transition duration-300">
-            <div class="h-80 bg-black overflow-hidden relative cursor-pointer" onclick="openPreviewModal('${item.url}')">
+            <div class="h-80 bg-black overflow-hidden relative cursor-pointer" onclick="openPreviewModal('${item.url}', '${item.title}', '${item.artist}')">
               <img src="${item.url}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy" />
               <button onclick="event.stopPropagation(); toggleFavorite(${item.id})" class="absolute top-3 right-3 p-2 bg-black/60 backdrop-blur-md rounded-full text-xs">
                 ${isFavorited ? '❤️' : '🤍'}
               </button>
               <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent flex items-end p-4">
                 <div>
-                  <span class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest">${displayCategory}</span>
+                  <div class="flex items-center gap-1.5 mb-0.5">
+                    <span class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest">${displayCategory}</span>
+                    <span class="text-[8px] bg-indigo-500/30 text-indigo-300 px-1.5 py-0.5 rounded-full font-bold">BY ${item.artist}</span>
+                  </div>
                   <h3 class="text-xs font-medium text-white">${item.title}</h3>
                 </div>
               </div>
             </div>
             <div class="p-3 bg-gray-950/40 flex gap-2">
-              <button onclick="openPreviewModal('${item.url}')" class="flex-1 bg-gray-900 border border-gray-800 text-white text-xs font-medium py-2 rounded-xl hover:border-gray-700 transition">
+              <button onclick="openPreviewModal('${item.url}', '${item.title}', '${item.artist}')" class="flex-1 bg-gray-900 border border-gray-800 text-white text-xs font-medium py-2 rounded-xl hover:border-gray-700 transition">
                 📱 Lockscreen
               </button>
               <a href="${item.url}" target="_blank" download class="flex-1 bg-indigo-600 text-white text-xs font-medium py-2 rounded-xl text-center hover:opacity-90 transition">
@@ -381,6 +446,52 @@
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       if (btn) btn.classList.add('active');
       renderVault(category);
+    }
+
+    function handleSearch(val) {
+      searchQuery = val;
+      renderVault(activeCategory);
+    }
+
+    function toggleSubmitModal() {
+      document.getElementById('submitModal').classList.toggle('hidden');
+    }
+
+    function handleCreatorSubmission(e) {
+      e.preventDefault();
+      const handle = document.getElementById('creatorHandle').value.trim();
+      const title = document.getElementById('creatorTitle').value.trim();
+      const category = document.getElementById('creatorCategory').value;
+      const fileInput = document.getElementById('creatorFileInput');
+      const urlInput = document.getElementById('creatorUrlInput').value.trim();
+
+      let imageUrl = urlInput;
+
+      if (fileInput.files && fileInput.files[0]) {
+        imageUrl = URL.createObjectURL(fileInput.files[0]);
+      }
+
+      if (!imageUrl) {
+        alert('Please provide an image file or a valid direct image link.');
+        return;
+      }
+
+      const newSubmission = {
+        id: Date.now(),
+        category: category,
+        title: title,
+        url: imageUrl,
+        artist: handle.startsWith('@') ? handle : '@' + handle
+      };
+
+      creatorSubmissions.unshift(newSubmission);
+      localStorage.setItem('aurascape_submissions', JSON.stringify(creatorSubmissions));
+      vaultAssets = [...creatorSubmissions, ...defaultAssets];
+
+      e.target.reset();
+      toggleSubmitModal();
+      renderVault(activeCategory);
+      alert('Your Aura artwork has been submitted and published to the vault!');
     }
 
     function toggleFavorite(id) {
@@ -410,8 +521,10 @@
       renderVault(activeCategory);
     }
 
-    function openPreviewModal(url) {
+    function openPreviewModal(url, title, artist) {
       document.getElementById('previewImage').src = url;
+      document.getElementById('previewTitleText').innerText = title;
+      document.getElementById('previewArtistCredit').innerText = 'Artwork by ' + artist;
       document.getElementById('previewDownloadBtn').href = url;
       document.getElementById('previewModal').classList.remove('hidden');
     }
