@@ -11,13 +11,13 @@
       theme: {
         extend: {
           colors: {
-            accent: 'var(--accent-color)',
+            accent: '#6366f1',
           }
         }
       }
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
     :root {
@@ -26,7 +26,7 @@
       --text-main: #f1f5f9;
       --text-sub: #94a3b8;
       --border-color: rgba(255, 255, 255, 0.08);
-      --accent-color: #6366f1;
+      --header-bg: rgba(8, 9, 13, 0.9);
     }
 
     html.light {
@@ -35,7 +35,7 @@
       --text-main: #0f172a;
       --text-sub: #64748b;
       --border-color: rgba(0, 0, 0, 0.08);
-      --accent-color: #4f46e5;
+      --header-bg: rgba(244, 245, 248, 0.9);
     }
 
     body {
@@ -45,26 +45,42 @@
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    .font-cinzel { font-family: 'Cinzel', serif; }
-    .glass-card { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--border-color); }
-    .kanji-glow { filter: drop-shadow(0 0 12px var(--accent-color)); }
-    .filter-btn.active { background: var(--accent-color); color: #ffffff; border-color: transparent; }
+    .font-serif-slim {
+      font-family: 'Playfair Display', 'Times New Roman', serif;
+      font-weight: 400;
+    }
+
+    .glass-card { 
+      background: var(--card-bg); 
+      backdrop-filter: blur(12px); 
+      border: 1px solid var(--border-color); 
+    }
+
+    .filter-btn.active { 
+      background: #6366f1; 
+      color: #ffffff; 
+      border-color: transparent; 
+    }
   </style>
 </head>
 <body class="min-h-screen pb-16 relative overflow-x-hidden">
 
-  <!-- ================= 1. PITCH-BLACK SPLASH SCREEN (OPTION C) ================= -->
-  <div id="splashScreen" class="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center transition-opacity duration-700">
-    <div class="text-center space-y-3 px-4">
-      <!-- Kanji / Geometric Prism Emblem -->
-      <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-indigo-900 via-purple-700 to-pink-500 p-[2px] kanji-glow">
-        <div class="w-full h-full bg-black rounded-2xl flex items-center justify-center text-white text-2xl font-cinzel font-black">
-          ⚔️
-        </div>
+  <!-- ================= 1. PITCH-BLACK SPLASH SCREEN ================= -->
+  <div id="splashScreen" class="fixed inset-0 z-50 bg-[#000000] flex flex-col items-center justify-center transition-opacity duration-700">
+    <div class="text-center space-y-4 px-4">
+      <!-- Minimalist Silver Katana Emblem -->
+      <div class="w-14 h-14 mx-auto rounded-full bg-gray-950 border border-gray-800 flex items-center justify-center text-gray-200 shadow-xl">
+        <svg class="w-7 h-7 stroke-current text-gray-200" viewBox="0 0 24 24" fill="none" stroke-width="1.2">
+          <path d="M19.5 4.5L4.5 19.5" stroke-linecap="round"/>
+          <path d="M18 3L21 6" stroke-linecap="round"/>
+          <path d="M6 18L3 21" stroke-linecap="round"/>
+          <path d="M15 9L11 5" stroke-linecap="round"/>
+        </svg>
       </div>
+
       <div>
-        <h1 class="text-2xl md:text-3xl font-cinzel font-black tracking-[0.25em] text-white">AURA SCAPE</h1>
-        <p class="text-xs text-indigo-400 font-bold tracking-widest mt-1">オーラスケープ • 4K 聖域</p>
+        <h1 class="text-2xl md:text-3xl font-serif-slim tracking-[0.3em] text-white uppercase">AURA SCAPE</h1>
+        <p class="text-[10px] text-gray-400 font-medium tracking-widest mt-1">オーラスケープ • 4K ARCHIVE</p>
       </div>
     </div>
   </div>
@@ -73,26 +89,26 @@
   <div id="onboardingModal" class="hidden fixed inset-0 z-40 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
     <div class="glass-card max-w-md w-full rounded-3xl p-6 md:p-8 space-y-6">
       <div class="text-center space-y-1">
-        <span class="text-[10px] font-bold text-indigo-400 tracking-widest uppercase">Customizing Your Experience</span>
-        <h2 class="text-xl font-bold">Select Your Anime Vibe</h2>
+        <span class="text-[10px] font-bold text-indigo-400 tracking-widest uppercase">Welcome</span>
+        <h2 class="text-xl font-bold">Select Your Preference</h2>
       </div>
 
       <div class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Preferred Category</label>
-          <div class="grid grid-cols-2 gap-2 text-xs font-bold">
-            <button onclick="setInitialVibe('dark_fantasy', this)" class="vibe-btn active p-3 bg-gray-800 rounded-xl border border-indigo-500 text-left">⚔️ Dark Fantasy</button>
-            <button onclick="setInitialVibe('cyberpunk', this)" class="vibe-btn p-3 bg-gray-800 rounded-xl border border-transparent text-left">⚡ Cyberpunk</button>
-            <button onclick="setInitialVibe('lofi', this)" class="vibe-btn p-3 bg-gray-800 rounded-xl border border-transparent text-left">🌸 Lofi / Chill</button>
-            <button onclick="setInitialVibe('shonen', this)" class="vibe-btn p-3 bg-gray-800 rounded-xl border border-transparent text-left">🔥 Shonen Action</button>
+          <div class="grid grid-cols-2 gap-2 text-xs font-medium">
+            <button onclick="setInitialVibe('dark_fantasy', this)" class="vibe-btn active p-3 bg-gray-900/60 rounded-xl border border-indigo-500 text-left">Dark Fantasy</button>
+            <button onclick="setInitialVibe('cyberpunk', this)" class="vibe-btn p-3 bg-gray-900/60 rounded-xl border border-transparent text-left">Cyberpunk</button>
+            <button onclick="setInitialVibe('lofi', this)" class="vibe-btn p-3 bg-gray-900/60 rounded-xl border border-transparent text-left">Lofi & Chill</button>
+            <button onclick="setInitialVibe('shonen', this)" class="vibe-btn p-3 bg-gray-900/60 rounded-xl border border-transparent text-left">Shonen Action</button>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Interface Environment Mode</label>
-          <div class="grid grid-cols-2 gap-3 text-xs font-bold">
-            <button onclick="setThemeMode('dark')" class="p-3 bg-black text-white rounded-xl border border-gray-700 flex items-center justify-center gap-2">
-              🖤 Dark OLED
+          <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Default Theme Mode</label>
+          <div class="grid grid-cols-2 gap-3 text-xs font-medium">
+            <button onclick="setThemeMode('dark')" class="p-3 bg-black text-white rounded-xl border border-gray-800 flex items-center justify-center gap-2">
+              🌙 Dark OLED
             </button>
             <button onclick="setThemeMode('light')" class="p-3 bg-white text-gray-900 rounded-xl border border-gray-300 flex items-center justify-center gap-2">
               ☀️ Light Mode
@@ -102,31 +118,43 @@
       </div>
 
       <button onclick="finishOnboarding()" class="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-bold text-sm hover:opacity-90 transition">
-        Enter AuraScape Vault →
+        Enter Gallery →
       </button>
     </div>
   </div>
 
   <!-- ================= 3. APP HEADER ================= -->
-  <header class="border-b border-gray-800/80 sticky top-0 z-30 bg-[#08090d]/90 backdrop-blur-md">
+  <header class="border-b border-gray-800/60 sticky top-0 z-30 backdrop-blur-md" style="background-color: var(--header-bg);">
     <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      
+      <!-- Katana Logo & Slim Typography -->
       <div class="flex items-center space-x-3">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-pink-500 flex items-center justify-center font-cinzel font-bold text-white text-base shadow-lg">
-          ⚔️
+        <div class="w-8 h-8 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-300">
+          <svg class="w-4 h-4 stroke-current" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+            <path d="M19.5 4.5L4.5 19.5" stroke-linecap="round"/>
+            <path d="M18 3L21 6" stroke-linecap="round"/>
+            <path d="M6 18L3 21" stroke-linecap="round"/>
+          </svg>
         </div>
         <div>
-          <h1 class="font-cinzel font-black text-base tracking-widest leading-none">AURA SCAPE</h1>
-          <p class="text-[9px] text-indigo-400 font-semibold tracking-wider">オーラスケープ 4K</p>
+          <h1 class="font-serif-slim text-base tracking-[0.25em] leading-none uppercase">AURA SCAPE</h1>
+          <p class="text-[9px] text-gray-400 font-medium tracking-wider mt-0.5">オーラスケープ 4K</p>
         </div>
       </div>
 
-      <!-- Controls & Stash -->
+      <!-- Controls: Theme Toggle Switch | Stash | Settings -->
       <div class="flex items-center gap-2">
-        <button onclick="showStashTab()" class="px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold flex items-center gap-1.5 hover:border-indigo-500 transition">
+        <!-- TOP LIGHT/DARK SWITCH -->
+        <button id="themeToggleBtn" onclick="toggleTheme()" class="px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-medium flex items-center gap-1.5 hover:border-indigo-500 transition" title="Switch Light/Dark Mode">
+          <span id="themeIcon">🌙</span>
+        </button>
+
+        <button onclick="showStashTab()" class="px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-medium flex items-center gap-1.5 hover:border-indigo-500 transition">
           <span class="text-pink-500">❤️</span>
           <span id="stashCount">0</span>
         </button>
-        <button onclick="toggleSettingsModal()" class="p-2 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold hover:border-indigo-500 transition">
+
+        <button onclick="toggleSettingsModal()" class="p-2 bg-gray-900 border border-gray-800 rounded-xl text-xs font-medium hover:border-indigo-500 transition">
           ⚙️
         </button>
       </div>
@@ -138,11 +166,11 @@
 
     <!-- Category Filter Bar -->
     <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-      <button onclick="filterVault('all', this)" class="filter-btn active px-4 py-2 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap transition">🔥 All Assets</button>
-      <button onclick="filterVault('dark_fantasy', this)" class="filter-btn px-4 py-2 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap transition">⚔️ Dark Fantasy</button>
-      <button onclick="filterVault('cyberpunk', this)" class="filter-btn px-4 py-2 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap transition">⚡ Cyberpunk</button>
-      <button onclick="filterVault('lofi', this)" class="filter-btn px-4 py-2 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap transition">🌸 Lofi & Chill</button>
-      <button onclick="filterVault('shonen', this)" class="filter-btn px-4 py-2 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap transition">🔥 Shonen</button>
+      <button onclick="filterVault('all', this)" class="filter-btn active px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">All Assets</button>
+      <button onclick="filterVault('dark_fantasy', this)" class="filter-btn px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">Dark Fantasy</button>
+      <button onclick="filterVault('cyberpunk', this)" class="filter-btn px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">Cyberpunk</button>
+      <button onclick="filterVault('lofi', this)" class="filter-btn px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">Lofi & Chill</button>
+      <button onclick="filterVault('shonen', this)" class="filter-btn px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">Shonen</button>
     </div>
 
     <!-- Wallpaper Grid -->
@@ -160,31 +188,31 @@
       <img id="previewImage" src="" class="absolute inset-0 w-full h-full object-cover z-0" />
       <div class="absolute inset-0 bg-black/30 z-10"></div>
 
-      <!-- Lock Screen Notch & Status Bar -->
+      <!-- Lock Screen Status Bar -->
       <div class="relative z-20 flex justify-between items-center text-white text-xs px-2 font-semibold">
         <span>9:41</span>
-        <div class="w-20 h-4 bg-black rounded-full"></div>
+        <div class="w-20 h-4 bg-black/80 rounded-full"></div>
         <span>5G 🔋</span>
       </div>
 
       <!-- Lock Screen Clock -->
       <div class="relative z-20 text-center text-white space-y-1 mt-8">
-        <p class="text-xs font-semibold tracking-wider uppercase opacity-90">Wednesday, October 7</p>
-        <h2 class="text-6xl font-extrabold tracking-tight">12:45</h2>
+        <p class="text-xs font-medium tracking-wider uppercase opacity-90">Wednesday, October 7</p>
+        <h2 class="text-6xl font-light tracking-tight font-serif-slim">12:45</h2>
       </div>
 
       <!-- Lock Screen Footer Controls -->
       <div class="relative z-20 space-y-4 mb-2">
         <div class="glass-card rounded-2xl p-3 text-xs text-white space-y-1">
           <p class="font-bold">AuraScape 4K Asset</p>
-          <p class="text-[10px] text-gray-300">Tap download below to save to gallery.</p>
+          <p class="text-[10px] text-gray-300">Tap download below to save to device gallery.</p>
         </div>
 
         <div class="flex gap-2">
-          <button onclick="closePreviewModal()" class="flex-1 bg-gray-900/80 text-white py-3 rounded-xl font-bold text-xs border border-gray-700">
+          <button onclick="closePreviewModal()" class="flex-1 bg-gray-900/80 text-white py-3 rounded-xl font-medium text-xs border border-gray-700">
             Close
           </button>
-          <a id="previewDownloadBtn" href="" target="_blank" download class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-bold text-xs text-center">
+          <a id="previewDownloadBtn" href="" target="_blank" download class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-medium text-xs text-center">
             Download 4K
           </a>
         </div>
@@ -192,52 +220,49 @@
     </div>
   </div>
 
-  <!-- ================= 6. SETTINGS & PREFERENCES DRAWER ================= -->
+  <!-- ================= 6. STREAMLINED SETTINGS DRAWER ================= -->
   <div id="settingsModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end">
     <div class="glass-card max-w-sm w-full h-full p-6 space-y-6 flex flex-col justify-between">
       
       <div class="space-y-6">
         <div class="flex items-center justify-between border-b border-gray-800 pb-4">
-          <h3 class="font-bold text-lg">Settings & Preferences</h3>
+          <h3 class="font-bold text-base">Options & Settings</h3>
           <button onclick="toggleSettingsModal()" class="text-gray-400 font-bold">✕</button>
         </div>
 
-        <!-- Setting 1: Theme Switcher -->
+        <!-- Option 1: Theme Switcher -->
         <div class="space-y-2">
-          <label class="block text-xs font-bold text-gray-400 uppercase">App Theme Mode</label>
-          <div class="grid grid-cols-2 gap-2 text-xs font-bold">
-            <button onclick="setThemeMode('dark')" class="p-2.5 bg-gray-900 border border-gray-800 rounded-xl text-center">🖤 Dark OLED</button>
+          <label class="block text-xs font-bold text-gray-400 uppercase">Appearance</label>
+          <div class="grid grid-cols-2 gap-2 text-xs font-medium">
+            <button onclick="setThemeMode('dark')" class="p-2.5 bg-gray-900 border border-gray-800 rounded-xl text-center">🌙 Dark OLED</button>
             <button onclick="setThemeMode('light')" class="p-2.5 bg-gray-100 text-gray-900 rounded-xl text-center">☀️ Light Mode</button>
           </div>
         </div>
 
-        <!-- Setting 2: Splash Screen Speed -->
+        <!-- Option 2: Stash Management -->
         <div class="space-y-2">
-          <label class="block text-xs font-bold text-gray-400 uppercase">Splash Screen Intro</label>
-          <select id="splashSetting" onchange="updateSplashSetting(this.value)" class="w-full bg-gray-900 border border-gray-800 text-xs rounded-xl p-3 text-white">
-            <option value="3000">Standard (3 Seconds)</option>
-            <option value="1000">Fast (1 Second)</option>
-            <option value="0">Disabled (Instant Launch)</option>
-          </select>
+          <label class="block text-xs font-bold text-gray-400 uppercase">Saved Data</label>
+          <button onclick="clearStashData()" class="w-full bg-gray-900/80 border border-gray-800 text-gray-300 py-2.5 rounded-xl text-xs font-medium text-left px-3 flex justify-between items-center">
+            <span>Clear Saved Favorites</span>
+            <span id="settingsStashBadge" class="text-[10px] bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-full">0</span>
+          </button>
         </div>
 
-        <!-- Setting 3: Dynamic Accent Tinting -->
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-xs font-bold">Dynamic Accent Tinting</p>
-            <p class="text-[10px] text-gray-400">Match app highlights to category</p>
-          </div>
-          <input type="checkbox" id="autoTintToggle" checked onchange="toggleAutoTint(this.checked)" class="w-4 h-4 text-indigo-600">
+        <!-- Option 3: App Info -->
+        <div class="space-y-1 pt-2">
+          <p class="text-xs font-bold text-gray-400 uppercase">About</p>
+          <p class="text-xs text-gray-400">AuraScape 4K Archive v1.2</p>
+          <p class="text-[10px] text-gray-500">Curated high-resolution anime lock screen wallpapers.</p>
         </div>
       </div>
 
-      <button onclick="resetAppOnboarding()" class="w-full bg-red-500/10 text-red-400 border border-red-500/20 py-3 rounded-xl text-xs font-bold hover:bg-red-500/20 transition">
-        Reset Onboarding & Preferences
+      <button onclick="resetAppOnboarding()" class="w-full bg-red-500/10 text-red-400 border border-red-500/20 py-3 rounded-xl text-xs font-medium hover:bg-red-500/20 transition">
+        Reset Preferences
       </button>
     </div>
   </div>
 
-  <!-- ================= 7. APP JAVASCRIPT LOGIC ================= -->
+  <!-- ================= 7. JAVASCRIPT LOGIC ================= -->
   <script>
     // Asset Repository with Postimages Link Included
     const vaultAssets = [
@@ -251,26 +276,21 @@
     let userStash = JSON.parse(localStorage.getItem('aurascape_stash') || '[]');
     let activeCategory = 'all';
 
-    // Startup Sequence
+    // Startup
     window.onload = () => {
-      const splashDuration = parseInt(localStorage.getItem('aurascape_splash') || '3000');
       const hasOnboarded = localStorage.getItem('aurascape_onboarded');
       const savedTheme = localStorage.getItem('aurascape_theme') || 'dark';
 
       setThemeMode(savedTheme);
 
-      if (splashDuration > 0) {
+      // Splash Screen Transition
+      setTimeout(() => {
+        document.getElementById('splashScreen').classList.add('opacity-0');
         setTimeout(() => {
-          document.getElementById('splashScreen').classList.add('opacity-0');
-          setTimeout(() => {
-            document.getElementById('splashScreen').classList.add('hidden');
-            if (!hasOnboarded) document.getElementById('onboardingModal').classList.remove('hidden');
-          }, 700);
-        }, splashDuration);
-      } else {
-        document.getElementById('splashScreen').classList.add('hidden');
-        if (!hasOnboarded) document.getElementById('onboardingModal').classList.remove('hidden');
-      }
+          document.getElementById('splashScreen').classList.add('hidden');
+          if (!hasOnboarded) document.getElementById('onboardingModal').classList.remove('hidden');
+        }, 700);
+      }, 2500);
 
       updateStashUI();
       renderVault('all');
@@ -281,32 +301,23 @@
       if (mode === 'light') {
         document.documentElement.classList.remove('dark');
         document.documentElement.classList.add('light');
+        document.getElementById('themeIcon').innerText = '☀️';
       } else {
         document.documentElement.classList.remove('light');
         document.documentElement.classList.add('dark');
+        document.getElementById('themeIcon').innerText = '🌙';
       }
       localStorage.setItem('aurascape_theme', mode);
     }
 
-    // Dynamic Accent Colors by Category
-    function applyCategoryTint(category) {
-      const autoTint = localStorage.getItem('aurascape_autotint') !== 'false';
-      if (!autoTint) return;
-
-      const colors = {
-        'dark_fantasy': '#ef4444',
-        'cyberpunk': '#06b6d4',
-        'lofi': '#a855f7',
-        'shonen': '#f59e0b',
-        'all': '#6366f1'
-      };
-      document.documentElement.style.setProperty('--accent-color', colors[category] || '#6366f1');
+    function toggleTheme() {
+      const current = localStorage.getItem('aurascape_theme') || 'dark';
+      setThemeMode(current === 'dark' ? 'light' : 'dark');
     }
 
     // Gallery Render Engine
     function renderVault(category) {
       activeCategory = category;
-      applyCategoryTint(category);
       const grid = document.getElementById('vaultGrid');
       grid.innerHTML = '';
 
@@ -330,24 +341,24 @@
       items.forEach(item => {
         const isFavorited = userStash.includes(item.id);
         grid.innerHTML += `
-          <div class="glass-card rounded-2xl overflow-hidden group flex flex-col justify-between hover:border-indigo-500/50 transition duration-300">
+          <div class="glass-card rounded-2xl overflow-hidden group flex flex-col justify-between hover:border-gray-700 transition duration-300">
             <div class="h-80 bg-black overflow-hidden relative cursor-pointer" onclick="openPreviewModal('${item.url}')">
               <img src="${item.url}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy" />
-              <button onclick="event.stopPropagation(); toggleFavorite(${item.id})" class="absolute top-3 right-3 p-2 bg-black/60 backdrop-blur-md rounded-full text-sm">
+              <button onclick="event.stopPropagation(); toggleFavorite(${item.id})" class="absolute top-3 right-3 p-2 bg-black/60 backdrop-blur-md rounded-full text-xs">
                 ${isFavorited ? '❤️' : '🤍'}
               </button>
               <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent flex items-end p-4">
                 <div>
                   <span class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest">${item.category.replace('_', ' ')}</span>
-                  <h3 class="text-xs font-bold text-white">${item.title}</h3>
+                  <h3 class="text-xs font-medium text-white">${item.title}</h3>
                 </div>
               </div>
             </div>
             <div class="p-3 bg-gray-950/40 flex gap-2">
-              <button onclick="openPreviewModal('${item.url}')" class="flex-1 bg-gray-900 border border-gray-800 text-white text-xs font-bold py-2 rounded-xl">
+              <button onclick="openPreviewModal('${item.url}')" class="flex-1 bg-gray-900 border border-gray-800 text-white text-xs font-medium py-2 rounded-xl hover:border-gray-700 transition">
                 📱 Lockscreen
               </button>
-              <a href="${item.url}" target="_blank" download class="flex-1 bg-indigo-600 text-white text-xs font-bold py-2 rounded-xl text-center">
+              <a href="${item.url}" target="_blank" download class="flex-1 bg-indigo-600 text-white text-xs font-medium py-2 rounded-xl text-center hover:opacity-90 transition">
                 ⬇️ 4K Asset
               </a>
             </div>
@@ -376,10 +387,18 @@
 
     function updateStashUI() {
       document.getElementById('stashCount').innerText = userStash.length;
+      document.getElementById('settingsStashBadge').innerText = userStash.length;
     }
 
     function showStashTab() {
       filterVault('stash', null);
+    }
+
+    function clearStashData() {
+      userStash = [];
+      localStorage.removeItem('aurascape_stash');
+      updateStashUI();
+      renderVault(activeCategory);
     }
 
     // Modal Handlers
@@ -406,15 +425,6 @@
       document.querySelectorAll('.vibe-btn').forEach(b => b.classList.remove('border-indigo-500'));
       btn.classList.add('border-indigo-500');
       filterVault(category, null);
-    }
-
-    function updateSplashSetting(val) {
-      localStorage.setItem('aurascape_splash', val);
-    }
-
-    function toggleAutoTint(val) {
-      localStorage.setItem('aurascape_autotint', val);
-      if (!val) document.documentElement.style.setProperty('--accent-color', '#6366f1');
     }
 
     function resetAppOnboarding() {
