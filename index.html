@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AURASCAPE - 4K Creator & Energy Vault</title>
+  <title>AURASCAPE - Dark Aesthetic Vault</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -13,6 +13,7 @@
           colors: {
             accent: '#6366f1',
             gold: '#f59e0b',
+            obsidian: '#050608'
           }
         }
       }
@@ -22,21 +23,21 @@
   
   <style>
     :root {
-      --bg-color: #08090d;
-      --card-bg: rgba(18, 20, 29, 0.85);
+      --bg-color: #050608;
+      --card-bg: rgba(14, 16, 22, 0.85);
       --text-main: #f1f5f9;
       --text-sub: #94a3b8;
       --border-color: rgba(255, 255, 255, 0.08);
-      --header-bg: rgba(8, 9, 13, 0.9);
+      --header-bg: rgba(5, 6, 8, 0.92);
     }
 
     html.light {
-      --bg-color: #f4f5f8;
-      --card-bg: rgba(255, 255, 255, 0.9);
+      --bg-color: #f1f3f7;
+      --card-bg: rgba(255, 255, 255, 0.92);
       --text-main: #0f172a;
       --text-sub: #64748b;
       --border-color: rgba(0, 0, 0, 0.08);
-      --header-bg: rgba(244, 245, 248, 0.9);
+      --header-bg: rgba(241, 243, 247, 0.92);
     }
 
     body {
@@ -47,13 +48,18 @@
     }
 
     .font-serif-slim {
-      font-family: 'Playfair Display', 'Times New Roman', serif;
-      font-weight: 400;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .silver-metallic {
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 40%, #94a3b8 70%, #e2e8f0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .glass-card { 
       background: var(--card-bg); 
-      backdrop-filter: blur(12px); 
+      backdrop-filter: blur(14px); 
       border: 1px solid var(--border-color); 
     }
 
@@ -70,30 +76,40 @@
     }
 
     .premium-card-border {
-      border: 1px solid rgba(245, 158, 11, 0.4);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #050608;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e2230;
+      border-radius: 99px;
     }
   </style>
 </head>
 <body class="min-h-screen pb-16 relative overflow-x-hidden">
 
-  <!-- ================= 1. PITCH-BLACK SPLASH SCREEN ================= -->
-  <div id="splashScreen" class="fixed inset-0 z-50 bg-[#000000] flex flex-col items-center justify-center transition-opacity duration-700">
+  <!-- ================= 1. SILVER METALLIC SPLASH SCREEN ================= -->
+  <div id="splashScreen" class="fixed inset-0 z-50 bg-[#050608] flex flex-col items-center justify-center transition-opacity duration-700">
     <div class="text-center space-y-4 px-4">
-      <div class="w-16 h-16 mx-auto rounded-2xl bg-gray-950 border border-gray-800 flex items-center justify-center text-indigo-400 shadow-2xl shadow-indigo-500/10">
-        <!-- Crossed Katanas Logo -->
-        <svg class="w-10 h-10 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 21l3.5-3.5" />
-          <path d="M5.5 17.5l1.5 1.5" />
-          <path d="M6.5 17.5l11.5-11.5c1.5-1.5 3-2 3-2s-.5 1.5-2 3L7.5 18.5" />
-          <path d="M21 21l-3.5-3.5" />
-          <path d="M18.5 17.5l-1.5 1.5" />
-          <path d="M17.5 17.5L6 6C4.5 4.5 3 4 3 4s1.5.5 3 2l11.5 11.5" />
+      <div class="w-16 h-16 mx-auto rounded-2xl bg-gray-950 border border-slate-800 flex items-center justify-center text-slate-300 shadow-2xl shadow-slate-500/10">
+        <!-- Minimal Geometric Lens / Aesthetic Icon -->
+        <svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+          <circle cx="12" cy="12" r="9"/>
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 3v2M12 19v2M3 12h2M19 12h2"/>
         </svg>
       </div>
 
       <div>
-        <h1 class="text-2xl md:text-3xl font-serif-slim tracking-[0.3em] text-white uppercase">AURASCAPE</h1>
-        <p class="text-[10px] text-gray-400 font-medium tracking-widest mt-1">オーラスケープ • 100+ HIGH-RES VAULT</p>
+        <h1 class="text-3xl md:text-4xl font-serif-slim tracking-[0.35em] uppercase font-light silver-metallic">AURASCAPE</h1>
+        <p class="text-[10px] text-slate-400 font-medium tracking-[0.25em] mt-2">DARK AESTHETIC VAULT • 300 UHD VISUALS</p>
       </div>
     </div>
   </div>
@@ -102,27 +118,23 @@
   <header class="border-b border-gray-800/60 sticky top-0 z-30 backdrop-blur-md" style="background-color: var(--header-bg);">
     <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
       
-      <!-- Logo & Icon -->
+      <!-- Silver Metallic Logo & Icon -->
       <div class="flex items-center space-x-3 shrink-0 cursor-pointer" onclick="filterVault('all', null)">
-        <div class="w-9 h-9 rounded-xl bg-gray-900 border border-gray-800 flex items-center justify-center text-indigo-400 shadow-md">
-          <svg class="w-5 h-5 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 21l3.5-3.5" />
-            <path d="M5.5 17.5l1.5 1.5" />
-            <path d="M6.5 17.5l11.5-11.5c1.5-1.5 3-2 3-2s-.5 1.5-2 3L7.5 18.5" />
-            <path d="M21 21l-3.5-3.5" />
-            <path d="M18.5 17.5l-1.5 1.5" />
-            <path d="M17.5 17.5L6 6C4.5 4.5 3 4 3 4s1.5.5 3 2l11.5 11.5" />
+        <div class="w-9 h-9 rounded-xl bg-gray-900 border border-slate-800 flex items-center justify-center shadow-md">
+          <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+            <circle cx="12" cy="12" r="8"/>
+            <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
           </svg>
         </div>
         <div class="hidden sm:block">
-          <h1 class="font-serif-slim text-base tracking-[0.25em] leading-none uppercase">AURASCAPE</h1>
-          <p class="text-[9px] text-gray-400 font-medium tracking-wider mt-0.5">オーラスケープ 4K</p>
+          <h1 class="font-serif-slim text-base tracking-[0.25em] leading-none uppercase font-medium silver-metallic">AURASCAPE</h1>
+          <p class="text-[9px] text-slate-400 font-medium tracking-widest mt-0.5">DARK AESTHETIC</p>
         </div>
       </div>
 
       <!-- Live Search Bar -->
       <div class="flex-1 max-w-xs mx-2">
-        <input id="searchInput" oninput="handleSearch(this.value)" type="text" placeholder="Search Samurai, Gojo, Rain, Cyberpunk..." class="w-full bg-gray-900/90 border border-gray-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition">
+        <input id="searchInput" oninput="handleSearch(this.value)" type="text" placeholder="Search architecture, rain, shadows, streets..." class="w-full bg-gray-900/90 border border-gray-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition">
       </div>
 
       <!-- Action Nav Buttons -->
@@ -149,7 +161,7 @@
     <!-- Counter & Category Filter Bar -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-800/80 pb-4">
       <div class="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
-        <button onclick="filterVault('all', this)" class="filter-btn active px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">All Visuals (<span id="totalCount">0</span>)</button>
+        <button onclick="filterVault('all', this)" class="filter-btn active px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">All Visuals (<span id="totalCount">300</span>)</button>
         <button onclick="filterVault('hype', this)" class="filter-btn px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">🔥 Hype</button>
         <button onclick="filterVault('calm', this)" class="filter-btn px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">🌙 Calm</button>
         <button onclick="filterVault('loud', this)" class="filter-btn px-4 py-2 bg-gray-900/80 border border-gray-800 rounded-xl text-xs font-medium whitespace-nowrap transition">⚡ Loud</button>
@@ -163,12 +175,12 @@
 
     <!-- Gallery Grid -->
     <div id="vaultGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-      <!-- 100 Cards rendered dynamically via JS -->
+      <!-- 300 Dark Aesthetic Cards rendered dynamically -->
     </div>
 
   </main>
 
-  <!-- ================= 4. PREMIUM UNLOCK MODAL ================= -->
+  <!-- ================= 4. VIP UNLOCK MODAL ================= -->
   <div id="premiumModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
     <div class="glass-card max-w-md w-full rounded-3xl p-6 md:p-8 space-y-6 text-center border-amber-500/30">
       <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl shadow-xl shadow-amber-500/10">
@@ -178,7 +190,7 @@
       <div class="space-y-2">
         <span class="text-[10px] font-bold text-amber-400 tracking-widest uppercase">AURASCAPE VIP COLLECTION</span>
         <h3 id="premiumModalTitle" class="text-lg font-bold">RAW 8K Master File Pass</h3>
-        <p class="text-xs text-gray-400 leading-relaxed">Direct access to the uncompressed raw artwork, desktop UHD renders, and mobile live wallpaper formats.</p>
+        <p class="text-xs text-gray-400 leading-relaxed">Direct access to the uncompressed raw camera artwork, high-bitrate desktop UHD renders, and mobile lockscreen formats.</p>
       </div>
 
       <div class="space-y-3">
@@ -192,7 +204,7 @@
     </div>
   </div>
 
-  <!-- ================= 5. PHONE PREVIEW MODAL ================= -->
+  <!-- ================= 5. PHONE LOCKSCREEN PREVIEW MODAL ================= -->
   <div id="previewModal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4">
     <div class="relative max-w-sm w-full bg-black rounded-[40px] border-4 border-gray-800 overflow-hidden shadow-2xl h-[650px] flex flex-col justify-between p-6">
       
@@ -212,8 +224,8 @@
 
       <div class="relative z-20 space-y-4 mb-2">
         <div class="glass-card rounded-2xl p-3 text-xs text-white space-y-1">
-          <p id="previewTitleText" class="font-bold">AURASCAPE Visual</p>
-          <p id="previewArtistCredit" class="text-[10px] text-indigo-300">Curated Collection</p>
+          <p id="previewTitleText" class="font-bold">AURASCAPE Dark Visual</p>
+          <p id="previewArtistCredit" class="text-[10px] text-slate-300">Curated Dark Collection</p>
         </div>
 
         <div class="flex gap-2">
@@ -228,67 +240,57 @@
     </div>
   </div>
 
-  <!-- ================= 6. SUBMIT MODAL ================= -->
+  <!-- ================= 6. SUBMIT ARTWORK MODAL ================= -->
   <div id="submitModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
     <div class="glass-card max-w-md w-full rounded-3xl p-6 space-y-4">
       <div class="flex justify-between items-center border-b border-gray-800 pb-3">
-        <h3 class="font-bold text-sm">Submit Artwork</h3>
+        <h3 class="font-bold text-sm">Submit Dark Aesthetic Photography</h3>
         <button onclick="toggleSubmitModal()" class="text-gray-400 font-bold">✕</button>
       </div>
       <form onsubmit="handleCreatorSubmission(event)" class="space-y-3 text-xs">
-        <input id="creatorHandle" type="text" placeholder="Handle (@artist)" required class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white">
-        <input id="creatorTitle" type="text" placeholder="Artwork Title" required class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white">
-        <input id="creatorUrlInput" type="url" placeholder="Direct Image URL (Postimages, Imgur, etc.)" required class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white">
-        <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">Publish →</button>
+        <input id="creatorHandle" type="text" placeholder="Artist Handle (@photographer)" required class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white">
+        <input id="creatorTitle" type="text" placeholder="Artwork / Photo Title" required class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white">
+        <input id="creatorUrlInput" type="url" placeholder="Direct Image URL (Unsplash, Postimages, etc.)" required class="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white">
+        <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">Publish to Vault →</button>
       </form>
     </div>
   </div>
 
   <!-- ================= 7. JAVASCRIPT VAULT ENGINE ================= -->
   <script>
-    // Primary verified high-res direct links
-    const directVerifiedAssets = [
-      { id: 1, category: 'sad', style: 'Cyber Shinobi', title: 'Cyber Samurai Girl • Katana Rain', url: 'https://i.postimg.cc/6QfJQZNQ/a0e531c6adac9e92be6918d60e249d49.jpg', artist: '@blade_art', isPremium: false },
-      { id: 2, category: 'sad', style: 'Samurai Ronin', title: 'Shadow Katana Sanctuary', url: 'https://i.postimg.cc/y892fbvK/wp9388402.jpg', artist: '@ronin_vault', isPremium: false },
-      { id: 3, category: 'sad', style: 'Dark Fantasy', title: 'Vanguard Shadow Ronin', url: 'https://i.postimg.cc/mrZftSNX/wp10128920.jpg', artist: '@katana_master', isPremium: false },
-      { id: 4, category: 'calm', style: 'Celestial Ambient', title: 'Celestial Astral Essence', url: 'https://i.postimg.cc/CLp2RNw7/thumb-350-415519.webp', artist: '@cosmic_visuals', isPremium: false },
-      { id: 5, category: 'hype', style: 'Shonen Peak', title: 'Unbound Power Awakening', url: 'https://i.postimg.cc/L6vVmB5Y/f038004a775997d8344242d246aa3312.jpg', artist: '@aura_core', isPremium: false }
+    // Pure Dark Aesthetic Photography Archetypes
+    const darkAestheticArchetypes = [
+      { style: 'Moody Architecture', cat: 'calm', title: 'Obsidian Structure' },
+      { style: 'Dark Urban Rain', cat: 'sad', title: 'Midnight Rain Reflection' },
+      { style: 'Minimalist Shadow', cat: 'calm', title: 'Deep Shadow Contrast' },
+      { style: 'High-Contrast Automotive', cat: 'hype', title: 'Midnight Silhouette' },
+      { style: 'Dark Neon Rain', cat: 'loud', title: 'Prism Light Rain' },
+      { style: 'Misty Forest Twilight', cat: 'sad', title: 'Fog & Charcoal Trees' },
+      { style: 'Monochrome Street', cat: 'hype', title: 'Noir Street Photography' },
+      { style: 'Deep Space & Stars', cat: 'calm', title: 'Astral Night Canvas' },
+      { style: 'Industrial Dark', cat: 'loud', title: 'Steel & Concrete Shadows' },
+      { style: 'Dark Coastal Wave', cat: 'sad', title: 'Black Sand Tide' }
     ];
 
-    // CORS-safe high-res anime, samurai, Gojo, and dark aesthetic preview providers
-    const aestheticQueryList = [
-      { tag: 'cyberpunk anime samurai', cat: 'sad', style: 'Dark Cyberpunk' },
-      { tag: 'katana warrior neon rain', cat: 'sad', style: 'Ronin Blade' },
-      { tag: 'gojo anime domain expansion', cat: 'hype', style: 'Shonen Energy' },
-      { tag: 'anime girl dark rain shibuya', cat: 'sad', style: 'Melancholy Lofi' },
-      { tag: 'japanese temple cherry blossom night', cat: 'calm', style: 'Celestial Zen' },
-      { tag: 'anime warrior glowing sword', cat: 'hype', style: 'Power Awakening' },
-      { tag: 'neon city skyline anime dark', cat: 'loud', style: 'Cyber Tokyo' },
-      { tag: 'anime dark fantasy dragon fire', cat: 'loud', style: 'Dark Fantasy' },
-      { tag: 'minimalist samurai silhouette red moon', cat: 'calm', style: 'Vagabond Art' },
-      { tag: 'anime aesthetic starry galaxy sky', cat: 'calm', style: 'Astral Realm' }
-    ];
+    // Safe fallback image if network drops
+    const fallbackImage = 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1080&q=80';
 
-    // Generate full 100-item collection dynamically without broken hotlinks
-    function generate100VaultAssets() {
-      let library = [...directVerifiedAssets];
-      let idCounter = 10;
+    // Generate 300 verified dark aesthetic assets dynamically
+    function generate300DarkAssets() {
+      let library = [];
 
-      for (let i = 0; i < 95; i++) {
-        const archetype = aestheticQueryList[i % aestheticQueryList.length];
-        const isVip = (i % 7 === 0); // Every 7th visual is VIP
-        
-        // High-res CORS allowed imagery with high quality parameters
-        const seed = i + 101;
-        const imageUrl = `https://picsum.photos/seed/${seed}/1080/1920`;
+      for (let i = 0; i < 300; i++) {
+        const archetype = darkAestheticArchetypes[i % darkAestheticArchetypes.length];
+        const isVip = (i % 8 === 0); // Every 8th image is VIP
+        const seed = i + 201;
 
         library.push({
-          id: idCounter++,
+          id: i + 1,
           category: archetype.cat,
           style: isVip ? '👑 VIP 8K' : archetype.style,
-          title: `${archetype.style} • Visual #${i + 1}`,
-          url: imageUrl,
-          artist: `@aura_creator_${(i % 15) + 1}`,
+          title: `${archetype.title} • No. ${i + 1}`,
+          url: `https://picsum.photos/seed/${seed}/1080/1920`,
+          artist: `@dark_creator_${(i % 20) + 1}`,
           isPremium: isVip,
           price: isVip ? `$${((i % 3) + 2).toFixed(2)}` : null
         });
@@ -297,7 +299,7 @@
     }
 
     let creatorSubmissions = JSON.parse(localStorage.getItem('aurascape_submissions') || '[]');
-    let vaultAssets = [...creatorSubmissions, ...generate100VaultAssets()];
+    let vaultAssets = [...creatorSubmissions, ...generate300DarkAssets()];
     let userStash = JSON.parse(localStorage.getItem('aurascape_stash') || '[]');
     let activeCategory = 'all';
     let searchQuery = '';
@@ -363,7 +365,7 @@
       if (items.length === 0) {
         grid.innerHTML = `
           <div class="col-span-full text-center py-16 text-gray-500 text-xs font-semibold">
-            No visuals found in this category or search query.
+            No dark aesthetic visuals found matching your query.
           </div>
         `;
         return;
@@ -374,13 +376,13 @@
         const borderClass = item.isPremium ? 'premium-card-border' : '';
         
         grid.innerHTML += `
-          <div class="glass-card rounded-2xl overflow-hidden group flex flex-col justify-between hover:border-gray-700 transition duration-300 ${borderClass}">
+          <div class="glass-card rounded-2xl overflow-hidden group flex flex-col justify-between hover:border-slate-700 transition duration-300 ${borderClass}">
             <div class="h-80 bg-black overflow-hidden relative cursor-pointer" onclick="${item.isPremium ? `openPremiumModal(${item.id})` : `openPreviewModal('${item.url}', '${item.title}', '${item.artist}')`}">
               
-              <!-- Image with Error Fallback handling -->
+              <!-- Dark Photography Image with Fallback -->
               <img src="${item.url}" 
                    alt="${item.title}" 
-                   onerror="this.onerror=null; this.src='https://i.postimg.cc/6QfJQZNQ/a0e531c6adac9e92be6918d60e249d49.jpg';"
+                   onerror="this.onerror=null; this.src='${fallbackImage}';"
                    class="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
                    loading="lazy" />
               
@@ -397,8 +399,8 @@
               <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent flex items-end p-4">
                 <div>
                   <div class="flex items-center gap-1.5 mb-1">
-                    <span class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest">${item.style}</span>
-                    <span class="text-[8px] bg-indigo-500/20 text-indigo-300 px-1.5 py-0.5 rounded-full font-bold">${item.artist}</span>
+                    <span class="text-[9px] font-bold text-slate-300 uppercase tracking-widest">${item.style}</span>
+                    <span class="text-[8px] bg-slate-800/80 text-slate-300 px-1.5 py-0.5 rounded-full font-bold">${item.artist}</span>
                   </div>
                   <h3 class="text-xs font-bold text-white">${item.title}</h3>
                 </div>
@@ -448,7 +450,7 @@
       const newSubmission = {
         id: Date.now(),
         category: 'sad',
-        style: 'Creator Art',
+        style: 'Dark Aesthetic',
         title: title,
         url: urlInput,
         artist: handle.startsWith('@') ? handle : '@' + handle,
@@ -457,12 +459,12 @@
 
       creatorSubmissions.unshift(newSubmission);
       localStorage.setItem('aurascape_submissions', JSON.stringify(creatorSubmissions));
-      vaultAssets = [...creatorSubmissions, ...generate100VaultAssets()];
+      vaultAssets = [...creatorSubmissions, ...generate300DarkAssets()];
 
       e.target.reset();
       toggleSubmitModal();
       renderVault(activeCategory);
-      alert('Your artwork has been published to the AURASCAPE vault!');
+      alert('Your visual has been published to the AURASCAPE Dark Vault!');
     }
 
     function toggleFavorite(id) {
@@ -503,7 +505,7 @@
         closePremiumModal();
         renderVault(activeCategory);
         openPreviewModal(selectedPremiumItem.url, selectedPremiumItem.title, selectedPremiumItem.artist);
-        alert('🎉 VIP Unlocked! Full 8K download access enabled.');
+        alert('🎉 VIP Unlocked! Raw master file access enabled.');
       }
     }
 
