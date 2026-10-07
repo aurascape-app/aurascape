@@ -1,1 +1,498 @@
-aura_pro_studio.html
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AURA STUDIO PRO • WebGL Wallpapers & Privacy Shield</title>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Three.js WebGL Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Google Fonts Gallery -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            syne: ['Syne', 'sans-serif'],
+            playfair: ['Playfair Display', 'serif'],
+            cinzel: ['Cinzel', 'serif'],
+            space: ['Space Grotesk', 'sans-serif'],
+            outfit: ['Outfit', 'sans-serif'],
+            mono: ['Space Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #020204;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .glass-card {
+      background: rgba(10, 12, 18, 0.82);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .glass-modal {
+      background: rgba(6, 8, 14, 0.94);
+      backdrop-filter: blur(36px);
+      -webkit-backdrop-filter: blur(36px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    /* Privacy Blur Shield Effect */
+    .privacy-blurred {
+      filter: blur(8px) contrast(1.4) saturate(1.8);
+      opacity: 0.6;
+      transition: filter 0.3s ease, opacity 0.3s ease, transform 0.2s ease;
+    }
+
+    .privacy-revealed {
+      filter: blur(0px) contrast(1.0) saturate(1.0);
+      opacity: 1.0;
+      transform: scale(1.02);
+    }
+
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #fff7ed 0%, #fde047 50%, #ca8a04 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      background: rgba(255, 255, 255, 0.15);
+      height: 4px;
+      border-radius: 99px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: #fde047;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(250, 204, 21, 0.8);
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 99px; }
+  </style>
+</head>
+<body class="relative w-screen h-screen overflow-hidden text-slate-100">
+
+  <!-- WEBGL CANVAS ENGINE -->
+  <canvas id="webglCanvas" class="absolute inset-0 w-full h-full z-0 cursor-grab active:cursor-grabbing"></canvas>
+
+  <!-- TOP APP BAR -->
+  <header class="absolute top-0 left-0 right-0 z-20 glass-card px-4 sm:px-6 py-3 flex justify-between items-center pointer-events-auto border-b border-white/10">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-black font-extrabold text-xs shadow-lg shadow-amber-500/20 font-syne">
+        A
+      </div>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <h1 class="font-syne font-extrabold text-sm sm:text-base tracking-wider text-white">AURA PRO</h1>
+          <span class="bg-amber-400/20 text-amber-300 font-bold text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded uppercase tracking-widest border border-amber-400/30">STUDIO</span>
+        </div>
+        <p class="text-[9px] text-slate-400 font-mono hidden sm:block">FLUID ENGINE & PRIVACY SHIELD</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <!-- Mic Audio Sync Button -->
+      <button id="micToggleBtn" onclick="toggleAudioSync()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5">
+        <span id="micIcon">🎵</span>
+        <span class="hidden sm:inline" id="micText">Audio Sync</span>
+      </button>
+
+      <!-- Paywall Trigger -->
+      <button onclick="openPaywallModal()" class="bg-gradient-to-r from-amber-400 to-amber-600 text-black font-extrabold px-3.5 py-1.5 rounded-xl text-xs hover:brightness-110 transition shadow-lg shadow-amber-500/20 flex items-center gap-1">
+        <span>⚡</span>
+        <span class="hidden sm:inline">Get Pro Pass</span>
+        <span class="sm:hidden">Pro</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- LOCKSCREEN OVERLAY & PRIVACY NOTIFICATIONS -->
+  <div id="lockscreenOverlay" class="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-4 sm:p-8 pt-16 sm:pt-20 pb-36 transition-opacity duration-500">
+    
+    <!-- Top System Header -->
+    <div class="flex justify-between items-center text-xs font-medium text-white/70 tracking-widest uppercase font-mono">
+      <span id="liveTimeMini">00:00</span>
+      <div class="flex items-center gap-2">
+        <span id="deviceTypeBadge" class="text-[9px] bg-white/10 px-2 py-0.5 rounded-full border border-white/10">AUTO DENSITY</span>
+        <span>5G 🔋</span>
+      </div>
+    </div>
+
+    <!-- Center Clock & Date -->
+    <div class="text-center space-y-1.5 my-auto">
+      <p id="lockscreenDate" class="text-xs sm:text-sm font-semibold tracking-[0.3em] uppercase text-amber-300/90 font-sans">WEDNESDAY, OCTOBER 7</p>
+      <h1 id="lockscreenClock" class="text-6xl sm:text-8xl md:text-9xl font-extralight tracking-tight text-white drop-shadow-2xl font-syne">09:41</h1>
+      <p id="lockscreenCustomText" class="text-xs sm:text-sm font-light tracking-[0.25em] text-white/70 uppercase max-w-md mx-auto font-sans">AURA PRIVACY SHIELD ACTIVE</p>
+
+      <!-- Dynamic Aesthetic Lockscreen Widgets Suite -->
+      <div id="widgetContainer" class="flex flex-wrap items-center justify-center gap-2 pt-3 pointer-events-auto">
+        <!-- Weather Widget -->
+        <div id="widget-weather" class="glass-card px-3 py-1.5 rounded-2xl text-[11px] font-medium text-slate-200 flex items-center gap-1.5 border border-white/10">
+          <span>⛅</span> <span>72° San Francisco</span>
+        </div>
+        <!-- Spotify Widget -->
+        <div id="widget-spotify" class="glass-card px-3 py-1.5 rounded-2xl text-[11px] font-medium text-slate-200 flex items-center gap-1.5 border border-white/10">
+          <span class="text-emerald-400">🎵</span> <span>Frank Ocean • Pink + White</span>
+        </div>
+        <!-- Battery Widget -->
+        <div id="widget-battery" class="glass-card px-3 py-1.5 rounded-2xl text-[11px] font-medium text-slate-200 flex items-center gap-1.5 border border-white/10">
+          <span class="text-amber-400">🔋</span> <span>94% MagSafe</span>
+        </div>
+        <!-- Steps Widget -->
+        <div id="widget-steps" class="glass-card px-3 py-1.5 rounded-2xl text-[11px] font-medium text-slate-200 flex items-center gap-1.5 border border-white/10 hidden sm:flex">
+          <span>🏃</span> <span>8,420 steps</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIVACY WAVE LOCKSCREEN NOTIFICATION SHIELD -->
+    <div id="notificationContainer" class="max-w-md mx-auto w-full space-y-2 pointer-events-auto">
+      <div class="flex items-center justify-between px-1 text-[10px] text-slate-400 font-mono tracking-wider">
+        <span>PRIVACY NOTIFICATION SHIELD</span>
+        <span class="text-amber-300/80 animate-pulse">Drag wave or hover to reveal</span>
+      </div>
+
+      <!-- Notification Card 1 -->
+      <div id="notif-1" onpointerenter="revealNotif('notif-1')" onpointerleave="hideNotif('notif-1')" onpointerdown="revealNotif('notif-1')" onpointerup="hideNotif('notif-1')" class="glass-card p-3 rounded-2xl border border-white/15 transition-all duration-300 cursor-pointer relative overflow-hidden">
+        <div class="flex items-center justify-between mb-1">
+          <div class="flex items-center gap-2">
+            <span class="w-5 h-5 rounded-lg bg-green-500/20 text-green-400 flex items-center justify-center text-[10px] font-bold">💬</span>
+            <span class="text-xs font-bold text-slate-200">iMessage • Sarah</span>
+          </div>
+          <span class="text-[9px] text-slate-400 font-mono">2m ago</span>
+        </div>
+        <p id="notif-1-text" class="text-xs text-slate-300 font-sans privacy-blurred">
+          Are you coming to the private launch party tonight? Code is 9842...
+        </p>
+      </div>
+
+      <!-- Notification Card 2 -->
+      <div id="notif-2" onpointerenter="revealNotif('notif-2')" onpointerleave="hideNotif('notif-2')" onpointerdown="revealNotif('notif-2')" onpointerup="hideNotif('notif-2')" class="glass-card p-3 rounded-2xl border border-white/15 transition-all duration-300 cursor-pointer relative overflow-hidden">
+        <div class="flex items-center justify-between mb-1">
+          <div class="flex items-center gap-2">
+            <span class="w-5 h-5 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-[10px] font-bold">🔒</span>
+            <span class="text-xs font-bold text-slate-200">Security Alert • Stripe</span>
+          </div>
+          <span class="text-[9px] text-slate-400 font-mono">12m ago</span>
+        </div>
+        <p id="notif-2-text" class="text-xs text-slate-300 font-sans privacy-blurred">
+          Payout of $1,420.00 transferred to your linked bank account.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING STUDIO DOCK -->
+  <div id="controlPanel" class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 w-[94%] max-w-2xl glass-card rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3.5 pointer-events-auto border border-white/15">
+    
+    <!-- Tab Controls & Export Action -->
+    <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+      <div class="flex gap-1.5 overflow-x-auto">
+        <button onclick="switchTab('presets')" id="tabBtn-presets" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-black transition">Presets</button>
+        <button onclick="switchTab('fonts')" id="tabBtn-fonts" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">Fonts</button>
+        <button onclick="switchTab('optics')" id="tabBtn-optics" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">Optics</button>
+        <button onclick="switchTab('widgets')" id="tabBtn-widgets" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">Widgets</button>
+      </div>
+
+      <div class="flex items-center gap-1.5">
+        <button onclick="toggleOverlay()" class="px-2.5 py-1.5 rounded-xl text-xs bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 transition">
+          👁️
+        </button>
+        <button onclick="openPaywallModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-amber-500 text-black hover:brightness-110 transition shadow-lg shadow-amber-500/20 flex items-center gap-1">
+          <span>⚡</span>
+          <span>Export 4K</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 1: PRESETS GALLERY (12 AESTHETIC PALETTES) -->
+    <div id="tabContent-presets" class="tab-content grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-48 overflow-y-auto pr-1">
+      <button onclick="applyPreset('gold')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left group">
+        <span class="text-xs font-bold block text-amber-300">Molten Gold</span>
+        <span class="text-[9px] text-slate-400">24K Amber</span>
+      </button>
+
+      <button onclick="applyPreset('obsidian')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left group">
+        <span class="text-xs font-bold block text-slate-200">Obsidian Chrome</span>
+        <span class="text-[9px] text-slate-400">Liquid Silver</span>
+      </button>
+
+      <button onclick="applyPreset('cyber')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left group">
+        <span class="text-xs font-bold block text-cyan-400">Cyber Neon</span>
+        <span class="text-[9px] text-slate-400">Prism Cyan</span>
+      </button>
+
+      <button onclick="applyPreset('emerald')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left group">
+        <span class="text-xs font-bold block text-emerald-400">Toxic Emerald</span>
+        <span class="text-[9px] text-slate-400">Quantum Green</span>
+      </button>
+
+      <button onclick="applyPreset('amethyst')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left group">
+        <span class="text-xs font-bold block text-purple-400">Deep Amethyst</span>
+        <span class="text-[9px] text-slate-400">Royal Violet</span>
+      </button>
+
+      <button onclick="applyPreset('magma')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left group">
+        <span class="text-xs font-bold block text-red-400">Ruby Magma</span>
+        <span class="text-[9px] text-slate-400">Volcanic Red</span>
+      </button>
+
+      <button onclick="applyPreset('sapphire')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left group">
+        <span class="text-xs font-bold block text-blue-400">Sapphire Fluid</span>
+        <span class="text-[9px] text-slate-400">Deep Oceanic</span>
+      </button>
+
+      <button onclick="applyPreset('rosegold')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left group">
+        <span class="text-xs font-bold block text-rose-300">Rose Gold</span>
+        <span class="text-[9px] text-slate-400">Champagne Blush</span>
+      </button>
+
+      <button onclick="applyPreset('sunset')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left group">
+        <span class="text-xs font-bold block text-orange-400">Sunset Horizon</span>
+        <span class="text-[9px] text-slate-400">Warm Dusk</span>
+      </button>
+
+      <button onclick="applyPreset('acid')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left group">
+        <span class="text-xs font-bold block text-lime-400">Acid Lime</span>
+        <span class="text-[9px] text-slate-400">Hyper Glow</span>
+      </button>
+
+      <button onclick="applyPreset('platinum')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left group">
+        <span class="text-xs font-bold block text-slate-100">Pure Platinum</span>
+        <span class="text-[9px] text-slate-400">Ultra Clean</span>
+      </button>
+
+      <button onclick="applyPreset('midnight')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left group">
+        <span class="text-xs font-bold block text-indigo-400">Midnight Wave</span>
+        <span class="text-[9px] text-slate-400">Deep Indigo</span>
+      </button>
+    </div>
+
+    <!-- TAB 2: SPECIALIZED TYPOGRAPHY GALLERY -->
+    <div id="tabContent-fonts" class="tab-content hidden space-y-3">
+      <p class="text-[10px] text-slate-400 uppercase tracking-widest font-mono">SELECT CLOCK TYPOGRAPHY GALLERY</p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <button onclick="setClockFont('font-syne')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-syne text-xs text-center">
+          <span class="block text-base">12:45</span>
+          <span class="text-[9px] font-sans text-slate-400">Syne Bold</span>
+        </button>
+
+        <button onclick="setClockFont('font-playfair')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-playfair text-xs text-center">
+          <span class="block text-base">12:45</span>
+          <span class="text-[9px] font-sans text-slate-400">Playfair Slim</span>
+        </button>
+
+        <button onclick="setClockFont('font-cinzel')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-cinzel text-xs text-center">
+          <span class="block text-base">12:45</span>
+          <span class="text-[9px] font-sans text-slate-400">Cinzel Roman</span>
+        </button>
+
+        <button onclick="setClockFont('font-space')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-space text-xs text-center">
+          <span class="block text-base">12:45</span>
+          <span class="text-[9px] font-sans text-slate-400">Space Grotesk</span>
+        </button>
+
+        <button onclick="setClockFont('font-outfit')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-outfit text-xs text-center">
+          <span class="block text-base">12:45</span>
+          <span class="text-[9px] font-sans text-slate-400">Outfit Minimal</span>
+        </button>
+
+        <button onclick="setClockFont('font-mono')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-mono text-xs text-center">
+          <span class="block text-base">12:45</span>
+          <span class="text-[9px] font-sans text-slate-400">Space Mono</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 3: OPTICS & GYRO MOTIONS -->
+    <div id="tabContent-optics" class="tab-content hidden space-y-3">
+      <div class="grid grid-cols-2 gap-3 text-xs">
+        <div class="space-y-1">
+          <div class="flex justify-between text-slate-300">
+            <span>Fluid Speed</span>
+            <span id="speedVal" class="text-amber-400 font-mono">1.0</span>
+          </div>
+          <input type="range" id="sliderSpeed" min="0.1" max="3.0" step="0.1" value="1.0" class="w-full" oninput="updateUniforms()">
+        </div>
+
+        <div class="space-y-1">
+          <div class="flex justify-between text-slate-300">
+            <span>Specular Glow</span>
+            <span id="glowVal" class="text-amber-400 font-mono">4.0</span>
+          </div>
+          <input type="range" id="sliderGlow" min="1.0" max="8.0" step="0.2" value="4.0" class="w-full" oninput="updateUniforms()">
+        </div>
+
+        <div class="space-y-1">
+          <div class="flex justify-between text-slate-300">
+            <span>Wave Density</span>
+            <span id="densityVal" class="text-amber-400 font-mono">5.0</span>
+          </div>
+          <input type="range" id="sliderDensity" min="2.0" max="10.0" step="0.5" value="5.0" class="w-full" oninput="updateUniforms()">
+        </div>
+
+        <!-- Phone Gyroscope Toggle -->
+        <div class="space-y-1">
+          <div class="flex justify-between text-slate-300">
+            <span>Phone Gyro Tilt</span>
+            <span id="gyroStatus" class="text-amber-400 font-mono">OFF</span>
+          </div>
+          <button onclick="enableGyroscope()" class="w-full py-1 bg-white/10 rounded-lg text-[10px] font-bold hover:bg-white/20 transition border border-white/10">
+            📱 Enable Motion Gyro
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: WIDGET SUITE CONTROLS -->
+    <div id="tabContent-widgets" class="tab-content hidden space-y-3">
+      <p class="text-[10px] text-slate-400 uppercase tracking-widest font-mono">TOGGLE LOCKSCREEN WIDGETS</p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+        <button onclick="toggleWidget('widget-weather')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 text-left">
+          ⛅ Weather Bar
+        </button>
+        <button onclick="toggleWidget('widget-spotify')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 text-left">
+          🎵 Spotify Canvas
+        </button>
+        <button onclick="toggleWidget('widget-battery')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 text-left">
+          🔋 MagSafe Battery
+        </button>
+        <button onclick="toggleWidget('widget-steps')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 text-left">
+          🏃 Step Counter
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COMMERCIAL PAYWALL MODAL -->
+  <div id="paywallModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-2xl opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="glass-modal max-w-md w-full rounded-3xl p-6 sm:p-8 space-y-5 relative border border-amber-500/30 shadow-2xl">
+      
+      <button onclick="closePaywallModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 flex items-center justify-center transition">✕</button>
+
+      <div class="text-center space-y-1.5">
+        <div class="inline-flex items-center gap-1.5 bg-amber-400/10 border border-amber-400/30 px-3 py-1 rounded-full text-amber-300 text-xs font-bold tracking-wider uppercase">
+          <span>👑</span> <span>UNLOCK AURA PRO PASS</span>
+        </div>
+        <h2 class="text-2xl font-extrabold font-syne text-white">4K Renders & All Presets</h2>
+        <p class="text-xs text-slate-300">Get unlimited 4K exports, all 12 fluid presets, and live audio-reactive loops.</p>
+      </div>
+
+      <div class="space-y-2 text-xs text-slate-200 bg-white/5 p-3.5 rounded-2xl border border-white/10">
+        <div class="flex items-center gap-2">
+          <span class="text-amber-400 font-bold">✓</span>
+          <span><strong>4K Ultra-HD</strong> Wallpaper Exports (PNG)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-amber-400 font-bold">✓</span>
+          <span><strong>All 12 Fluid Presets</strong> + Audio Reactive Sync</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-amber-400 font-bold">✓</span>
+          <span><strong>Commercial Rights:</strong> Spotify Canvas & Album Art</span>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-500/40 rounded-2xl p-3 text-center">
+        <p class="text-[10px] uppercase tracking-widest text-amber-300 font-semibold">LIFETIME PRO ACCESS</p>
+        <div class="flex items-baseline justify-center gap-1">
+          <span class="text-3xl font-extrabold font-syne text-white">$14.99</span>
+          <span class="text-xs text-slate-400 line-through">$49.99</span>
+        </div>
+      </div>
+
+      <button onclick="redirectToCheckout()" class="w-full py-3 bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-black font-extrabold text-xs rounded-xl shadow-lg shadow-amber-500/30 hover:brightness-110 transition uppercase tracking-wider font-syne">
+        Pay $14.99 & Unlock Now
+      </button>
+
+      <p class="text-[9px] text-center text-slate-400">Instant Checkout via LemonSqueezy • Apple Pay & Credit Cards</p>
+    </div>
+  </div>
+
+  <!-- THREE.JS GLSL SHADER ENGINE & LOGIC -->
+  <script>
+    const vertexShader = `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = vec4(position, 1.0);
+      }
+    `;
+
+    const fragmentShader = `
+      uniform vec2 u_resolution;
+      uniform vec2 u_mouse;
+      uniform float u_time;
+      uniform float u_speed;
+      uniform float u_glow;
+      uniform float u_density;
+      uniform float u_audioLevel;
+      uniform vec3 u_colorA;
+      uniform vec3 u_colorB;
+      uniform vec3 u_colorC;
+
+      varying vec2 vUv;
+
+      void main() {
+        vec2 st = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+        vec2 mouse = (u_mouse - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+        
+        float t = u_time * u_speed * 0.4;
+        
+        // Touch interaction warp
+        float distToMouse = length(st - mouse);
+        float mouseImpact = smoothstep(0.5, 0.0, distToMouse);
+        st += normalize(st - mouse + 0.0001) * mouseImpact * (0.2 + u_audioLevel * 0.3);
+
+        // Fluid Wave Math
+        vec2 c = st * (u_density + u_audioLevel * 2.0);
+        float v = 0.0;
+        
+        for(int i = 1; i < 6; i++) {
+          float fi = float(i);
+          c += vec2(
+            sin(fi * c.y + t + fi * 0.5),
+            cos(fi * c.x - t + fi * 0.3)
+          );
+          v += sin(c.x + c.y) / fi;
+        }
+
+        v = abs(v);
+        
+        // Specular Liquid Metal Highlights
+        float specular = pow(v, 3.5) * (u_glow + u_audioLevel * 4.0);
+        float rim = pow(1.0 - v, 2.0);
+
+        vec3 baseColor = mix(u_colorA, u_colorB, sin(v * 3.1415) * 0.5 + 0.5);
+        baseColor = mix(baseColor, u_colorC,
