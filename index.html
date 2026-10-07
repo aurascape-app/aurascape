@@ -1,171 +1,354 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AuraScape AI Suite - Faith & Aesthetics</title>
+  <title>AuraScape 4K - Anime Aesthetics</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            accent: 'var(--accent-color)',
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0c10; color: #e0e6ed; }
-    .glass-card { background: rgba(20, 22, 31, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
-    .gradient-text { background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .nav-btn.active { border-color: #6366f1; color: #fff; background: rgba(99, 102, 241, 0.1); }
-    
-    /* Cross Emblem Accent Styling */
-    .cross-accent {
-      position: relative;
-      display: inline-block;
+    :root {
+      --bg-color: #08090d;
+      --card-bg: rgba(18, 20, 29, 0.85);
+      --text-main: #f1f5f9;
+      --text-sub: #94a3b8;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --accent-color: #6366f1;
     }
-    .cross-icon {
-      filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
+
+    html.light {
+      --bg-color: #f4f5f8;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --text-main: #0f172a;
+      --text-sub: #64748b;
+      --border-color: rgba(0, 0, 0, 0.08);
+      --accent-color: #4f46e5;
     }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .glass-card { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--border-color); }
+    .kanji-glow { filter: drop-shadow(0 0 12px var(--accent-color)); }
+    .filter-btn.active { background: var(--accent-color); color: #ffffff; border-color: transparent; }
   </style>
 </head>
-<body class="min-h-screen pb-16">
+<body class="min-h-screen pb-16 relative overflow-x-hidden">
 
-  <!-- Header with Cross Emblem Accent -->
-  <header class="border-b border-gray-800/80 sticky top-0 z-40 bg-[#0b0c10]/90 backdrop-blur-md">
-    <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <!-- Glowing Cross Emblem Icon -->
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-900 via-indigo-600 to-purple-500 flex items-center justify-center font-extrabold text-white text-xl shadow-lg border border-indigo-400/30">
-          <span class="cross-icon text-lg">✝</span>
-        </div>
-        <div>
-          <h1 class="font-bold text-lg leading-none gradient-text">AuraScape AI</h1>
-          <p class="text-[10px] text-gray-400 font-medium">Faith • Scripture • 4K Vault</p>
+  <!-- ================= 1. PITCH-BLACK SPLASH SCREEN (OPTION C) ================= -->
+  <div id="splashScreen" class="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center transition-opacity duration-700">
+    <div class="text-center space-y-3 px-4">
+      <!-- Kanji / Geometric Prism Emblem -->
+      <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-indigo-900 via-purple-700 to-pink-500 p-[2px] kanji-glow">
+        <div class="w-full h-full bg-black rounded-2xl flex items-center justify-center text-white text-2xl font-cinzel font-black">
+          ⚔️
         </div>
       </div>
-      <span id="savedKeyBadge" class="hidden text-[10px] bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-500/20">
-        Key Saved ✓
-      </span>
+      <div>
+        <h1 class="text-2xl md:text-3xl font-cinzel font-black tracking-[0.25em] text-white">AURA SCAPE</h1>
+        <p class="text-xs text-indigo-400 font-bold tracking-widest mt-1">オーラスケープ • 4K 聖域</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 2. ONBOARDING MODAL ================= -->
+  <div id="onboardingModal" class="hidden fixed inset-0 z-40 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full rounded-3xl p-6 md:p-8 space-y-6">
+      <div class="text-center space-y-1">
+        <span class="text-[10px] font-bold text-indigo-400 tracking-widest uppercase">Customizing Your Experience</span>
+        <h2 class="text-xl font-bold">Select Your Anime Vibe</h2>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Preferred Category</label>
+          <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+            <button onclick="setInitialVibe('dark_fantasy', this)" class="vibe-btn active p-3 bg-gray-800 rounded-xl border border-indigo-500 text-left">⚔️ Dark Fantasy</button>
+            <button onclick="setInitialVibe('cyberpunk', this)" class="vibe-btn p-3 bg-gray-800 rounded-xl border border-transparent text-left">⚡ Cyberpunk</button>
+            <button onclick="setInitialVibe('lofi', this)" class="vibe-btn p-3 bg-gray-800 rounded-xl border border-transparent text-left">🌸 Lofi / Chill</button>
+            <button onclick="setInitialVibe('shonen', this)" class="vibe-btn p-3 bg-gray-800 rounded-xl border border-transparent text-left">🔥 Shonen Action</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Interface Environment Mode</label>
+          <div class="grid grid-cols-2 gap-3 text-xs font-bold">
+            <button onclick="setThemeMode('dark')" class="p-3 bg-black text-white rounded-xl border border-gray-700 flex items-center justify-center gap-2">
+              🖤 Dark OLED
+            </button>
+            <button onclick="setThemeMode('light')" class="p-3 bg-white text-gray-900 rounded-xl border border-gray-300 flex items-center justify-center gap-2">
+              ☀️ Light Mode
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="finishOnboarding()" class="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-bold text-sm hover:opacity-90 transition">
+        Enter AuraScape Vault →
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= 3. APP HEADER ================= -->
+  <header class="border-b border-gray-800/80 sticky top-0 z-30 bg-[#08090d]/90 backdrop-blur-md">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-pink-500 flex items-center justify-center font-cinzel font-bold text-white text-base shadow-lg">
+          ⚔️
+        </div>
+        <div>
+          <h1 class="font-cinzel font-black text-base tracking-widest leading-none">AURA SCAPE</h1>
+          <p class="text-[9px] text-indigo-400 font-semibold tracking-wider">オーラスケープ 4K</p>
+        </div>
+      </div>
+
+      <!-- Controls & Stash -->
+      <div class="flex items-center gap-2">
+        <button onclick="showStashTab()" class="px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold flex items-center gap-1.5 hover:border-indigo-500 transition">
+          <span class="text-pink-500">❤️</span>
+          <span id="stashCount">0</span>
+        </button>
+        <button onclick="toggleSettingsModal()" class="p-2 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold hover:border-indigo-500 transition">
+          ⚙️
+        </button>
+      </div>
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-4 pt-6 space-y-6">
+  <!-- ================= 4. MAIN GALLERY & FILTERS ================= -->
+  <main class="max-w-6xl mx-auto px-4 pt-6 space-y-6">
 
-    <!-- Tab Navigation -->
-    <div class="grid grid-cols-2 gap-3 pb-2 border-b border-gray-800/80">
-      <button id="navVault" onclick="showTab('vault')" class="nav-btn active flex items-center justify-center gap-2 p-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent transition">
-        <span>🖼️ 4K Vault</span>
-      </button>
-      <button id="navStudy" onclick="showTab('study')" class="nav-btn flex items-center justify-center gap-2 p-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent transition">
-        <span>📖 AI Study & Devotional</span>
-      </button>
+    <!-- Category Filter Bar -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+      <button onclick="filterVault('all', this)" class="filter-btn active px-4 py-2 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap transition">🔥 All Assets</button>
+      <button onclick="filterVault('dark_fantasy', this)" class="filter-btn px-4 py-2 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap transition">⚔️ Dark Fantasy</button>
+      <button onclick="filterVault('cyberpunk', this)" class="filter-btn px-4 py-2 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap transition">⚡ Cyberpunk</button>
+      <button onclick="filterVault('lofi', this)" class="filter-btn px-4 py-2 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap transition">🌸 Lofi & Chill</button>
+      <button onclick="filterVault('shonen', this)" class="filter-btn px-4 py-2 bg-gray-900 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap transition">🔥 Shonen</button>
     </div>
 
-    <!-- TAB 1: CURATED 4K VAULT -->
-    <div id="tabVault" class="space-y-6">
-      
-      <!-- Category Filter Buttons -->
-      <div class="flex items-center gap-2 overflow-x-auto pb-2">
-        <button onclick="filterVault('all')" class="px-4 py-2 bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 rounded-xl text-xs font-bold whitespace-nowrap">All Wallpapers</button>
-        <button onclick="filterVault('faith')" class="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-gray-300 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap">✝️ Faith & Cross</button>
-        <button onclick="filterVault('anime')" class="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-gray-300 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap">🎌 Anime & Gaming</button>
-        <button onclick="filterVault('cinematic')" class="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-gray-300 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap">🌌 Cinematic</button>
-      </div>
-
-      <!-- 4K Image Grid -->
-      <div id="vaultGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <!-- JS dynamically populates high-res 4K cards here -->
-      </div>
-    </div>
-
-    <!-- TAB 2: AI STUDY & DEVOTIONAL -->
-    <div id="tabStudy" class="hidden space-y-6">
-      <div class="glass-card rounded-2xl p-5 md:p-7 space-y-4">
-        
-        <div>
-          <label class="block text-xs font-bold text-indigo-400 uppercase tracking-wider mb-1">
-            Google AI Studio Key (Saves Automatically)
-          </label>
-          <input type="password" id="geminiApiKey" placeholder="Paste AQ... key here" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Select Study Mode:</label>
-          <select id="studyCategory" class="w-full bg-gray-950 border border-gray-800 text-white text-xs rounded-xl p-3 focus:outline-none focus:border-indigo-500">
-            <option value="faith">✝️ Pure Bible & Faith Devotional</option>
-            <option value="anime">🎌 Anime & Narrative Story Breakdown</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
-            Topic, Verse, or Question
-          </label>
-          <textarea id="studyPromptInput" rows="3" class="w-full bg-gray-950/80 border border-gray-800 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:border-indigo-500" placeholder="e.g., Does the Bible talk about when Jesus will return?"></textarea>
-        </div>
-
-        <button id="geminiGenerateBtn" onclick="runStudyCompanion()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3.5 px-6 rounded-xl font-bold text-sm hover:opacity-95 transition flex items-center justify-center gap-2">
-          <span>📖 Generate AI Study Analysis</span>
-        </button>
-      </div>
-
-      <div id="studyOutput" class="hidden glass-card rounded-2xl p-5 md:p-7 space-y-4 border border-indigo-500/30">
-        <h3 class="font-bold text-white text-base">Study Analysis</h3>
-        <div id="studyResponse" class="text-xs text-gray-300 leading-relaxed space-y-2 whitespace-pre-wrap"></div>
-      </div>
+    <!-- Wallpaper Grid -->
+    <div id="vaultGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+      <!-- Dynamic Wallpaper Cards Rendered Here -->
     </div>
 
   </main>
 
+  <!-- ================= 5. PHONE LOCK SCREEN PREVIEW MODAL ================= -->
+  <div id="previewModal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4">
+    <div class="relative max-w-sm w-full bg-black rounded-[40px] border-4 border-gray-800 overflow-hidden shadow-2xl h-[650px] flex flex-col justify-between p-6">
+      
+      <!-- Phone Background Wallpaper -->
+      <img id="previewImage" src="" class="absolute inset-0 w-full h-full object-cover z-0" />
+      <div class="absolute inset-0 bg-black/30 z-10"></div>
+
+      <!-- Lock Screen Notch & Status Bar -->
+      <div class="relative z-20 flex justify-between items-center text-white text-xs px-2 font-semibold">
+        <span>9:41</span>
+        <div class="w-20 h-4 bg-black rounded-full"></div>
+        <span>5G 🔋</span>
+      </div>
+
+      <!-- Lock Screen Clock -->
+      <div class="relative z-20 text-center text-white space-y-1 mt-8">
+        <p class="text-xs font-semibold tracking-wider uppercase opacity-90">Wednesday, October 7</p>
+        <h2 class="text-6xl font-extrabold tracking-tight">12:45</h2>
+      </div>
+
+      <!-- Lock Screen Footer Controls -->
+      <div class="relative z-20 space-y-4 mb-2">
+        <div class="glass-card rounded-2xl p-3 text-xs text-white space-y-1">
+          <p class="font-bold">AuraScape 4K Asset</p>
+          <p class="text-[10px] text-gray-300">Tap download below to save to gallery.</p>
+        </div>
+
+        <div class="flex gap-2">
+          <button onclick="closePreviewModal()" class="flex-1 bg-gray-900/80 text-white py-3 rounded-xl font-bold text-xs border border-gray-700">
+            Close
+          </button>
+          <a id="previewDownloadBtn" href="" target="_blank" download class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-bold text-xs text-center">
+            Download 4K
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 6. SETTINGS & PREFERENCES DRAWER ================= -->
+  <div id="settingsModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end">
+    <div class="glass-card max-w-sm w-full h-full p-6 space-y-6 flex flex-col justify-between">
+      
+      <div class="space-y-6">
+        <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+          <h3 class="font-bold text-lg">Settings & Preferences</h3>
+          <button onclick="toggleSettingsModal()" class="text-gray-400 font-bold">✕</button>
+        </div>
+
+        <!-- Setting 1: Theme Switcher -->
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-gray-400 uppercase">App Theme Mode</label>
+          <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+            <button onclick="setThemeMode('dark')" class="p-2.5 bg-gray-900 border border-gray-800 rounded-xl text-center">🖤 Dark OLED</button>
+            <button onclick="setThemeMode('light')" class="p-2.5 bg-gray-100 text-gray-900 rounded-xl text-center">☀️ Light Mode</button>
+          </div>
+        </div>
+
+        <!-- Setting 2: Splash Screen Speed -->
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-gray-400 uppercase">Splash Screen Intro</label>
+          <select id="splashSetting" onchange="updateSplashSetting(this.value)" class="w-full bg-gray-900 border border-gray-800 text-xs rounded-xl p-3 text-white">
+            <option value="3000">Standard (3 Seconds)</option>
+            <option value="1000">Fast (1 Second)</option>
+            <option value="0">Disabled (Instant Launch)</option>
+          </select>
+        </div>
+
+        <!-- Setting 3: Dynamic Accent Tinting -->
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold">Dynamic Accent Tinting</p>
+            <p class="text-[10px] text-gray-400">Match app highlights to category</p>
+          </div>
+          <input type="checkbox" id="autoTintToggle" checked onchange="toggleAutoTint(this.checked)" class="w-4 h-4 text-indigo-600">
+        </div>
+      </div>
+
+      <button onclick="resetAppOnboarding()" class="w-full bg-red-500/10 text-red-400 border border-red-500/20 py-3 rounded-xl text-xs font-bold hover:bg-red-500/20 transition">
+        Reset Onboarding & Preferences
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= 7. APP JAVASCRIPT LOGIC ================= -->
   <script>
-    // PRE-CURATED 4K HIGH-RES IMAGE VAULT
+    // Asset Repository with Postimages Link Included
     const vaultAssets = [
-      { id: 1, category: 'faith', title: 'Radiant Cross Over Ocean', url: 'https://images.unsplash.com/photo-1544427920-c49ccfb85579?q=80&w=1200&auto=format&fit=crop' },
-      { id: 2, category: 'faith', title: 'Mountain Sanctuary Sunrise', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1200&auto=format&fit=crop' },
-      { id: 3, category: 'faith', title: 'Heavenly Ray of Hope', url: 'https://images.unsplash.com/photo-1509021436468-d510300e8498?q=80&w=1200&auto=format&fit=crop' },
-      { id: 4, category: 'anime', title: 'Cyberpunk Warrior Lockscreen', url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1200&auto=format&fit=crop' },
-      { id: 5, category: 'anime', title: 'Neon Samurai City', url: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=1200&auto=format&fit=crop' },
-      { id: 6, category: 'cinematic', title: 'Deep Space Nebula 4K', url: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=1200&auto=format&fit=crop' }
+      { id: 1, category: 'dark_fantasy', title: 'Cyber Samurai Girl', url: 'https://i.postimg.cc/6QfJQZNQ/a0e531c6adac9e92be6918d60e249d49.jpg' },
+      { id: 2, category: 'cyberpunk', title: 'Neon Tokyo Alleyway', url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1600&auto=format&fit=crop' },
+      { id: 3, category: 'lofi', title: 'Sunset Lofi Bedroom', url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1600&auto=format&fit=crop' },
+      { id: 4, category: 'shonen', title: 'Flame Warrior Aura', url: 'https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=1600&auto=format&fit=crop' },
+      { id: 5, category: 'cyberpunk', title: 'Futuristic Cyber City', url: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=1600&auto=format&fit=crop' }
     ];
 
-    // Load saved API key on page load
+    let userStash = JSON.parse(localStorage.getItem('aurascape_stash') || '[]');
+    let activeCategory = 'all';
+
+    // Startup Sequence
     window.onload = () => {
-      const savedKey = localStorage.getItem('aurascape_gemini_key');
-      if (savedKey) {
-        document.getElementById('geminiApiKey').value = savedKey;
-        document.getElementById('savedKeyBadge').classList.remove('hidden');
+      const splashDuration = parseInt(localStorage.getItem('aurascape_splash') || '3000');
+      const hasOnboarded = localStorage.getItem('aurascape_onboarded');
+      const savedTheme = localStorage.getItem('aurascape_theme') || 'dark';
+
+      setThemeMode(savedTheme);
+
+      if (splashDuration > 0) {
+        setTimeout(() => {
+          document.getElementById('splashScreen').classList.add('opacity-0');
+          setTimeout(() => {
+            document.getElementById('splashScreen').classList.add('hidden');
+            if (!hasOnboarded) document.getElementById('onboardingModal').classList.remove('hidden');
+          }, 700);
+        }, splashDuration);
+      } else {
+        document.getElementById('splashScreen').classList.add('hidden');
+        if (!hasOnboarded) document.getElementById('onboardingModal').classList.remove('hidden');
       }
+
+      updateStashUI();
       renderVault('all');
     };
 
-    function showTab(tabName) {
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById('tabVault').classList.add('hidden');
-      document.getElementById('tabStudy').classList.add('hidden');
-
-      if (tabName === 'vault') {
-        document.getElementById('navVault').classList.add('active');
-        document.getElementById('tabVault').classList.remove('hidden');
+    // Theme Management
+    function setThemeMode(mode) {
+      if (mode === 'light') {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
       } else {
-        document.getElementById('navStudy').classList.add('active');
-        document.getElementById('tabStudy').classList.remove('hidden');
+        document.documentElement.classList.remove('light');
+        document.documentElement.classList.add('dark');
       }
+      localStorage.setItem('aurascape_theme', mode);
     }
 
-    function renderVault(filterCategory) {
+    // Dynamic Accent Colors by Category
+    function applyCategoryTint(category) {
+      const autoTint = localStorage.getItem('aurascape_autotint') !== 'false';
+      if (!autoTint) return;
+
+      const colors = {
+        'dark_fantasy': '#ef4444',
+        'cyberpunk': '#06b6d4',
+        'lofi': '#a855f7',
+        'shonen': '#f59e0b',
+        'all': '#6366f1'
+      };
+      document.documentElement.style.setProperty('--accent-color', colors[category] || '#6366f1');
+    }
+
+    // Gallery Render Engine
+    function renderVault(category) {
+      activeCategory = category;
+      applyCategoryTint(category);
       const grid = document.getElementById('vaultGrid');
       grid.innerHTML = '';
 
-      const items = filterCategory === 'all' 
+      let items = category === 'all' 
         ? vaultAssets 
-        : vaultAssets.filter(item => item.category === filterCategory);
+        : vaultAssets.filter(item => item.category === category);
+
+      if (category === 'stash') {
+        items = vaultAssets.filter(item => userStash.includes(item.id));
+      }
+
+      if (items.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full text-center py-16 text-gray-500 text-xs font-semibold">
+            No assets found in this view.
+          </div>
+        `;
+        return;
+      }
 
       items.forEach(item => {
+        const isFavorited = userStash.includes(item.id);
         grid.innerHTML += `
-          <div class="glass-card rounded-xl overflow-hidden border border-gray-800 hover:border-indigo-500 transition group">
-            <div class="h-64 bg-black overflow-hidden relative">
-              <img src="${item.url}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
-                <span class="text-xs font-bold text-white">${item.title}</span>
+          <div class="glass-card rounded-2xl overflow-hidden group flex flex-col justify-between hover:border-indigo-500/50 transition duration-300">
+            <div class="h-80 bg-black overflow-hidden relative cursor-pointer" onclick="openPreviewModal('${item.url}')">
+              <img src="${item.url}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy" />
+              <button onclick="event.stopPropagation(); toggleFavorite(${item.id})" class="absolute top-3 right-3 p-2 bg-black/60 backdrop-blur-md rounded-full text-sm">
+                ${isFavorited ? '❤️' : '🤍'}
+              </button>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent flex items-end p-4">
+                <div>
+                  <span class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest">${item.category.replace('_', ' ')}</span>
+                  <h3 class="text-xs font-bold text-white">${item.title}</h3>
+                </div>
               </div>
             </div>
-            <div class="p-3">
-              <a href="${item.url}" target="_blank" download class="block text-center bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-2 rounded-lg transition">
-                ⬇️ Download 4K Asset
+            <div class="p-3 bg-gray-950/40 flex gap-2">
+              <button onclick="openPreviewModal('${item.url}')" class="flex-1 bg-gray-900 border border-gray-800 text-white text-xs font-bold py-2 rounded-xl">
+                📱 Lockscreen
+              </button>
+              <a href="${item.url}" target="_blank" download class="flex-1 bg-indigo-600 text-white text-xs font-bold py-2 rounded-xl text-center">
+                ⬇️ 4K Asset
               </a>
             </div>
           </div>
@@ -173,67 +356,70 @@
       });
     }
 
-    function filterVault(cat) {
-      renderVault(cat);
+    function filterVault(category, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderVault(category);
     }
 
-    async function runStudyCompanion() {
-      const apiKey = document.getElementById('geminiApiKey').value.trim();
-      const userPrompt = document.getElementById('studyPromptInput').value.trim();
-      const mode = document.getElementById('studyCategory').value;
-
-      if (!apiKey || !userPrompt) {
-        alert('Please enter your API key and a question!');
-        return;
-      }
-
-      // Automatically save API key in local storage so user never types it again
-      localStorage.setItem('aurascape_gemini_key', apiKey);
-      document.getElementById('savedKeyBadge').classList.remove('hidden');
-
-      const generateBtn = document.getElementById('geminiGenerateBtn');
-      const studyOutput = document.getElementById('studyOutput');
-      const studyResponse = document.getElementById('studyResponse');
-
-      generateBtn.disabled = true;
-      generateBtn.innerHTML = '<span>📖 Analyzing Scripture & Theology...</span>';
-
-      let systemInstruction = "";
-      if (mode === 'faith') {
-        systemInstruction = "You are a Christian biblical study assistant. Provide a clear, respectful, deep theological and biblical analysis of the question using scripture passages. Do NOT mention anime. Include bold headers and 3 key scripture takeaways.";
+    // Stash Management
+    function toggleFavorite(id) {
+      if (userStash.includes(id)) {
+        userStash = userStash.filter(item => item !== id);
       } else {
-        systemInstruction = "You are an anime character arc and narrative analyzer. Break down the user's prompt by examining character growth, sacrifice, and themes in anime/manga lore. Include bold headers.";
+        userStash.push(id);
       }
+      localStorage.setItem('aurascape_stash', JSON.stringify(userStash));
+      updateStashUI();
+      renderVault(activeCategory);
+    }
 
-      try {
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: `${systemInstruction} User Request: ${userPrompt}` }] }]
-            })
-          }
-        );
+    function updateStashUI() {
+      document.getElementById('stashCount').innerText = userStash.length;
+    }
 
-        const data = await response.json();
-        if (data.candidates && data.candidates[0].content) {
-          const text = data.candidates[0].content.parts[0].text.replace(/\*\*/g, '');
-          studyResponse.innerText = text;
-          studyOutput.classList.remove('hidden');
-          studyOutput.scrollIntoView({ behavior: 'smooth' });
-        } else {
-          studyResponse.innerText = "Response received. Error parsing text: " + JSON.stringify(data, null, 2);
-          studyOutput.classList.remove('hidden');
-        }
-      } catch (err) {
-        studyResponse.innerText = "Connection error: " + err.message;
-        studyOutput.classList.remove('hidden');
-      } finally {
-        generateBtn.disabled = false;
-        generateBtn.innerHTML = '<span>📖 Generate AI Study Analysis</span>';
-      }
+    function showStashTab() {
+      filterVault('stash', null);
+    }
+
+    // Modal Handlers
+    function openPreviewModal(url) {
+      document.getElementById('previewImage').src = url;
+      document.getElementById('previewDownloadBtn').href = url;
+      document.getElementById('previewModal').classList.remove('hidden');
+    }
+
+    function closePreviewModal() {
+      document.getElementById('previewModal').classList.add('hidden');
+    }
+
+    function toggleSettingsModal() {
+      document.getElementById('settingsModal').classList.toggle('hidden');
+    }
+
+    function finishOnboarding() {
+      localStorage.setItem('aurascape_onboarded', 'true');
+      document.getElementById('onboardingModal').classList.add('hidden');
+    }
+
+    function setInitialVibe(category, btn) {
+      document.querySelectorAll('.vibe-btn').forEach(b => b.classList.remove('border-indigo-500'));
+      btn.classList.add('border-indigo-500');
+      filterVault(category, null);
+    }
+
+    function updateSplashSetting(val) {
+      localStorage.setItem('aurascape_splash', val);
+    }
+
+    function toggleAutoTint(val) {
+      localStorage.setItem('aurascape_autotint', val);
+      if (!val) document.documentElement.style.setProperty('--accent-color', '#6366f1');
+    }
+
+    function resetAppOnboarding() {
+      localStorage.clear();
+      location.reload();
     }
   </script>
 </body>
