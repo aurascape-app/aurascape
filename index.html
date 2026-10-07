@@ -3,324 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AuraScape AI - Custom 4K Anime & Faith Wallpapers</title>
-  <!-- Tailwind CSS CDN -->
+  <title>AuraScape AI - Ultra 4K Wallpapers</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #0b0c10;
-      color: #e0e6ed;
-    }
-    .glow-border {
-      box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.25);
-    }
-    .gradient-text {
-      background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .glass-card {
-      background: rgba(20, 22, 31, 0.85);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0c10; color: #e0e6ed; }
+    .glass-card { background: rgba(20, 22, 31, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .gradient-text { background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   </style>
 </head>
 <body class="min-h-screen pb-16">
 
-  <!-- Top Header Navigation -->
   <header class="border-b border-gray-800/80 sticky top-0 z-40 bg-[#0b0c10]/90 backdrop-blur-md">
     <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-2">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-500 to-pink-500 flex items-center justify-center font-extrabold text-white text-xl shadow-lg">
-          A
-        </div>
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-500 to-pink-500 flex items-center justify-center font-extrabold text-white text-xl">A</div>
         <div>
           <h1 class="font-bold text-lg leading-none gradient-text">AuraScape AI</h1>
-          <p class="text-[10px] text-gray-400 font-medium">Anime • Faith • Gaming Wallpapers</p>
+          <p class="text-[10px] text-gray-400 font-medium">FLUX Powered • Anime & Faith Wallpapers</p>
         </div>
-      </div>
-
-      <div class="flex items-center space-x-3">
-        <!-- Credit Counter Tag -->
-        <button onclick="toggleModal('creditsModal')" class="flex items-center space-x-1.5 bg-indigo-950/60 border border-indigo-500/30 text-indigo-300 px-3 py-1.5 rounded-full text-xs font-semibold hover:border-indigo-400 transition">
-          <span>⚡</span>
-          <span id="creditDisplay">5 Free Credits</span>
-        </button>
-        <!-- Settings Gear Button -->
-        <button onclick="toggleModal('settingsModal')" class="p-2 text-gray-400 hover:text-white bg-gray-900 rounded-lg border border-gray-800 transition">
-          ⚙️
-        </button>
       </div>
     </div>
   </header>
 
-  <!-- Main Container -->
   <main class="max-w-4xl mx-auto px-4 pt-6 space-y-6">
 
-    <!-- Hero Announcement Banner -->
-    <div class="glass-card rounded-2xl p-4 md:p-6 border border-indigo-500/20 text-center relative overflow-hidden">
-      <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
-      <span class="inline-block px-3 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-full text-xs font-semibold mb-2">🔥 NEW FAITH x ANIME DROPS</span>
-      <h2 class="text-xl md:text-2xl font-extrabold text-white">Create & Download Ultra-HD Custom Wallpapers</h2>
-      <p class="text-xs md:text-sm text-gray-400 max-w-lg mx-auto mt-1">
-        Type your idea or tap preset tags to generate 4K mobile lockscreens & desktop wallpapers.
-      </p>
-    </div>
-
-    <!-- Main Generator Form Card -->
-    <div class="glass-card rounded-2xl p-5 md:p-7 glow-border space-y-5">
-      
-      <!-- Text Area Input -->
+    <div class="glass-card rounded-2xl p-5 md:p-7 space-y-5">
       <div>
         <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
-          1. Describe Your Wallpaper Concept
+          Describe Your Idea (Be specific!)
         </label>
         <textarea 
           id="promptInput"
           rows="3" 
-          class="w-full bg-gray-950/80 border border-gray-800 rounded-xl p-3.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition resize-none"
-          placeholder="e.g. Naruto in Sage of Six Paths mode in Kurama's cage with water ripples, side angle, solemn lighting..."
+          class="w-full bg-gray-950/80 border border-gray-800 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition"
+          placeholder="e.g. Naruto in Sage of Six Paths mode, back turned at an angle, standing sad in dark flooded Kurama cage with rippling water..."
         ></textarea>
       </div>
 
-      <!-- Style Preset Selection -->
-      <div>
-        <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
-          2. Choose Aesthetic Style
-        </label>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5" id="presetGroup">
-          <button type="button" onclick="selectPreset(this, 'dark-anime')" class="preset-btn active bg-indigo-600/30 border-indigo-500 border text-white p-2.5 rounded-xl text-left text-xs font-semibold transition">
-            <span class="block text-base mb-0.5">🌙</span>
-            Dark Anime
-          </button>
-          <button type="button" onclick="selectPreset(this, 'faith-cross')" class="preset-btn bg-gray-900 border-gray-800 border text-gray-300 hover:text-white p-2.5 rounded-xl text-left text-xs font-semibold transition">
-            <span class="block text-base mb-0.5">✝️</span>
-            Faith & Cross
-          </button>
-          <button type="button" onclick="selectPreset(this, 'battle-mythic')" class="preset-btn bg-gray-900 border-gray-800 border text-gray-300 hover:text-white p-2.5 rounded-xl text-left text-xs font-semibold transition">
-            <span class="block text-base mb-0.5">🎮</span>
-            Gaming / Mythic
-          </button>
-          <button type="button" onclick="selectPreset(this, 'cyberpunk')" class="preset-btn bg-gray-900 border-gray-800 border text-gray-300 hover:text-white p-2.5 rounded-xl text-left text-xs font-semibold transition">
-            <span class="block text-base mb-0.5">⚡</span>
-            Cyber Neon
-          </button>
-        </div>
-      </div>
-
-      <!-- Format Selection (Aspect Ratio) -->
-      <div class="flex items-center justify-between pt-1">
+      <div class="flex items-center justify-between">
         <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Format:</label>
-        <select id="aspectRatio" class="bg-gray-900 border border-gray-800 text-white text-xs font-semibold rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500">
+        <select id="aspectRatio" class="bg-gray-900 border border-gray-800 text-white text-xs font-semibold rounded-lg px-3 py-2">
           <option value="9:16">📱 Mobile Lockscreen (1080x1920)</option>
           <option value="16:9">💻 Desktop Wallpaper (1920x1080)</option>
         </select>
       </div>
 
-      <!-- Generate Button -->
       <button 
         id="generateBtn"
-        onclick="generateImage()"
-        class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-3.5 px-6 rounded-xl font-bold text-sm hover:opacity-95 transition shadow-lg flex items-center justify-center space-x-2"
+        onclick="generateUltraImage()"
+        class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-3.5 px-6 rounded-xl font-bold text-sm hover:opacity-95 transition shadow-lg"
       >
-        <span>🎨 Generate 4K Wallpaper</span>
+        <span>⚡ Generate FLUX 4K Artwork</span>
       </button>
-
     </div>
 
-    <!-- Output Showcase Area -->
     <div id="outputArea" class="hidden glass-card rounded-2xl p-5 md:p-7 space-y-5 border border-indigo-500/30">
-      
       <div class="flex items-center justify-between border-b border-gray-800 pb-3">
-        <h3 class="font-bold text-white text-base">Your Rendered Artwork</h3>
-        <span class="text-xs text-green-400 flex items-center space-x-1">
-          <span class="w-2 h-2 rounded-full bg-green-500 inline-block animate-pulse"></span>
-          <span>4K HD Ready</span>
-        </span>
+        <h3 class="font-bold text-white text-base">Generated FLUX Artwork</h3>
       </div>
 
-      <!-- Image Canvas Frame -->
       <div class="relative rounded-xl overflow-hidden bg-black flex items-center justify-center min-h-[350px]">
-        <img 
-          id="resultImg" 
-          src="" 
-          alt="Generated AI Wallpaper" 
-          class="max-h-[550px] w-auto object-contain transition-all duration-200"
-          style="filter: brightness(100%);"
-        />
-
-        <!-- Lockscreen Overlay Widget -->
-        <div id="lockscreenWidget" class="hidden absolute inset-0 pointer-events-none flex flex-col items-center pt-10 text-white text-shadow">
-          <p class="text-xs font-semibold opacity-80 uppercase tracking-widest">Tuesday, Oct 6</p>
-          <p class="text-6xl font-extrabold tracking-tight mt-1">12:45</p>
-        </div>
+        <img id="resultImg" src="" alt="AI Wallpaper" class="max-h-[550px] w-auto object-contain" />
       </div>
 
-      <!-- Image Fine-Tuning Controls -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-950/60 p-4 rounded-xl border border-gray-800/80">
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 mb-1">Live Brightness Adjustment:</label>
-          <input 
-            type="range" 
-            id="brightnessSlider" 
-            min="50" 
-            max="150" 
-            value="100" 
-            oninput="updateBrightness(this.value)"
-            class="w-full accent-indigo-500 cursor-pointer"
-          >
-        </div>
-
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-gray-400">Lockscreen Preview Overlay:</span>
-          <button 
-            onclick="toggleLockscreenPreview()"
-            class="px-3 py-1.5 bg-gray-900 border border-gray-700 hover:border-gray-500 text-xs font-semibold text-white rounded-lg transition"
-          >
-            Toggle Clock Widget
-          </button>
-        </div>
-      </div>
-
-      <!-- Download & Monetization Action Buttons -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
-        <!-- Free Download -->
-        <a id="downloadLink" href="#" target="_blank" download="aurascape-wallpaper.jpg" class="w-full">
-          <button class="w-full bg-gray-900 hover:bg-gray-800 border border-gray-700 text-white py-3 rounded-xl font-bold text-xs transition">
-            ⬇️ Download Standard HD
-          </button>
-        </a>
-
-        <!-- Premium $1.99 HD Pack Trigger -->
-        <button onclick="toggleModal('purchaseModal')" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white py-3 rounded-xl font-bold text-xs transition shadow-md">
-          ⭐ Unlock Uncompressed 4K ($1.99)
+      <a id="downloadLink" href="#" target="_blank" download="wallpaper.jpg" class="block w-full">
+        <button class="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold text-xs">
+          ⬇️ Download Full Resolution
         </button>
-
-        <!-- Printify Physical Canvas Trigger -->
-        <button onclick="toggleModal('printModal')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-xl font-bold text-xs transition shadow-md">
-          🖼️ Order Framed Canvas ($29.99)
-        </button>
-      </div>
-
+      </a>
     </div>
 
   </main>
 
-  <!-- MODAL 1: Buy Credits / Purchase ($1.99 / $4.99) -->
-  <div id="creditsModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="glass-card max-w-md w-full rounded-2xl p-6 border border-indigo-500/30 relative">
-      <button onclick="toggleModal('creditsModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">✕</button>
-      <h3 class="text-xl font-bold text-white mb-1">Get Generation Credits</h3>
-      <p class="text-xs text-gray-400 mb-5">Unlock unlimited custom anime and faith wallpaper generations in 4K resolution.</p>
-
-      <div class="space-y-3">
-        <!-- Option 1 -->
-        <div class="p-4 rounded-xl bg-gray-950 border border-gray-800 hover:border-indigo-500 transition cursor-pointer flex justify-between items-center" onclick="openPaymentLink()">
-          <div>
-            <p class="font-bold text-white text-sm">10 Custom Generation Credits</p>
-            <p class="text-xs text-gray-400">Perfect for single custom creations</p>
-          </div>
-          <span class="bg-indigo-600 text-white font-extrabold text-xs px-3 py-1.5 rounded-lg">$1.99</span>
-        </div>
-
-        <!-- Option 2 -->
-        <div class="p-4 rounded-xl bg-indigo-950/40 border border-indigo-500/50 hover:border-indigo-400 transition cursor-pointer flex justify-between items-center" onclick="openPaymentLink()">
-          <div>
-            <div class="flex items-center space-x-2">
-              <p class="font-bold text-white text-sm">PRO Monthly Pass</p>
-              <span class="bg-pink-500/20 text-pink-300 text-[10px] px-2 py-0.5 rounded font-bold border border-pink-500/30">BEST VALUE</span>
-            </div>
-            <p class="text-xs text-gray-400">Unlimited 4K generations + Commercial rights</p>
-          </div>
-          <span class="bg-gradient-to-r from-indigo-500 to-pink-500 text-white font-extrabold text-xs px-3 py-1.5 rounded-lg">$4.99/mo</span>
-        </div>
-      </div>
-
-      <p class="text-[10px] text-gray-500 text-center mt-5">Secured with Stripe / PayPal. Money back guarantee.</p>
-    </div>
-  </div>
-
-  <!-- MODAL 2: Physical Canvas Print-On-Demand ($29.99) -->
-  <div id="printModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="glass-card max-w-md w-full rounded-2xl p-6 border border-emerald-500/30 relative">
-      <button onclick="toggleModal('printModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">✕</button>
-      <span class="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-500/20">PRINT-ON-DEMAND</span>
-      <h3 class="text-xl font-bold text-white mt-2 mb-1">Order High-Gloss Canvas Poster</h3>
-      <p class="text-xs text-gray-400 mb-4">Turn this generated wallpaper into a physical framed room canvas. Delivered straight to your door.</p>
-
-      <ul class="text-xs text-gray-300 space-y-2 mb-5">
-        <li class="flex items-center space-x-2"><span>✅</span><span>High-gloss museum-grade canvas finish</span></li>
-        <li class="flex items-center space-x-2"><span>✅</span><span>Free worldwide shipping included</span></li>
-        <li class="flex items-center space-x-2"><span>✅</span><span>Ready-to-hang wooden frame</span></li>
-      </ul>
-
-      <button onclick="openPaymentLink()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-xl font-bold text-sm transition">
-        Order Now for $29.99
-      </button>
-    </div>
-  </div>
-
-  <!-- MODAL 3: Settings & About -->
-  <div id="settingsModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="glass-card max-w-md w-full rounded-2xl p-6 border border-gray-800 relative">
-      <button onclick="toggleModal('settingsModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">✕</button>
-      <h3 class="text-lg font-bold text-white mb-3">Settings & About AuraScape</h3>
-      
-      <div class="space-y-4 text-xs text-gray-300">
-        <div>
-          <h4 class="font-bold text-indigo-400 mb-1">About AuraScape AI</h4>
-          <p class="text-gray-400 leading-relaxed">
-            AuraScape AI fuses high-fidelity Anime aesthetics, Gaming mythology, and Faith-inspired themes into custom wallpapers for mobile and desktop screens.
-          </p>
-        </div>
-
-        <div>
-          <h4 class="font-bold text-indigo-400 mb-1">Copyright & IP Protection Notice</h4>
-          <p class="text-gray-400 leading-relaxed">
-            All generated images are AI creations produced using artistic style descriptions and original artistic prompts. AuraScape AI promotes transformative fan concepts and original spiritual art.
-          </p>
-        </div>
-
-        <div class="pt-2 border-t border-gray-800 flex justify-between items-center text-gray-500 text-[11px]">
-          <span>Version 1.0 (PWA Ready)</span>
-          <span>© 2026 AuraScape AI</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- JavaScript Application Logic -->
   <script>
-    let currentPreset = 'dark-anime';
-    let userCredits = 5;
-
-    const presets = {
-      'dark-anime': 'cinematic dark anime masterpiece, moody lighting, somber emotional atmosphere, dark water reflections, highly detailed 8k wallpaper',
-      'faith-cross': 'sacred anime fantasy art, glowing radiant stone cross in background, divine light rays cutting through dark clouds, high contrast, 8k wallpaper',
-      'battle-mythic': 'cyberpunk tactical battle royale mythic suit, glowing neon accents, epic desolate battlefield background, cinematic lighting, 8k wallpaper',
-      'cyberpunk': 'neon vibrant cyberpunk city street, dark anime protagonist, glowing katana, volumetric rain reflections, ultra detailed 8k wallpaper'
-    };
-
-    function selectPreset(button, presetKey) {
-      currentPreset = presetKey;
-      document.querySelectorAll('.preset-btn').forEach(btn => {
-        btn.classList.remove('bg-indigo-600/30', 'border-indigo-500', 'text-white');
-        btn.classList.add('bg-gray-900', 'border-gray-800', 'text-gray-300');
-      });
-      button.classList.remove('bg-gray-900', 'border-gray-800', 'text-gray-300');
-      button.classList.add('bg-indigo-600/30', 'border-indigo-500', 'text-white');
-    }
-
-    function generateImage() {
+    function generateUltraImage() {
       const userPrompt = document.getElementById('promptInput').value.trim();
       if (!userPrompt) {
-        alert('Please enter a concept or prompt idea first!');
+        alert('Please enter a concept first!');
         return;
       }
 
@@ -330,23 +90,20 @@
       const downloadLink = document.getElementById('downloadLink');
       const aspectRatio = document.getElementById('aspectRatio').value;
 
-      // Determine Resolution
       const width = aspectRatio === '9:16' ? 1080 : 1920;
       const height = aspectRatio === '9:16' ? 1920 : 1080;
 
-      // Combine user prompt with style preset
-      const fullPrompt = `${userPrompt}, ${presets[currentPreset]}`;
-      const encodedPrompt = encodeURIComponent(fullPrompt);
-      const seed = Math.floor(Math.random() * 999999);
+      // PROMPT ENHANCER: Secretly converts simple user text into an ultra-detailed art prompt
+      const enhancedPrompt = `Masterpiece cinematic anime artwork, highly detailed, dramatic emotional lighting, volumetric dark shadows, intricate details, 8k resolution, ${userPrompt}, trending on artstation, octane render style`;
+      const encodedPrompt = encodeURIComponent(enhancedPrompt);
+      const seed = Math.floor(Math.random() * 9999999);
 
-      // Pollinations AI Direct Engine URL
-      const generatedUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=${width}&height=${height}&seed=${seed}&nologo=true`;
+      // FLUX Model Engine API call
+      const generatedUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=${width}&height=${height}&seed=${seed}&model=flux&nologo=true`;
 
-      // Update UI Loading State
       generateBtn.disabled = true;
-      generateBtn.innerHTML = '<span>🎨 Rendering Artwork...</span>';
+      generateBtn.innerHTML = '<span>⚡ Rendering FLUX Artwork... (Takes ~10 seconds)</span>';
 
-      // Preload Image
       const imgLoader = new Image();
       imgLoader.src = generatedUrl;
       imgLoader.onload = () => {
@@ -354,44 +111,15 @@
         downloadLink.href = generatedUrl;
         outputArea.classList.remove('hidden');
         generateBtn.disabled = false;
-        generateBtn.innerHTML = '<span>🎨 Generate 4K Wallpaper</span>';
-
-        // Deduct 1 credit for demonstration
-        if (userCredits > 0) {
-          userCredits--;
-          document.getElementById('creditDisplay').innerText = `${userCredits} Free Credits`;
-        }
-
-        // Smooth scroll to result
+        generateBtn.innerHTML = '<span>⚡ Generate FLUX 4K Artwork</span>';
         outputArea.scrollIntoView({ behavior: 'smooth' });
       };
 
       imgLoader.onerror = () => {
-        alert('Image generation timed out. Please click generate again.');
+        alert('Render took too long. Please tap generate again!');
         generateBtn.disabled = false;
-        generateBtn.innerHTML = '<span>🎨 Generate 4K Wallpaper</span>';
+        generateBtn.innerHTML = '<span>⚡ Generate FLUX 4K Artwork</span>';
       };
-    }
-
-    function updateBrightness(val) {
-      const resultImg = document.getElementById('resultImg');
-      resultImg.style.filter = `brightness(${val}%)`;
-    }
-
-    function toggleLockscreenPreview() {
-      const lockscreen = document.getElementById('lockscreenWidget');
-      lockscreen.classList.toggle('hidden');
-    }
-
-    function toggleModal(modalId) {
-      const modal = document.getElementById(modalId);
-      modal.classList.toggle('hidden');
-    }
-
-    function openPaymentLink() {
-      // Replace this URL with your real Lemon Squeezy or PayPal payment link when ready
-      alert('Redirecting to secure payment checkout ($1.99 / $4.99)...');
-      window.open('https://paypal.com', '_blank');
     }
   </script>
 </body>
