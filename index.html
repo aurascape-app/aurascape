@@ -3,17 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AURA PRO • High-End WebGL Wallpapers & Lockscreen Engine</title>
+  <title>AURA PRO • Studio WebGL Engine</title>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Three.js WebGL Engine -->
+  <!-- Three.js Engine -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-  <!-- Google Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
@@ -35,322 +34,203 @@
   </script>
 
   <style>
-    * {
-      box-sizing: border-box;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background-color: #050507;
-      color: #f8fafc;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      touch-action: none;
-    }
-
-    /* Subdued $5,000 Ultra-Luxury Glass Panels */
-    .glass-card {
-      background: rgba(8, 10, 16, 0.78);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .glass-modal {
-      background: rgba(6, 8, 14, 0.92);
-      backdrop-filter: blur(36px);
-      -webkit-backdrop-filter: blur(36px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-    }
-
-    /* Subtle Edge Creep / Soft Edge Vignette */
-    .edge-vignette {
-      pointer-events: none;
-      box-shadow: inset 0 0 45px rgba(0, 0, 0, 0.85);
-    }
-
-    /* Privacy Blur Shield */
-    .privacy-blurred {
-      filter: blur(8px) contrast(1.4) saturate(1.8);
-      opacity: 0.6;
-      transition: filter 0.25s ease, opacity 0.25s ease, transform 0.2s ease;
-    }
-
-    .privacy-revealed {
-      filter: blur(0px) contrast(1.0) saturate(1.0);
-      opacity: 1.0;
-      transform: scale(1.01);
-    }
-
-    input[type=range] {
-      -webkit-appearance: none;
-      background: rgba(255, 255, 255, 0.15);
-      height: 4px;
-      border-radius: 99px;
-    }
-    input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      height: 16px;
-      width: 16px;
-      border-radius: 50%;
-      background: #fde047;
-      cursor: pointer;
-      box-shadow: 0 0 10px rgba(250, 204, 21, 0.8);
-    }
-
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 99px; }
+    * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+    body { margin: 0; padding: 0; overflow: hidden; background-color: #000000; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; touch-action: none; }
+    .glass-card { background: rgba(10, 10, 12, 0.75); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glass-modal { background: rgba(5, 5, 8, 0.92); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.15); }
+    .edge-vignette { pointer-events: none; box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.95); }
+    .privacy-blurred { filter: blur(8px) contrast(1.2); opacity: 0.5; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .privacy-revealed { filter: blur(0px) contrast(1.0); opacity: 1.0; }
+    input[type=range] { -webkit-appearance: none; background: rgba(255, 255, 255, 0.1); height: 4px; border-radius: 99px; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%; background: #fbbf24; cursor: pointer; box-shadow: 0 0 12px rgba(251, 191, 36, 0.8); }
+    ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 99px; }
   </style>
 </head>
-<body class="relative w-screen h-screen overflow-hidden text-slate-100">
+<body class="relative w-screen h-screen overflow-hidden text-slate-100 bg-black">
 
-  <!-- SUBTLE ANCHORED EDGE VIGNETTE (Just ~1 inch subtle shadow along borders) -->
-  <div class="absolute inset-0 z-20 edge-vignette pointer-events-none border border-black/30"></div>
+  <!-- Subtle Anchored Vignette Edge -->
+  <div class="absolute inset-0 z-20 edge-vignette pointer-events-none"></div>
 
-  <!-- WEBGL CANVAS ENGINE -->
+  <!-- WebGL Canvas Engine -->
   <canvas id="webglCanvas" class="absolute inset-0 w-full h-full z-0 cursor-grab active:cursor-grabbing"></canvas>
 
-  <!-- TOP APP BAR -->
-  <header class="absolute top-0 left-0 right-0 z-30 glass-card px-4 sm:px-6 py-3 flex justify-between items-center pointer-events-auto border-b border-white/10">
-    <div class="flex items-center gap-2.5">
-      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-black font-extrabold text-xs shadow-lg shadow-amber-500/20 font-syne">
+  <!-- Studio Header Navigation -->
+  <header class="absolute top-0 left-0 right-0 z-30 glass-card px-4 sm:px-6 py-3 flex justify-between items-center pointer-events-auto border-b border-white/5">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-xl bg-amber-400 text-black flex items-center justify-center font-extrabold text-xs font-syne shadow-lg shadow-amber-400/20">
         A
       </div>
-      <div>
-        <div class="flex items-center gap-1.5">
-          <h1 class="font-syne font-extrabold text-sm sm:text-base tracking-wider text-white">AURA PRO</h1>
-          <span class="bg-amber-400/20 text-amber-300 font-bold text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded uppercase tracking-widest border border-amber-400/30">STUDIO</span>
-        </div>
+      <div class="flex items-center gap-2">
+        <h1 class="font-syne font-bold text-sm tracking-widest text-white uppercase">AURA STUDIO</h1>
+        <span class="bg-amber-400/10 text-amber-300 font-mono text-[9px] px-2 py-0.5 rounded border border-amber-400/20">v3.0 PRO</span>
       </div>
     </div>
 
     <div class="flex items-center gap-2">
-      <!-- Mic Audio Sync Button -->
-      <button id="micToggleBtn" onclick="toggleAudioSync()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5 cursor-pointer">
-        <span id="micIcon">🎵</span>
-        <span class="hidden sm:inline" id="micText">Audio Sync</span>
+      <button id="micToggleBtn" onclick="toggleAudioSync()" class="px-3 py-1.5 rounded-xl text-xs font-medium bg-white/5 border border-white/10 text-slate-300 hover:text-white transition flex items-center gap-1.5 cursor-pointer">
+        <span id="micIcon">🎙️</span>
+        <span id="micText" class="hidden sm:inline">Audio Sync</span>
       </button>
 
-      <!-- Paywall Trigger -->
-      <button onclick="openPaywallModal()" class="bg-gradient-to-r from-amber-400 to-amber-600 text-black font-extrabold px-3.5 py-1.5 rounded-xl text-xs hover:brightness-110 transition shadow-lg shadow-amber-500/20 flex items-center gap-1 cursor-pointer">
-        <span>⚡</span>
-        <span class="hidden sm:inline">Get Pro Pass</span>
-        <span class="sm:hidden">Pro</span>
+      <button onclick="openPaywallModal()" class="bg-gradient-to-r from-amber-400 to-amber-500 text-black font-extrabold px-4 py-1.5 rounded-xl text-xs hover:brightness-110 transition shadow-lg shadow-amber-400/20 font-syne cursor-pointer">
+        PRO PASS
       </button>
     </div>
   </header>
 
-  <!-- LOCKSCREEN OVERLAY & PRIVACY NOTIFICATIONS -->
-  <div id="lockscreenOverlay" class="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-4 sm:p-8 pt-20 pb-36 transition-opacity duration-300 font-syne">
-    
-    <!-- Center Clock & Date Preview -->
-    <div class="text-center space-y-1.5 my-auto">
-      <p id="lockscreenDate" class="text-xs sm:text-sm font-semibold tracking-[0.3em] uppercase text-amber-300/90">WEDNESDAY, OCTOBER 7</p>
-      <h1 id="lockscreenClock" class="text-6xl sm:text-8xl md:text-9xl font-extralight tracking-tight text-white drop-shadow-2xl">00:00</h1>
-      <p id="lockscreenCustomText" class="text-xs sm:text-sm font-light tracking-[0.25em] text-white/70 uppercase max-w-md mx-auto">AURA PRIVACY SHIELD ACTIVE</p>
-
-      <!-- Dynamic Lockscreen Widgets Suite -->
-      <div id="widgetContainer" class="flex flex-wrap items-center justify-center gap-2 pt-3 pointer-events-auto">
-        <div id="widget-weather" class="glass-card px-3 py-1.5 rounded-2xl text-[11px] font-medium text-slate-200 flex items-center gap-1.5 border border-white/10">
-          <span>⛅</span> <span>72° San Francisco</span>
-        </div>
-        <div id="widget-spotify" class="glass-card px-3 py-1.5 rounded-2xl text-[11px] font-medium text-slate-200 flex items-center gap-1.5 border border-white/10">
-          <span class="text-emerald-400">🎵</span> <span>Frank Ocean • Pink + White</span>
-        </div>
-        <div id="widget-calendar" class="glass-card px-3 py-1.5 rounded-2xl text-[11px] font-medium text-slate-200 flex items-center gap-1.5 border border-white/10">
-          <span class="text-amber-400">📅</span> <span>2 Events Today</span>
-        </div>
-      </div>
+  <!-- Lockscreen Overlay -->
+  <div id="lockscreenOverlay" class="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-6 pt-24 pb-36 font-syne transition-opacity duration-300">
+    <div class="text-center space-y-1 my-auto">
+      <p id="lockscreenDate" class="text-xs font-semibold tracking-[0.3em] uppercase text-amber-300/80">OCTOBER 7, 2026</p>
+      <h1 id="lockscreenClock" class="text-7xl sm:text-9xl font-extralight tracking-tight text-white drop-shadow-2xl">00:00</h1>
+      <p class="text-[10px] tracking-[0.3em] text-slate-400 uppercase">DYNAMIC CANVAS ENGINE</p>
     </div>
 
-    <!-- PRIVACY NOTIFICATION SHIELD -->
-    <div id="notificationContainer" class="max-w-md mx-auto w-full space-y-2 pointer-events-auto">
-      <div class="flex items-center justify-between px-1 text-[10px] text-slate-400 font-mono tracking-wider">
-        <span>PRIVACY SHIELD DEMO</span>
-        <span class="text-amber-300/80 animate-pulse">Hover or Tap to reveal</span>
-      </div>
-
-      <div id="notif-1" onpointerenter="revealNotif('notif-1')" onpointerleave="hideNotif('notif-1')" class="glass-card p-3 rounded-2xl border border-white/15 transition-all duration-300 cursor-pointer relative overflow-hidden">
+    <div id="notificationContainer" class="max-w-md mx-auto w-full pointer-events-auto">
+      <div id="notif-1" onpointerenter="revealNotif('notif-1')" onpointerleave="hideNotif('notif-1')" class="glass-card p-3.5 rounded-2xl border border-white/10 transition-all duration-300 cursor-pointer">
         <div class="flex items-center justify-between mb-1">
-          <div class="flex items-center gap-2">
-            <span class="w-5 h-5 rounded-lg bg-green-500/20 text-green-400 flex items-center justify-center text-[10px] font-bold">💬</span>
-            <span class="text-xs font-bold text-slate-200">iMessage • Sarah</span>
-          </div>
-          <span class="text-[9px] text-slate-400 font-mono">2m ago</span>
+          <span class="text-xs font-bold text-slate-200">AURA PRIVACY SHIELD</span>
+          <span class="text-[9px] text-slate-400 font-mono">HOVER TO REVEAL</span>
         </div>
         <p id="notif-1-text" class="text-xs text-slate-300 privacy-blurred">
-          Are you coming to the private launch party tonight? Code is 9842...
+          Tap or drag across the canvas to interact directly with the fluid shader mechanics.
         </p>
       </div>
     </div>
   </div>
 
-  <!-- FLOATING CONTROL DOCK -->
-  <div id="controlPanel" class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 w-[94%] max-w-2xl glass-card rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3.5 pointer-events-auto border border-white/15">
+  <!-- Studio Dock Control Panel -->
+  <div id="controlPanel" class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 w-[94%] max-w-2xl glass-card rounded-3xl p-4 shadow-2xl space-y-3 pointer-events-auto border border-white/10">
     
-    <!-- Tab Navigation -->
-    <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
-      <div class="flex gap-1.5 overflow-x-auto">
-        <button onclick="switchTab('presets')" id="tabBtn-presets" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-black transition cursor-pointer">Presets</button>
-        <button onclick="switchTab('fonts')" id="tabBtn-fonts" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition cursor-pointer">Fonts</button>
-        <button onclick="switchTab('optics')" id="tabBtn-optics" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition cursor-pointer">Optics</button>
+    <div class="flex items-center justify-between border-b border-white/10 pb-2">
+      <div class="flex gap-2">
+        <button onclick="switchTab('presets')" id="tabBtn-presets" class="tab-btn px-3 py-1 rounded-lg text-xs font-bold bg-amber-400 text-black transition cursor-pointer">Presets</button>
+        <button onclick="switchTab('fonts')" id="tabBtn-fonts" class="tab-btn px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition cursor-pointer">Fonts</button>
+        <button onclick="switchTab('optics')" id="tabBtn-optics" class="tab-btn px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition cursor-pointer">Optics</button>
       </div>
 
-      <div class="flex items-center gap-1.5">
-        <button onclick="toggleOverlay()" class="px-2.5 py-1.5 rounded-xl text-xs bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 transition cursor-pointer" title="Toggle Lockscreen Preview">
-          👁️
-        </button>
-        <button onclick="openPaywallModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-amber-500 text-black hover:brightness-110 transition shadow-lg shadow-amber-500/20 flex items-center gap-1 cursor-pointer">
-          <span>⚡</span>
-          <span>Export 4K</span>
-        </button>
-      </div>
+      <button onclick="toggleOverlay()" class="px-2.5 py-1 rounded-lg text-xs bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 transition cursor-pointer" title="Toggle Lockscreen Preview">
+        👁️ Preview
+      </button>
     </div>
 
-    <!-- TAB 1: PRESETS GALLERY -->
-    <div id="tabContent-presets" class="tab-content space-y-2 max-h-48 overflow-y-auto pr-1">
+    <!-- PRESETS TAB -->
+    <div id="tabContent-presets" class="tab-content space-y-2.5 max-h-52 overflow-y-auto pr-1">
       
-      <!-- Basics (Free Tier) -->
+      <!-- BLACK BACKDROP BASICS (Standard Favorites) -->
       <div class="space-y-1">
-        <span class="text-[9px] font-mono text-slate-400 uppercase tracking-wider block">Standard Basics</span>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          <button onclick="applyPreset('whiteVoid')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left cursor-pointer">
-            <span class="text-xs font-bold block text-slate-100">White Void</span>
-            <span class="text-[9px] text-slate-400">White BG + Black Fluid</span>
-          </button>
-
-          <button onclick="applyPreset('obsidian')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left cursor-pointer">
-            <span class="text-xs font-bold block text-slate-200">Obsidian Void</span>
-            <span class="text-[9px] text-slate-400">Black BG + White Fluid</span>
-          </button>
-
-          <button onclick="applyPreset('goldVoid')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left cursor-pointer">
-            <span class="text-xs font-bold block text-amber-300">Gold Void</span>
-            <span class="text-[9px] text-slate-400">Gold BG + Color Waves</span>
-          </button>
-
-          <button onclick="applyPreset('goldWaves')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left cursor-pointer">
-            <span class="text-xs font-bold block text-yellow-400">Black & Gold</span>
-            <span class="text-[9px] text-slate-400">Black BG + Gold Waves</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Pro Luxury Tier -->
-      <div class="space-y-1 pt-1 border-t border-white/10">
-        <div class="flex items-center justify-between">
-          <span class="text-[9px] font-mono text-amber-300 uppercase tracking-wider block">👑 Pro Luxury Aura Presets</span>
-          <span class="text-[9px] bg-amber-400/20 text-amber-300 px-1.5 py-0.5 rounded font-bold uppercase">PRO</span>
-        </div>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <span class="text-[9px] font-mono text-amber-300/80 uppercase tracking-wider block">Standard Basics (Pitch-Black Canvas)</span>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
           
-          <!-- BLACK ELECTRICITY ON OFF-WHITE CANVAS -->
-          <button onclick="applyPreset('blackElectricity')" class="p-2.5 bg-white/10 border border-amber-400/50 rounded-2xl hover:border-amber-300 transition text-left cursor-pointer">
-            <span class="text-xs font-bold block text-amber-200">⚡ Pale Electricity</span>
-            <span class="text-[9px] text-slate-300">Bone BG + Dark Lightning</span>
+          <button onclick="applyPreset('whiteVoidDark')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400/50 transition text-left cursor-pointer">
+            <span class="text-xs font-bold block text-white">White Void (Black)</span>
+            <span class="text-[9px] text-slate-400">Black BG + Pure White Waves</span>
           </button>
 
-          <button onclick="applyPreset('spooky')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left cursor-pointer">
-            <span class="text-xs font-bold block text-purple-300">Spooky Phantom</span>
-            <span class="text-[9px] text-slate-400">Violet Hairy Aura</span>
+          <button onclick="applyPreset('obsidianDark')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400/50 transition text-left cursor-pointer">
+            <span class="text-xs font-bold block text-slate-300">Obsidian (Black)</span>
+            <span class="text-[9px] text-slate-400">Black BG + Dark Grey Waves</span>
           </button>
 
-          <button onclick="applyPreset('cyber')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left cursor-pointer">
-            <span class="text-xs font-bold block text-cyan-400">Cyber Tendrils</span>
-            <span class="text-[9px] text-slate-400">Prism Electric</span>
+          <button onclick="applyPreset('goldDark')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400/50 transition text-left cursor-pointer">
+            <span class="text-xs font-bold block text-amber-300">Black & Gold</span>
+            <span class="text-[9px] text-slate-400">Black BG + Metallic Gold</span>
           </button>
 
-          <button onclick="applyPreset('emerald')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left cursor-pointer">
-            <span class="text-xs font-bold block text-emerald-400">Toxic Emerald</span>
-            <span class="text-[9px] text-slate-400">Quantum Green</span>
-          </button>
-
-          <button onclick="applyPreset('magma')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left cursor-pointer">
-            <span class="text-xs font-bold block text-red-400">Ruby Magma</span>
-            <span class="text-[9px] text-slate-400">Fiery Aura</span>
-          </button>
-
-          <button onclick="applyPreset('rosegold')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left cursor-pointer">
+          <button onclick="applyPreset('rosegoldDark')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400/50 transition text-left cursor-pointer">
             <span class="text-xs font-bold block text-rose-300">Rose Champagne</span>
-            <span class="text-[9px] text-slate-400">Blush Tendrils</span>
+            <span class="text-[9px] text-slate-400">Black BG + Rose Gold</span>
           </button>
+
+          <button onclick="applyPreset('rubyDark')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400/50 transition text-left cursor-pointer">
+            <span class="text-xs font-bold block text-red-400">Ruby Magma</span>
+            <span class="text-[9px] text-slate-400">Black BG + Ruby Waves</span>
+          </button>
+
+          <button onclick="applyPreset('cyberDark')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400/50 transition text-left cursor-pointer">
+            <span class="text-xs font-bold block text-cyan-400">Cyber Waves</span>
+            <span class="text-[9px] text-slate-400">Black BG + Cyan Electric</span>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- PALE CANVAS VARIANTS -->
+      <div class="space-y-1 pt-1 border-t border-white/5">
+        <span class="text-[9px] font-mono text-slate-400 uppercase tracking-wider block">Off-White Canvas Variants</span>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          
+          <button onclick="applyPreset('whiteVoid')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400/50 transition text-left cursor-pointer">
+            <span class="text-xs font-bold block text-slate-100">White Void (Pale)</span>
+            <span class="text-[9px] text-slate-400">Off-White BG + Black Mesh</span>
+          </button>
+
+          <button onclick="applyPreset('obsidianLight')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400/50 transition text-left cursor-pointer">
+            <span class="text-xs font-bold block text-slate-300">Obsidian Light</span>
+            <span class="text-[9px] text-slate-400">Bone BG + Charcoal Fluid</span>
+          </button>
+
+          <button onclick="applyPreset('goldVoidLight')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400/50 transition text-left cursor-pointer">
+            <span class="text-xs font-bold block text-yellow-300">Gold Light</span>
+            <span class="text-[9px] text-slate-400">Pale BG + Amber Fluid</span>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- PRO LUXURY SUITE -->
+      <div class="space-y-1 pt-1 border-t border-white/5">
+        <div class="flex items-center justify-between">
+          <span class="text-[9px] font-mono text-amber-300 uppercase tracking-wider block">👑 Pro Engine Effects</span>
+          <span class="text-[8px] bg-amber-400/20 text-amber-300 px-1.5 py-0.5 rounded font-bold">PRO</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-2 gap-2">
+          
+          <button onclick="applyPreset('multiLightning')" class="p-2 bg-amber-400/10 border border-amber-400/40 rounded-xl hover:border-amber-300 transition text-left cursor-pointer">
+            <span class="text-xs font-bold block text-amber-200">⚡ Multi-Electric Lightning</span>
+            <span class="text-[9px] text-slate-300">Multiple active arc strikes</span>
+          </button>
+
+          <button onclick="applyPreset('snapPulse')" class="p-2 bg-amber-400/10 border border-amber-400/40 rounded-xl hover:border-amber-300 transition text-left cursor-pointer">
+            <span class="text-xs font-bold block text-amber-200">🫰 Snap & Touch Pulse</span>
+            <span class="text-[9px] text-slate-300">Impulse shockwave rings</span>
+          </button>
+
         </div>
       </div>
 
     </div>
 
-    <!-- TAB 2: UNIVERSAL TYPOGRAPHY -->
-    <div id="tabContent-fonts" class="tab-content hidden space-y-3">
-      <p class="text-[10px] text-slate-400 uppercase tracking-widest font-mono">UNIVERSAL TYPOGRAPHY (CHANGES ALL SCREEN TEXT)</p>
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        <button onclick="setUniversalFont('font-syne')" class="p-2.5 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-syne text-xs text-center cursor-pointer">
-          <span class="block text-base font-bold">AURA 12:45</span>
-          <span class="text-[9px] font-sans text-slate-400">Syne Bold</span>
-        </button>
-
-        <button onclick="setUniversalFont('font-playfair')" class="p-2.5 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-playfair text-xs text-center cursor-pointer">
-          <span class="block text-base font-bold">AURA 12:45</span>
-          <span class="text-[9px] font-sans text-slate-400">Playfair Serif</span>
-        </button>
-
-        <button onclick="setUniversalFont('font-cinzel')" class="p-2.5 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-cinzel text-xs text-center cursor-pointer">
-          <span class="block text-base font-bold">AURA 12:45</span>
-          <span class="text-[9px] font-sans text-slate-400">Cinzel Roman</span>
-        </button>
-
-        <button onclick="setUniversalFont('font-space')" class="p-2.5 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-space text-xs text-center cursor-pointer">
-          <span class="block text-base font-bold">AURA 12:45</span>
-          <span class="text-[9px] font-sans text-slate-400">Space Grotesk</span>
-        </button>
-
-        <button onclick="setUniversalFont('font-outfit')" class="p-2.5 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-outfit text-xs text-center cursor-pointer">
-          <span class="block text-base font-bold">AURA 12:45</span>
-          <span class="text-[9px] font-sans text-slate-400">Outfit Minimal</span>
-        </button>
-
-        <button onclick="setUniversalFont('font-mono')" class="p-2.5 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-mono text-xs text-center cursor-pointer">
-          <span class="block text-base font-bold">AURA 12:45</span>
-          <span class="text-[9px] font-sans text-slate-400">Space Mono</span>
-        </button>
+    <!-- FONTS TAB -->
+    <div id="tabContent-fonts" class="tab-content hidden space-y-2">
+      <span class="text-[9px] text-slate-400 uppercase tracking-widest font-mono">Select Typography Engine</span>
+      <div class="grid grid-cols-3 gap-2">
+        <button onclick="setFont('font-syne')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 text-xs text-center font-syne">Syne</button>
+        <button onclick="setFont('font-playfair')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 text-xs text-center font-playfair">Playfair</button>
+        <button onclick="setFont('font-cinzel')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 text-xs text-center font-cinzel">Cinzel</button>
+        <button onclick="setFont('font-space')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 text-xs text-center font-space">Space</button>
+        <button onclick="setFont('font-outfit')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 text-xs text-center font-outfit">Outfit</button>
+        <button onclick="setFont('font-mono')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 text-xs text-center font-mono">Mono</button>
       </div>
     </div>
 
-    <!-- TAB 3: OPTICS & TENDRILS -->
-    <div id="tabContent-optics" class="tab-content hidden space-y-3">
+    <!-- OPTICS TAB -->
+    <div id="tabContent-optics" class="tab-content hidden space-y-2.5">
       <div class="grid grid-cols-2 gap-3 text-xs">
         <div class="space-y-1">
-          <div class="flex justify-between text-slate-300">
-            <span>Fluid Speed</span>
-            <span id="speedVal" class="text-amber-400 font-mono">1.0</span>
-          </div>
+          <div class="flex justify-between text-slate-300"><span>Motion Speed</span><span id="speedVal" class="text-amber-400 font-mono">1.0</span></div>
           <input type="range" id="sliderSpeed" min="0.1" max="3.0" step="0.1" value="1.0" class="w-full" oninput="updateUniforms()">
         </div>
-
         <div class="space-y-1">
-          <div class="flex justify-between text-slate-300">
-            <span>Specular Glow</span>
-            <span id="glowVal" class="text-amber-400 font-mono">4.0</span>
-          </div>
+          <div class="flex justify-between text-slate-300"><span>Glow Density</span><span id="glowVal" class="text-amber-400 font-mono">4.0</span></div>
           <input type="range" id="sliderGlow" min="1.0" max="8.0" step="0.2" value="4.0" class="w-full" oninput="updateUniforms()">
         </div>
-
         <div class="space-y-1">
-          <div class="flex justify-between text-slate-300">
-            <span>Wave Density</span>
-            <span id="densityVal" class="text-amber-400 font-mono">4.0</span>
-          </div>
+          <div class="flex justify-between text-slate-300"><span>Wave Scale</span><span id="densityVal" class="text-amber-400 font-mono">4.0</span></div>
           <input type="range" id="sliderDensity" min="2.0" max="8.0" step="0.5" value="4.0" class="w-full" oninput="updateUniforms()">
         </div>
-
         <div class="space-y-1">
-          <div class="flex justify-between text-slate-300">
-            <span>Aura Tendrils ("Hairy")</span>
-            <span id="tendrilVal" class="text-amber-400 font-mono">0.5</span>
-          </div>
+          <div class="flex justify-between text-slate-300"><span>Electric Tendrils</span><span id="tendrilVal" class="text-amber-400 font-mono">0.5</span></div>
           <input type="range" id="sliderTendrils" min="0.0" max="2.0" step="0.1" value="0.5" class="w-full" oninput="updateUniforms()">
         </div>
       </div>
@@ -359,32 +239,21 @@
   </div>
 
   <!-- PAYWALL MODAL -->
-  <div id="paywallModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-2xl opacity-0 pointer-events-none transition-opacity duration-300">
-    <div class="glass-modal max-w-md w-full rounded-3xl p-6 sm:p-8 space-y-5 relative border border-amber-500/30 shadow-2xl">
-      <button onclick="closePaywallModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 flex items-center justify-center transition cursor-pointer">✕</button>
-
-      <div class="text-center space-y-1.5">
-        <div class="inline-flex items-center gap-1.5 bg-amber-400/10 border border-amber-400/30 px-3 py-1 rounded-full text-amber-300 text-xs font-bold tracking-wider uppercase">
-          <span>👑</span> <span>UNLOCK AURA PRO PASS</span>
-        </div>
-        <h2 class="text-2xl font-extrabold font-syne text-white">4K Renders & All Presets</h2>
-        <p class="text-xs text-slate-300">Get unlimited 4K exports, all 12 dynamic presets, and live audio-reactive loops.</p>
+  <div id="paywallModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-2xl opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="glass-modal max-w-md w-full rounded-3xl p-6 space-y-4 relative border border-amber-500/30 text-center">
+      <button onclick="closePaywallModal()" class="absolute top-4 right-4 w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 flex items-center justify-center transition cursor-pointer">✕</button>
+      <div class="inline-flex items-center gap-1.5 bg-amber-400/10 border border-amber-400/30 px-3 py-1 rounded-full text-amber-300 text-xs font-bold uppercase font-syne">👑 AURA PRO PASS</div>
+      <h2 class="text-2xl font-extrabold font-syne text-white">Unlock Studio Engine</h2>
+      <p class="text-xs text-slate-300">Get access to multi-arc lightning, audio-reactive shockwaves, and custom shaders.</p>
+      <div class="bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-500/40 rounded-2xl p-3">
+        <span class="text-3xl font-extrabold font-syne text-white">$14.99</span>
+        <span class="text-xs text-amber-300/80 block">One-time purchase • Lifetime access</span>
       </div>
-
-      <div class="bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-500/40 rounded-2xl p-3 text-center">
-        <p class="text-[10px] uppercase tracking-widest text-amber-300 font-semibold">LIFETIME PRO ACCESS</p>
-        <div class="flex items-baseline justify-center gap-1">
-          <span class="text-3xl font-extrabold font-syne text-white">$14.99</span>
-        </div>
-      </div>
-
-      <button onclick="redirectToCheckout()" class="w-full py-3 bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-black font-extrabold text-xs rounded-xl shadow-lg shadow-amber-500/30 hover:brightness-110 transition uppercase tracking-wider font-syne cursor-pointer">
-        Pay $14.99 & Unlock Now
-      </button>
+      <button onclick="alert('Redirecting to Checkout...')" class="w-full py-3 bg-amber-400 text-black font-extrabold text-xs rounded-xl hover:brightness-110 transition uppercase tracking-wider font-syne cursor-pointer">Pay $14.99 & Unlock</button>
     </div>
   </div>
 
-  <!-- THREE.JS HIGH PERFORMANCE GLSL SHADER ENGINE -->
+  <!-- GLSL SHADER ENGINE -->
   <script>
     const vertexShader = `
       varying vec2 vUv;
@@ -403,62 +272,90 @@
       uniform float u_density;
       uniform float u_tendrils;
       uniform float u_audioLevel;
+      uniform int u_mode; // 0: Fluid Wave, 1: Multi-Lightning, 2: Pulse
       uniform vec3 u_colorA;
       uniform vec3 u_colorB;
       uniform vec3 u_colorC;
 
       varying vec2 vUv;
 
+      // Noise functions
+      float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      float noise(vec2 p) {
+        vec2 i = floor(p); vec2 f = fract(p);
+        f = f*f*(3.0-2.0*f);
+        return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+                   mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
+      }
+
       void main() {
         vec2 st = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
         vec2 mouse = (u_mouse - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
-        
-        float t = u_time * u_speed * 0.35;
-        
-        float distToMouse = length(st - mouse);
-        float mouseImpact = smoothstep(0.4, 0.0, distToMouse);
-        st += normalize(st - mouse + 0.0001) * mouseImpact * (0.15 + u_audioLevel * 0.25);
+        float t = u_time * u_speed * 0.4;
 
-        // Filament Edge Noise Generator
-        float hairNoise = sin(st.x * 50.0 + t * 4.0) * cos(st.y * 50.0 - t * 4.0) * u_tendrils * 0.15;
-        st += hairNoise;
+        vec3 finalColor = vec3(0.0);
 
-        vec2 c = st * (u_density + u_audioLevel * 1.5);
-        float v = 0.0;
-        
-        for(int i = 1; i < 4; i++) {
-          float fi = float(i);
-          c += vec2(
-            sin(fi * c.y + t + fi * 0.5),
-            cos(fi * c.x - t + fi * 0.3)
-          );
-          v += sin(c.x + c.y) / fi;
+        if (u_mode == 0) {
+          // RESTORED ORIGINAL HIGH-END FLUID WAVE MESH
+          float dist = length(st - mouse);
+          float impact = smoothstep(0.4, 0.0, dist);
+          st += normalize(st - mouse + 0.0001) * impact * (0.12 + u_audioLevel * 0.2);
+
+          vec2 c = st * u_density;
+          float v = 0.0;
+          for(int i = 1; i < 4; i++) {
+            float fi = float(i);
+            c += vec2(sin(fi * c.y + t), cos(fi * c.x - t));
+            v += sin(c.x + c.y) / fi;
+          }
+          v = abs(v);
+
+          float specular = pow(v, 3.0) * (u_glow + u_audioLevel * 2.0);
+          float rim = pow(1.0 - v, 1.5);
+
+          vec3 waveColor = mix(u_colorA, u_colorB, sin(v * 3.1415) * 0.5 + 0.5);
+          waveColor = mix(waveColor, u_colorC, rim * 0.4);
+
+          finalColor = waveColor + vec3(specular * 0.5);
+
+        } else if (u_mode == 1) {
+          // MULTI-BRANCH ELECTRIC LIGHTNING
+          vec3 bg = u_colorA;
+          vec3 boltCol = u_colorB;
+          
+          float totalBolt = 0.0;
+          for(int b = 0; b < 3; b++) {
+            float fb = float(b);
+            vec2 p = st * (u_density * 0.8) + vec2(fb * 1.5, -fb * 0.8);
+            float n = noise(p * 3.0 + t * 2.0 + fb);
+            float bolt = abs(p.x + sin(p.y * 4.0 + t * 3.0) * 0.3 + (n - 0.5) * u_tendrils);
+            bolt = 0.015 / (bolt + 0.001);
+            totalBolt += pow(bolt, 1.2);
+          }
+
+          float mouseBolt = 0.02 / (length(st - mouse) + 0.01);
+          finalColor = bg + boltCol * (totalBolt + mouseBolt * 0.5);
+
+        } else if (u_mode == 2) {
+          // SNAP & IMPULSE SHOCKWAVE PULSE
+          float d = length(st - mouse);
+          float wave = sin(d * 30.0 - t * 10.0 - u_audioLevel * 15.0);
+          wave = smoothstep(0.8, 1.0, wave) * exp(-d * 2.0);
+
+          finalColor = u_colorA + u_colorB * wave * u_glow;
         }
 
-        v = abs(v);
-
-        // Electrical tendril pulse
-        float edgeFilaments = pow(abs(sin(v * 20.0 + hairNoise * 10.0)), 8.0) * u_tendrils;
-        float specular = pow(v, 3.0) * (u_glow + u_audioLevel * 3.0);
-        float rim = pow(1.0 - v, 1.5);
-
-        vec3 baseColor = mix(u_colorA, u_colorB, sin(v * 3.1415) * 0.5 + 0.5);
-        baseColor = mix(baseColor, u_colorC, rim * 0.3 + edgeFilaments * 0.5);
-
-        vec3 finalColor = baseColor + vec3(specular * 0.6) + vec3(edgeFilaments * 0.4);
         gl_FragColor = vec4(finalColor, 1.0);
       }
     `;
 
-    let scene, camera, renderer, material, mesh;
-    let uniforms;
+    let scene, camera, renderer, material, mesh, uniforms;
     let targetMouse = new THREE.Vector2(0, 0);
     let currentMouse = new THREE.Vector2(0, 0);
     let audioContext, analyser, dataArray, isAudioSyncing = false;
 
     function initEngine() {
       const canvas = document.getElementById('webglCanvas');
-      
       scene = new THREE.Scene();
       camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
@@ -471,30 +368,27 @@
         u_density: { value: 4.0 },
         u_tendrils: { value: 0.5 },
         u_audioLevel: { value: 0.0 },
-        u_colorA: { value: new THREE.Color('#020617') },
-        u_colorB: { value: new THREE.Color('#f8fafc') },
-        u_colorC: { value: new THREE.Color('#ffffff') }
+        u_mode: { value: 0 },
+        u_colorA: { value: new THREE.Color('#000000') },
+        u_colorB: { value: new THREE.Color('#ffffff') },
+        u_colorC: { value: new THREE.Color('#e2e8f0') }
       };
 
       material = new THREE.ShaderMaterial({
-        vertexShader: vertexShader,
-        fragmentShader: fragmentShader,
-        uniforms: uniforms
+        vertexShader, fragmentShader, uniforms
       });
 
-      const geometry = new THREE.PlaneGeometry(2, 2);
-      mesh = new THREE.Mesh(geometry, material);
+      mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
       scene.add(mesh);
 
-      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: false, preserveDrawingBuffer: true });
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: false, preserveDrawingBuffer: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(1.0);
 
-      window.addEventListener('resize', onWindowResize);
-      window.addEventListener('pointermove', onPointerMove);
-      window.addEventListener('pointerdown', onPointerMove);
+      window.addEventListener('resize', onResize);
+      window.addEventListener('pointermove', onMove);
 
-      updateLiveClock();
+      updateClock();
       animate(0);
     }
 
@@ -509,84 +403,71 @@
         analyser.getByteFrequencyData(dataArray);
         let sum = 0;
         for (let i = 0; i < 16; i++) sum += dataArray[i];
-        let avg = sum / 16;
-        uniforms.u_audioLevel.value = avg / 255.0;
+        uniforms.u_audioLevel.value = (sum / 16) / 255.0;
       }
 
       uniforms.u_time.value = timestamp * 0.001;
       renderer.render(scene, camera);
-      updateLiveClock();
+      updateClock();
     }
 
-    function onPointerMove(e) {
+    function onMove(e) {
       targetMouse.x = e.clientX;
       targetMouse.y = window.innerHeight - e.clientY;
     }
 
-    function onWindowResize() {
+    function onResize() {
       renderer.setSize(window.innerWidth, window.innerHeight);
       uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight);
     }
 
     function updateUniforms() {
-      const speed = parseFloat(document.getElementById('sliderSpeed').value);
-      const glow = parseFloat(document.getElementById('sliderGlow').value);
-      const density = parseFloat(document.getElementById('sliderDensity').value);
-      const tendrils = parseFloat(document.getElementById('sliderTendrils').value);
+      uniforms.u_speed.value = parseFloat(document.getElementById('sliderSpeed').value);
+      uniforms.u_glow.value = parseFloat(document.getElementById('sliderGlow').value);
+      uniforms.u_density.value = parseFloat(document.getElementById('sliderDensity').value);
+      uniforms.u_tendrils.value = parseFloat(document.getElementById('sliderTendrils').value);
 
-      document.getElementById('speedVal').innerText = speed.toFixed(1);
-      document.getElementById('glowVal').innerText = glow.toFixed(1);
-      document.getElementById('densityVal').innerText = density.toFixed(1);
-      document.getElementById('tendrilVal').innerText = tendrils.toFixed(1);
-
-      uniforms.u_speed.value = speed;
-      uniforms.u_glow.value = glow;
-      uniforms.u_density.value = density;
-      uniforms.u_tendrils.value = tendrils;
+      document.getElementById('speedVal').innerText = uniforms.u_speed.value.toFixed(1);
+      document.getElementById('glowVal').innerText = uniforms.u_glow.value.toFixed(1);
+      document.getElementById('densityVal').innerText = uniforms.u_density.value.toFixed(1);
+      document.getElementById('tendrilVal').innerText = uniforms.u_tendrils.value.toFixed(1);
     }
 
-    // Standard Free & Pro Luxury Presets
     function applyPreset(name) {
-      const p = {
-        whiteVoid: ['#ffffff', '#0f172a', '#000000'],
-        obsidian: ['#020617', '#f8fafc', '#ffffff'],
-        goldVoid: ['#ca8a04', '#000000', '#fef08a'],
-        goldWaves: ['#000000', '#eab308', '#fef08a'],
-        // Pale Off-White Canvas with Black Electricity Lightning
-        blackElectricity: ['#f5f5f0', '#0a0a0c', '#18181b'],
-        spooky: ['#1e1b4b', '#a855f7', '#f472b6'],
-        cyber: ['#00f0ff', '#ff0077', '#ffffff'],
-        emerald: ['#10b981', '#022c22', '#a7f3d0'],
-        magma: ['#ef4444', '#450a0a', '#fca5a5'],
-        rosegold: ['#f43f5e', '#2e1065', '#fde047']
+      const presets = {
+        // PITCH-BLACK CANVAS BASICS
+        whiteVoidDark: { mode: 0, a: '#000000', b: '#ffffff', c: '#e2e8f0' },
+        obsidianDark:  { mode: 0, a: '#000000', b: '#475569', c: '#94a3b8' },
+        goldDark:      { mode: 0, a: '#000000', b: '#eab308', c: '#fef08a' },
+        rosegoldDark:  { mode: 0, a: '#000000', b: '#f43f5e', c: '#fecdd3' },
+        rubyDark:      { mode: 0, a: '#000000', b: '#dc2626', c: '#fca5a5' },
+        cyberDark:     { mode: 0, a: '#000000', b: '#06b6d4', c: '#a5f3fc' },
+
+        // OFF-WHITE CANVAS VARIANTS
+        whiteVoid:     { mode: 0, a: '#f8fafc', b: '#0f172a', c: '#020617' },
+        obsidianLight: { mode: 0, a: '#f1f5f9', b: '#334155', c: '#0f172a' },
+        goldVoidLight: { mode: 0, a: '#fefce8', b: '#ca8a04', c: '#854d0e' },
+
+        // PRO LUXURY SUITE
+        multiLightning:{ mode: 1, a: '#000000', b: '#38bdf8', c: '#ffffff' },
+        snapPulse:     { mode: 2, a: '#000000', b: '#f59e0b', c: '#fef08a' }
       };
 
-      if (p[name]) {
-        uniforms.u_colorA.value.set(p[name][0]);
-        uniforms.u_colorB.value.set(p[name][1]);
-        uniforms.u_colorC.value.set(p[name][2]);
-
-        // Auto-adjust tendril sliders for Electricity preset
-        if (name === 'blackElectricity') {
-          document.getElementById('sliderTendrils').value = 1.4;
-          document.getElementById('sliderGlow').value = 6.0;
-          updateUniforms();
-        }
+      const p = presets[name];
+      if (p) {
+        uniforms.u_mode.value = p.mode;
+        uniforms.u_colorA.value.set(p.a);
+        uniforms.u_colorB.value.set(p.b);
+        uniforms.u_colorC.value.set(p.c);
       }
     }
 
-    function setUniversalFont(fontClass) {
-      const lockscreenOverlay = document.getElementById('lockscreenOverlay');
-      lockscreenOverlay.className = `absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-4 sm:p-8 pt-20 pb-36 transition-opacity duration-300 ${fontClass}`;
+    function setFont(fontClass) {
+      document.getElementById('lockscreenOverlay').className = `absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-6 pt-24 pb-36 transition-opacity duration-300 ${fontClass}`;
     }
 
-    function revealNotif(id) {
-      document.getElementById(`${id}-text`).className = "text-xs text-slate-100 privacy-revealed";
-    }
-
-    function hideNotif(id) {
-      document.getElementById(`${id}-text`).className = "text-xs text-slate-300 privacy-blurred";
-    }
+    function revealNotif(id) { document.getElementById(`${id}-text`).className = "text-xs text-slate-100 privacy-revealed"; }
+    function hideNotif(id) { document.getElementById(`${id}-text`).className = "text-xs text-slate-300 privacy-blurred"; }
 
     async function toggleAudioSync() {
       if (!isAudioSyncing) {
@@ -599,63 +480,36 @@
           dataArray = new Uint8Array(analyser.frequencyBinCount);
           source.connect(analyser);
           isAudioSyncing = true;
-          document.getElementById('micText').innerText = "Syncing Mic...";
-          document.getElementById('micToggleBtn').classList.add('border-emerald-500', 'text-emerald-400');
-        } catch (e) {
-          alert("Microphone permission required for Audio Sync.");
-        }
+          document.getElementById('micText').innerText = "Syncing...";
+        } catch (e) { alert("Microphone access required for audio sync."); }
       } else {
         isAudioSyncing = false;
         uniforms.u_audioLevel.value = 0.0;
         document.getElementById('micText').innerText = "Audio Sync";
-        document.getElementById('micToggleBtn').classList.remove('border-emerald-500', 'text-emerald-400');
       }
     }
 
-    function switchTab(tabName) {
+    function switchTab(tab) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.tab-btn').forEach(el => {
-        el.classList.remove('bg-amber-500', 'text-black', 'font-bold');
+        el.classList.remove('bg-amber-400', 'text-black', 'font-bold');
         el.classList.add('text-slate-400');
       });
-
-      document.getElementById('tabContent-' + tabName).classList.remove('hidden');
-      const activeBtn = document.getElementById('tabBtn-' + tabName);
-      activeBtn.classList.add('bg-amber-500', 'text-black', 'font-bold');
-      activeBtn.classList.remove('text-slate-400');
+      document.getElementById('tabContent-' + tab).classList.remove('hidden');
+      const active = document.getElementById('tabBtn-' + tab);
+      active.classList.add('bg-amber-400', 'text-black', 'font-bold');
+      active.classList.remove('text-slate-400');
     }
 
-    function toggleOverlay() {
-      document.getElementById('lockscreenOverlay').classList.toggle('opacity-0');
-    }
+    function toggleOverlay() { document.getElementById('lockscreenOverlay').classList.toggle('opacity-0'); }
+    function openPaywallModal() { document.getElementById('paywallModal').classList.remove('opacity-0', 'pointer-events-none'); }
+    function closePaywallModal() { document.getElementById('paywallModal').classList.add('opacity-0', 'pointer-events-none'); }
 
-    function updateLiveClock() {
+    function updateClock() {
       const now = new Date();
       const hours = String(now.getHours()).padStart(2, '0');
       const mins = String(now.getMinutes()).padStart(2, '0');
-      const months = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
-      const days = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
-      
-      const dayName = days[now.getDay()];
-      const monthName = months[now.getMonth()];
-      const dateNum = now.getDate();
-
       document.getElementById('lockscreenClock').innerText = `${hours}:${mins}`;
-      document.getElementById('lockscreenDate').innerText = `${dayName}, ${monthName} ${dateNum}`;
-    }
-
-    function openPaywallModal() {
-      const modal = document.getElementById('paywallModal');
-      modal.classList.remove('opacity-0', 'pointer-events-none');
-    }
-
-    function closePaywallModal() {
-      const modal = document.getElementById('paywallModal');
-      modal.classList.add('opacity-0', 'pointer-events-none');
-    }
-
-    function redirectToCheckout() {
-      alert("Redirecting to LemonSqueezy Checkout...");
     }
 
     window.onload = initEngine;
