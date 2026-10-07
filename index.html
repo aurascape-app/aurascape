@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AuraScape AI Suite - aesthetics x insights</title>
+  <title>AuraScape AI Suite - Faith & Aesthetics</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -11,20 +11,35 @@
     .glass-card { background: rgba(20, 22, 31, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
     .gradient-text { background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .nav-btn.active { border-color: #6366f1; color: #fff; background: rgba(99, 102, 241, 0.1); }
+    
+    /* Cross Emblem Accent Styling */
+    .cross-accent {
+      position: relative;
+      display: inline-block;
+    }
+    .cross-icon {
+      filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
+    }
   </style>
 </head>
 <body class="min-h-screen pb-16">
 
-  <!-- Header -->
+  <!-- Header with Cross Emblem Accent -->
   <header class="border-b border-gray-800/80 sticky top-0 z-40 bg-[#0b0c10]/90 backdrop-blur-md">
     <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-500 to-pink-500 flex items-center justify-center font-extrabold text-white text-xl">A</div>
+      <div class="flex items-center space-x-3">
+        <!-- Glowing Cross Emblem Icon -->
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-900 via-indigo-600 to-purple-500 flex items-center justify-center font-extrabold text-white text-xl shadow-lg border border-indigo-400/30">
+          <span class="cross-icon text-lg">✝</span>
+        </div>
         <div>
-          <h1 class="font-bold text-lg leading-none gradient-text">AuraScape AI Suite</h1>
-          <p class="text-[10px] text-gray-400 font-medium">4K Vault • AI Study Companion • Aesthetics x Insights</p>
+          <h1 class="font-bold text-lg leading-none gradient-text">AuraScape AI</h1>
+          <p class="text-[10px] text-gray-400 font-medium">Faith • Scripture • 4K Vault</p>
         </div>
       </div>
+      <span id="savedKeyBadge" class="hidden text-[10px] bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-500/20">
+        Key Saved ✓
+      </span>
     </div>
   </header>
 
@@ -33,59 +48,90 @@
     <!-- Tab Navigation -->
     <div class="grid grid-cols-2 gap-3 pb-2 border-b border-gray-800/80">
       <button id="navVault" onclick="showTab('vault')" class="nav-btn active flex items-center justify-center gap-2 p-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent transition">
-        <span>🖼️ 4K Vault & Customizer</span>
+        <span>🖼️ 4K Vault</span>
       </button>
       <button id="navStudy" onclick="showTab('study')" class="nav-btn flex items-center justify-center gap-2 p-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent transition">
-        <span>📖 AI Study Companion</span>
+        <span>📖 AI Study & Devotional</span>
       </button>
     </div>
 
-    <!-- TAB 1: Vault & Customizer (Foundation) -->
+    <!-- TAB 1: CURATED 4K VAULT -->
     <div id="tabVault" class="space-y-6">
-      <div class="glass-card rounded-2xl p-5 md:p-7 text-center">
-        <p class="text-3xl mb-3">🛠️</p>
-        <h2 class="text-xl font-bold text-white mb-2">4K Customizer Vault</h2>
-        <p class="text-xs text-gray-400 max-w-lg mx-auto">
-          We are in the process of building the image vault structure. We will load 50+ flawless 4K assets (Faith, Anime, Spiritual) and build the JavaScript overlay customizer for glowing text and lockscreen previews.
-        </p>
-        <p class="text-xs text-indigo-400 mt-2 font-medium">Coming Soon in Phase 2!</p>
+      
+      <!-- Category Filter Buttons -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2">
+        <button onclick="filterVault('all')" class="px-4 py-2 bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 rounded-xl text-xs font-bold whitespace-nowrap">All Wallpapers</button>
+        <button onclick="filterVault('faith')" class="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-gray-300 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap">✝️ Faith & Cross</button>
+        <button onclick="filterVault('anime')" class="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-gray-300 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap">🎌 Anime & Gaming</button>
+        <button onclick="filterVault('cinematic')" class="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-gray-300 border border-gray-800 rounded-xl text-xs font-bold whitespace-nowrap">🌌 Cinematic</button>
+      </div>
+
+      <!-- 4K Image Grid -->
+      <div id="vaultGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <!-- JS dynamically populates high-res 4K cards here -->
       </div>
     </div>
 
-    <!-- TAB 2: AI Study Companion (ACTIVE PATH B) -->
+    <!-- TAB 2: AI STUDY & DEVOTIONAL -->
     <div id="tabStudy" class="hidden space-y-6">
-      <div class="glass-card rounded-2xl p-5 md:p-7 space-y-4 glow-border">
+      <div class="glass-card rounded-2xl p-5 md:p-7 space-y-4">
+        
         <div>
           <label class="block text-xs font-bold text-indigo-400 uppercase tracking-wider mb-1">
-            1. Enter Your Free Google AI Studio API Key (Starts with AIza...)
+            Google AI Studio Key (Saves Automatically)
           </label>
-          <input type="password" id="geminiApiKey" placeholder="Paste AIza... key here" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500">
-          <p class="text-[10px] text-gray-500 mt-1">Get one free at aistudio.google.com/apikey</p>
+          <input type="password" id="geminiApiKey" placeholder="Paste AQ... key here" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Select Study Mode:</label>
+          <select id="studyCategory" class="w-full bg-gray-950 border border-gray-800 text-white text-xs rounded-xl p-3 focus:outline-none focus:border-indigo-500">
+            <option value="faith">✝️ Pure Bible & Faith Devotional</option>
+            <option value="anime">🎌 Anime & Narrative Story Breakdown</option>
+          </select>
         </div>
 
         <div>
           <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
-            2. Enter a theme, passage, or question to explore
+            Topic, Verse, or Question
           </label>
-          <textarea id="studyPromptInput" rows="3" class="w-full bg-gray-950/80 border border-gray-800 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:border-indigo-500" placeholder="e.g., Analyze 'Courage' in a spiritual and anime narrative context..."></textarea>
+          <textarea id="studyPromptInput" rows="3" class="w-full bg-gray-950/80 border border-gray-800 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:border-indigo-500" placeholder="e.g., Does the Bible talk about when Jesus will return?"></textarea>
         </div>
 
         <button id="geminiGenerateBtn" onclick="runStudyCompanion()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3.5 px-6 rounded-xl font-bold text-sm hover:opacity-95 transition flex items-center justify-center gap-2">
-          <span>📖 Generate Spiritual & Anime Study Analysis</span>
+          <span>📖 Generate AI Study Analysis</span>
         </button>
       </div>
 
       <div id="studyOutput" class="hidden glass-card rounded-2xl p-5 md:p-7 space-y-4 border border-indigo-500/30">
-        <h3 class="font-bold text-white text-base">AI Study Output</h3>
-        <div id="studyResponse" class="text-xs text-gray-300 leading-relaxed space-y-2 whitespace-pre-wrap">
-          <!-- Text AI output renders here -->
-        </div>
+        <h3 class="font-bold text-white text-base">Study Analysis</h3>
+        <div id="studyResponse" class="text-xs text-gray-300 leading-relaxed space-y-2 whitespace-pre-wrap"></div>
       </div>
     </div>
 
   </main>
 
   <script>
+    // PRE-CURATED 4K HIGH-RES IMAGE VAULT
+    const vaultAssets = [
+      { id: 1, category: 'faith', title: 'Radiant Cross Over Ocean', url: 'https://images.unsplash.com/photo-1544427920-c49ccfb85579?q=80&w=1200&auto=format&fit=crop' },
+      { id: 2, category: 'faith', title: 'Mountain Sanctuary Sunrise', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1200&auto=format&fit=crop' },
+      { id: 3, category: 'faith', title: 'Heavenly Ray of Hope', url: 'https://images.unsplash.com/photo-1509021436468-d510300e8498?q=80&w=1200&auto=format&fit=crop' },
+      { id: 4, category: 'anime', title: 'Cyberpunk Warrior Lockscreen', url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1200&auto=format&fit=crop' },
+      { id: 5, category: 'anime', title: 'Neon Samurai City', url: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=1200&auto=format&fit=crop' },
+      { id: 6, category: 'cinematic', title: 'Deep Space Nebula 4K', url: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=1200&auto=format&fit=crop' }
+    ];
+
+    // Load saved API key on page load
+    window.onload = () => {
+      const savedKey = localStorage.getItem('aurascape_gemini_key');
+      if (savedKey) {
+        document.getElementById('geminiApiKey').value = savedKey;
+        document.getElementById('savedKeyBadge').classList.remove('hidden');
+      }
+      renderVault('all');
+    };
+
     function showTab(tabName) {
       document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
       document.getElementById('tabVault').classList.add('hidden');
@@ -94,27 +140,70 @@
       if (tabName === 'vault') {
         document.getElementById('navVault').classList.add('active');
         document.getElementById('tabVault').classList.remove('hidden');
-      } else if (tabName === 'study') {
+      } else {
         document.getElementById('navStudy').classList.add('active');
         document.getElementById('tabStudy').classList.remove('hidden');
       }
     }
 
+    function renderVault(filterCategory) {
+      const grid = document.getElementById('vaultGrid');
+      grid.innerHTML = '';
+
+      const items = filterCategory === 'all' 
+        ? vaultAssets 
+        : vaultAssets.filter(item => item.category === filterCategory);
+
+      items.forEach(item => {
+        grid.innerHTML += `
+          <div class="glass-card rounded-xl overflow-hidden border border-gray-800 hover:border-indigo-500 transition group">
+            <div class="h-64 bg-black overflow-hidden relative">
+              <img src="${item.url}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
+                <span class="text-xs font-bold text-white">${item.title}</span>
+              </div>
+            </div>
+            <div class="p-3">
+              <a href="${item.url}" target="_blank" download class="block text-center bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-2 rounded-lg transition">
+                ⬇️ Download 4K Asset
+              </a>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function filterVault(cat) {
+      renderVault(cat);
+    }
+
     async function runStudyCompanion() {
       const apiKey = document.getElementById('geminiApiKey').value.trim();
       const userPrompt = document.getElementById('studyPromptInput').value.trim();
+      const mode = document.getElementById('studyCategory').value;
 
       if (!apiKey || !userPrompt) {
-        alert('Please enter your API key and a prompt!');
+        alert('Please enter your API key and a question!');
         return;
       }
+
+      // Automatically save API key in local storage so user never types it again
+      localStorage.setItem('aurascape_gemini_key', apiKey);
+      document.getElementById('savedKeyBadge').classList.remove('hidden');
 
       const generateBtn = document.getElementById('geminiGenerateBtn');
       const studyOutput = document.getElementById('studyOutput');
       const studyResponse = document.getElementById('studyResponse');
 
       generateBtn.disabled = true;
-      generateBtn.innerHTML = '<span>📖 Generating Analysis... (Instant)</span>';
+      generateBtn.innerHTML = '<span>📖 Analyzing Scripture & Theology...</span>';
+
+      let systemInstruction = "";
+      if (mode === 'faith') {
+        systemInstruction = "You are a Christian biblical study assistant. Provide a clear, respectful, deep theological and biblical analysis of the question using scripture passages. Do NOT mention anime. Include bold headers and 3 key scripture takeaways.";
+      } else {
+        systemInstruction = "You are an anime character arc and narrative analyzer. Break down the user's prompt by examining character growth, sacrifice, and themes in anime/manga lore. Include bold headers.";
+      }
 
       try {
         const response = await fetch(
@@ -123,34 +212,27 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              contents: [{
-                parts: [{
-                  text: `System Prompt: Analyze the following request through a spiritual lens, integrating relevant Scripture, theological themes, and (if applicable) parallels from complex anime/manga narrative arcs (character development, sacrifice, devotion, faith, courage). Present the analysis in clean bullet points with bold section headers. Final section: Generate three concise, powerful quotes based on this theme. User Request: ${userPrompt}`
-                }]
-              }]
+              contents: [{ parts: [{ text: `${systemInstruction} User Request: ${userPrompt}` }] }]
             })
           }
         );
 
-        if (!response.ok) {
-          throw new Error('Gemini API busy or rate limited. Please try again!');
-        }
-
         const data = await response.json();
-        const aiText = data.candidates[0].content.parts[0].text;
-
-        // Clean up formatting (Gemini sometimes uses specific bold markers)
-        const cleanedText = aiText.replace(/\*\*/g, ''); 
-
-        studyResponse.innerText = cleanedText;
-        studyOutput.classList.remove('hidden');
-        studyOutput.scrollIntoView({ behavior: 'smooth' });
-
+        if (data.candidates && data.candidates[0].content) {
+          const text = data.candidates[0].content.parts[0].text.replace(/\*\*/g, '');
+          studyResponse.innerText = text;
+          studyOutput.classList.remove('hidden');
+          studyOutput.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          studyResponse.innerText = "Response received. Error parsing text: " + JSON.stringify(data, null, 2);
+          studyOutput.classList.remove('hidden');
+        }
       } catch (err) {
-        alert('Error: ' + err.message);
+        studyResponse.innerText = "Connection error: " + err.message;
+        studyOutput.classList.remove('hidden');
       } finally {
         generateBtn.disabled = false;
-        generateBtn.innerHTML = '<span>📖 Generate Spiritual & Anime Study Analysis</span>';
+        generateBtn.innerHTML = '<span>📖 Generate AI Study Analysis</span>';
       }
     }
   </script>
