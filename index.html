@@ -202,7 +202,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
     `;
 
     const fragmentShader = `
-      precision highp float;
+      precision mediump float;
       uniform vec2 u_resolution;
       uniform vec2 u_mouse;
       uniform vec2 u_touch;
@@ -222,130 +222,184 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
       uniform vec3 u_colorC;
       varying vec2 vUv;
 
-      float hash21(vec2 p){ p=fract(p*vec2(123.34,456.21)); p+=dot(p,p+vec2(45.32)); return fract(p.x*p.y); }
-      float noise(vec2 p){
-        vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f);
-        return mix(mix(hash21(i),hash21(i+vec2(1,0)),f.x),mix(hash21(i+vec2(0,1)),hash21(i+vec2(1,1)),f.x),f.y);
+      float hash21(vec2 p){
+        p = fract(p * vec2(123.34, 456.21));
+        p += dot(p, p + 45.32);
+        return fract(p.x * p.y);
       }
-      float fbm(vec2 p){ float v=0.0,a=0.5; for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+vec2(13.7);a*=0.5;} return v; }
-      float lineGlow(float d,float w){ return w/(abs(d)+w*0.018); }
-      mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
+
+      float noise(vec2 p){
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        f = f * f * (3.0 - 2.0 * f);
+        float a = hash21(i);
+        float b = hash21(i + vec2(1.0,0.0));
+        float c = hash21(i + vec2(0.0,1.0));
+        float d = hash21(i + vec2(1.0,1.0));
+        return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);
+      }
+
+      float fbm(vec2 p){
+        float v = 0.0;
+        float a = 0.5;
+        for(int i=0;i<4;i++){
+          v += noise(p) * a;
+          p = p * 2.0 + 17.0;
+          a *= 0.5;
+        }
+        return v;
+      }
+
+      float glowLine(float d, float width){
+        return width / (abs(d) + width);
+      }
+
+      vec2 rotate2D(vec2 p, float a){
+        float c = cos(a);
+        float s = sin(a);
+        return vec2(c*p.x - s*p.y, s*p.x + c*p.y);
+      }
 
       void main(){
-        vec2 st=(gl_FragCoord.xy-0.5*u_resolution.xy)/min(u_resolution.x,u_resolution.y);
-        vec2 mouse=(u_mouse-0.5*u_resolution.xy)/min(u_resolution.x,u_resolution.y);
-        vec2 touch=(u_touch-0.5*u_resolution.xy)/min(u_resolution.x,u_resolution.y);
-        vec2 tv=u_touchVelocity/min(u_resolution.x,u_resolution.y);
-        float t=u_time*u_speed;
-        float audio=clamp(u_audioLevel,0.0,1.0);
-        float bass=clamp(u_bass,0.0,1.0), mid=clamp(u_mid,0.0,1.0), treble=clamp(u_treble,0.0,1.0);
-        float force=clamp(u_touchForce,0.0,2.0);
-        float active=clamp(u_touchActive,0.0,1.0);
-        float glow=u_glow*(1.0+audio*1.7);
-        vec3 col=u_colorA;
+        vec2 px = gl_FragCoord.xy;
+        float aspect = max(u_resolution.x / max(u_resolution.y, 1.0), 0.001);
+        vec2 st = (px / max(u_resolution, vec2(1.0))) * 2.0 - 1.0;
+        st.x *= aspect;
 
-        vec2 delta=st-touch;
-        float dist=length(delta);
-        vec2 radial=delta/(dist+0.0001);
-        float touchField=exp(-dist*4.2)*force;
-        float touchRing=sin(dist*42.0-t*8.0)*exp(-dist*5.8)*force;
-        vec2 touchFlow=(radial*touchRing*0.12 + tv*exp(-dist*6.0)*1.6)*active;
+        vec2 mouse = (u_mouse / max(u_resolution, vec2(1.0))) * 2.0 - 1.0;
+        mouse.x *= aspect;
+        vec2 touch = (u_touch / max(u_resolution, vec2(1.0))) * 2.0 - 1.0;
+        touch.x *= aspect;
 
-        if(u_mode<0.5){
-          // WHITE VOID / SILK
-          vec2 p=st*3.2;
-          p += touchFlow*2.7;
-          p += radial*touchField*(0.36+0.12*sin(t*3.0));
-          p += normalize(st-mouse+vec2(0.0001))*0.12;
-          float v=0.0;
-          for(int i=1;i<=5;i++){
-            float fi=float(i);
-            p+=vec2(sin(p.y*1.35+fi+t*.45),cos(p.x*1.25-fi-t*.38))*.085;
-            v+=sin(p.x*2.2+p.y*1.7+t*fi*.28)/fi;
+        float t = u_time * max(u_speed, 0.05);
+        float force = clamp(u_touchForce, 0.0, 1.8);
+        float active = clamp(u_touchActive, 0.0, 1.0);
+        float audio = clamp(u_audioLevel, 0.0, 1.0);
+        float bass = clamp(u_bass, 0.0, 1.0);
+        float mid = clamp(u_mid, 0.0, 1.0);
+        float treble = clamp(u_treble, 0.0, 1.0);
+        float glow = max(u_glow, 0.1);
+
+        vec2 d = st - touch;
+        float distTouch = length(d);
+        vec2 radial = d / max(distTouch, 0.0005);
+        vec2 tangent = vec2(-radial.y, radial.x);
+        vec2 vel = u_touchVelocity / max(u_resolution, vec2(1.0)) * 2.0;
+        float field = exp(-distTouch * 3.5) * force * active;
+        float ring = sin(distTouch * 38.0 - t * 7.0) * exp(-distTouch * 5.0) * force * active;
+        vec2 wake = vel * exp(-distTouch * 4.5) * active * 4.0;
+        float audioPulse = 1.0 + audio * 1.8 + bass * 1.2;
+        vec3 col = u_colorA;
+
+        if(u_mode < 0.5){
+          vec2 p = st * vec2(2.1, 2.7);
+          p += radial * field * 0.75;
+          p += tangent * ring * 0.18;
+          p += wake * 0.65;
+          float v = 0.0;
+          for(int i=0;i<5;i++){
+            float fi = float(i) + 1.0;
+            p += vec2(sin(p.y * (1.15 + fi*0.08) + t*0.35*fi), cos(p.x * (1.05 + fi*0.07) - t*0.28*fi)) * 0.06;
+            v += sin(p.x*(1.9+fi*0.2) + p.y*(1.2+fi*0.12) + t*0.35*fi) / fi;
           }
-          v += touchRing*0.95 + touchField*0.18;
-          v=0.5+0.5*sin(v*3.2);
-          float ridge=smoothstep(.38,.72,v);
-          float spec=pow(max(v-.54,0.0)*2.2,5.0)*glow;
-          col=mix(u_colorA,mix(u_colorB,u_colorC,ridge),smoothstep(.12,.9,v));
-          col+=spec;
-        } else if(u_mode<1.5){
-          // LIGHTNING
-          float total=0.0, core=0.0;
-          vec2 bend=touchFlow*3.0 + radial*touchField*.22;
-          for(int b=0;b<6;b++){
-            float fb=float(b);
-            vec2 p=(st+bend)*2.4+vec2(fb*.37,sin(fb*2.1))*0.35;
-            p*=rot(fb*.71+t*.035);
-            float n=fbm(p*3.1+vec2(t*.55,-t*.35)+vec2(fb));
-            float center=sin(p.y*7.0+n*4.0+t*(1.2+fb*.13)+fb)*0.26;
-            center+=sin(p.y*19.0-t*2.0)*0.055;
-            center += sin((p.y-touch.y*2.0)*18.0+fb)*touchField*.16;
-            float d=abs(p.x-center);
-            float c=lineGlow(d,.011)*(0.55+0.45*noise(p*8.0+vec2(t)));
-            core+=pow(c,1.45); total+=c*.22;
+          v = 0.5 + 0.5 * sin(v * 3.3 + ring * 1.2);
+          float sheen = smoothstep(0.22,0.88,v);
+          float spec = pow(max(v-0.48,0.0)*2.0,5.0) * glow;
+          col = mix(u_colorA, mix(u_colorB,u_colorC,sheen), sheen);
+          col += u_colorC * (spec + field*0.12);
+        }
+        else if(u_mode < 1.5){
+          float core = 0.0;
+          float haze = 0.0;
+          vec2 steer = radial * field * 0.28 + wake * 0.35;
+          for(int i=0;i<7;i++){
+            float fi = float(i);
+            vec2 p = (st + steer) * (2.2 + fi*0.11);
+            p = rotate2D(p, fi*0.65 + t*0.035);
+            float n = fbm(p*2.4 + vec2(t*0.35,-t*0.2) + fi*3.0);
+            float path = sin(p.y*5.5 + n*4.5 + t*(1.0+fi*0.08) + fi) * 0.22;
+            float branch = sin(p.y*15.0 + n*6.0 - t*1.7) * 0.045;
+            float line = abs(p.x - path - branch - sin(touch.y*4.0 + fi)*field*0.15);
+            float g = glowLine(line,0.012);
+            core += pow(g,1.35) * (0.5 + 0.5*noise(p*7.0));
+            haze += glowLine(line,0.08) * 0.08;
           }
-          float discharge=exp(-dist*7.0)*force*(1.0+treble*2.5);
-          float branch=pow(max(0.0,noise((st-touch)*24.0+vec2(t*3.0))-.52),4.0)*discharge*4.0;
-          float flash=pow(max(0.0,sin(t*2.8+noise(st*5.0)*5.0)),18.0)*treble*4.0;
-          col=u_colorA+u_colorB*(core*(1.15+glow*.34))+u_colorC*(total*glow*.55+flash+branch);
-          col+=u_colorC*discharge*exp(-dist*2.2)*.8;
-        } else if(u_mode<2.5){
-          // SMOKE
-          vec2 q=st*2.2;
-          q*=rot(t*.035);
-          q += touchFlow*2.2;
-          q += radial*touchField*.42;
-          float f=fbm(q+vec2(t*.12,-t*.08));
-          f=.72*f+.28*fbm(q*2.1-vec2(t*.18,t*.11));
-          float push=touchField*(0.5+0.5*sin(dist*28.0-t*3.5));
-          f=clamp(f+push*.32-dot(tv,radial)*exp(-dist*5.0)*2.2,0.0,1.0);
-          float m=smoothstep(.18,.82,f);
-          col=mix(u_colorA,u_colorB,m);
-          col+=u_colorC*pow(f,3.2)*glow*.34;
-        } else if(u_mode<3.5){
-          // MERCURY / CHROME
-          vec2 p=st*2.6;
-          p += radial*touchField*.72;
-          p += touchFlow*3.0;
-          p.y+=sin(p.x*2.0+t*.35)*.25;
-          float f=fbm(p*1.35+vec2(t*.16,-t*.12));
-          f += touchRing*.34;
-          float ridge=abs(sin(p.x*5.0+f*7.0+t*.5));
-          ridge += exp(-dist*3.0)*force*.55;
-          float liquid=smoothstep(.16,.86,.5*f+.5*ridge);
-          float spec=pow(max(0.0,1.0-abs(fract(f*4.0)-.5)*2.0),7.0)*(1.2+glow);
-          col=mix(u_colorA,u_colorB,liquid);
-          col=mix(col,u_colorC,spec*.72);
-          col+=u_colorC*pow(spec,2.0)*.5;
-          col+=u_colorC*exp(-dist*4.0)*force*.16;
-        } else if(u_mode<4.5){
-          // BLACK OIL
-          vec2 p=st*3.0;
-          float swirlTouch=exp(-dist*3.6)*force;
-          p += touchFlow*2.6;
-          p += radial*swirlTouch*.5;
-          p *= rot(swirlTouch*(1.7+dot(tv,vec2(-radial.y,radial.x))*900.0));
-          float f=fbm(p+vec2(t*.09,-t*.13));
-          float r=sin(f*9.0+p.x*2.0+t*.25+swirlTouch*3.0)*.5+.5;
-          float sheen=pow(smoothstep(.45,.9,r),3.0);
-          col=mix(u_colorA,u_colorB,.18+.34*f);
-          col=mix(col,u_colorC,sheen*.7);
-          col+=u_colorC*sheen*glow*.25;
-        } else if(u_mode<5.5){
-          // COSMIC
-          vec2 p = st * 2.5;
-          p -= radial * touchField * 0.4;
-          p *= rot(t * 0.05 + touchField * 0.5);
-          float n = fbm(p + vec2(t * 0.1, -t * 0.1));
-          float stars = pow(hash21(floor(st * 40.0)), 32.0) * (0.8 + 0.2 * sin(t * 5.0));
-          float core = exp(-length(st) * 2.0);
-          col = mix(u_colorA, u_colorB, n);
-          col += u_colorC * (stars + core * 0.5) * glow;
-          col += u_colorC * exp(-dist * 3.0) * force * 0.5;
+          float discharge = exp(-distTouch*8.0) * force * active;
+          float tendrils = pow(max(noise((st-touch)*18.0 + vec2(t*1.6,-t*1.1))-0.5,0.0),3.0) * discharge * 5.0;
+          float flash = pow(max(sin(t*3.0 + noise(st*6.0)*6.0),0.0),18.0) * treble * 3.5;
+          col = u_colorA + u_colorB * (core * (0.8 + glow*0.25)) + u_colorC * (haze + tendrils + flash + discharge*1.6) * audioPulse;
+        }
+        else if(u_mode < 2.5){
+          vec2 p = st * 1.8;
+          p += radial * field * 0.55;
+          p += wake * 0.55;
+          p = rotate2D(p, t*0.03);
+          float n = fbm(p*1.7 + vec2(t*0.08,-t*0.11));
+          n += 0.35*fbm(p*3.2 - vec2(t*0.16,t*0.06));
+          n += field * 0.35 + dot(vel,radial) * exp(-distTouch*4.0) * 2.0;
+          n = clamp(n,0.0,1.0);
+          float smoke = smoothstep(0.2,0.78,n);
+          col = mix(u_colorA,u_colorB,smoke);
+          col += u_colorC * pow(n,3.0) * glow * 0.32;
+        }
+        else if(u_mode < 3.5){
+          vec2 p = st * 2.25;
+          p += radial * field * 0.95;
+          p += tangent * ring * 0.20;
+          p += wake * 0.45;
+          p.y += sin(p.x*2.4+t*0.35)*0.18;
+          float n = fbm(p*1.35 + vec2(t*0.11,-t*0.08));
+          float ridges = abs(sin(p.x*5.0 + n*7.0 + t*0.45));
+          float liquid = clamp(0.22 + n*0.35 + ridges*0.48 + field*0.4,0.0,1.0);
+          float spec = pow(max(0.0,1.0-abs(fract(n*4.0)-0.5)*2.0),8.0);
+          col = mix(u_colorA,u_colorB,liquid);
+          col = mix(col,u_colorC,spec*0.8);
+          col += u_colorC * field * 0.22 * audioPulse;
+        }
+        else if(u_mode < 4.5){
+          vec2 p = st * 2.6;
+          float swirl = exp(-distTouch*3.0) * force * active;
+          p += wake * 0.8;
+          p += radial * swirl * 0.45;
+          p = rotate2D(p, swirl*2.0 + dot(vel,tangent)*3.0);
+          float n = fbm(p + vec2(t*0.07,-t*0.1));
+          float ribbons = 0.5 + 0.5*sin(n*10.0 + p.x*2.5 + t*0.22);
+          float sheen = pow(smoothstep(0.42,0.9,ribbons),2.5);
+          col = mix(u_colorA,u_colorB,0.16+0.38*n);
+          col = mix(col,u_colorC,sheen*0.72);
+          col += u_colorC * sheen * glow * 0.18;
+        }
+        else if(u_mode < 5.5){
+          vec2 p = st * 2.6;
+          p -= radial * field * 0.48;
+          p += tangent * ring * 0.1;
+          p = rotate2D(p, t*0.045 + field*0.65);
+          float neb = fbm(p + vec2(t*0.06,-t*0.05));
+          float stars = pow(hash21(floor(st*55.0)),24.0);
+          float stars2 = pow(hash21(floor((st+vec2(3.7,1.9))*95.0)),34.0) * 0.7;
+          float core = exp(-length(st)*2.6);
+          col = mix(u_colorA,u_colorB,neb*0.82);
+          col += u_colorC * (stars + stars2 + core*0.22) * (0.8 + glow*0.35 + treble*1.5);
+          col += u_colorC * exp(-distTouch*4.0) * force * active * 0.55;
+        }
+        else{
+          vec2 p = st * 1.9;
+          float r = length(p);
+          float a = atan(p.y,p.x);
+          float swirl = sin(a*8.0 - r*15.0 - t*1.4 + fbm(p*2.6)*4.0);
+          p += wake * 0.45;
+          p += radial * field * 0.3;
+          float band = smoothstep(1.0,0.05,r) * (0.5 + 0.5*swirl);
+          float flare = pow(max(0.0,1.0-r),3.0) * (1.0+bass*2.0);
+          float burst = exp(-distTouch*5.0) * field;
+          col = mix(u_colorA,u_colorB,band*0.82);
+          col += u_colorC * (band*0.85 + flare + burst) * (0.55+glow*0.25);
         }
 
-        gl_FragColor = vec4(col, 1.0);
+        float vignette = smoothstep(1.55,0.45,length(st));
+        col *= (0.72 + 0.28*vignette);
+        col += (hash21(px + t) - 0.5) * 0.008;
+        gl_FragColor = vec4(max(col,vec3(0.0)),1.0);
       }
     `;
 
@@ -353,12 +407,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
     const canvas = document.getElementById('webglCanvas');
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: "high-performance", preserveDrawingBuffer: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight, false);
 
     const uniforms = {
-      u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+      u_resolution: { value: new THREE.Vector2(window.innerWidth * Math.min(window.devicePixelRatio || 1, 2), window.innerHeight * Math.min(window.devicePixelRatio || 1, 2)) },
       u_mouse: { value: new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2) },
       u_touch: { value: new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2) },
       u_touchVelocity: { value: new THREE.Vector2(0, 0) },
@@ -382,6 +436,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
       fragmentShader: fragmentShader,
       uniforms: uniforms
     });
+    material.extensions.derivatives = false;
+    if (renderer.debug) renderer.debug.checkShaderErrors = true;
 
     const geometry = new THREE.PlaneGeometry(2, 2);
     const mesh = new THREE.Mesh(geometry, material);
@@ -409,7 +465,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
       plasmaStorm: { mode: 1, colorA: "#0e0214", colorB: "#86198f", colorC: "#f0abfc", name: "Plasma Storm" },
       electricVeins: { mode: 1, colorA: "#080314", colorB: "#4c1d95", colorC: "#a78bfa", name: "Electric Veins" },
       cosmicDust: { mode: 5, colorA: "#03030e", colorB: "#312e81", colorC: "#818cf8", name: "Cosmic Dust" },
-      solarFlare: { mode: 5, colorA: "#120302", colorB: "#9a3412", colorC: "#fb923c", name: "Solar Flare" }
+      solarFlare: { mode: 6, colorA: "#120302", colorB: "#9a3412", colorC: "#fb923c", name: "Solar Flare" }
     };
 
     function applyPreset(key) {
@@ -475,8 +531,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
     }
 
     function setRenderQuality(val) {
-      const qualities = { performance: 0.75, balanced: 1.0, high: Math.min(window.devicePixelRatio, 1.5), ultra: Math.min(window.devicePixelRatio, 2.0) };
-      renderer.setPixelRatio(qualities[val] || 1.0);
+      const qualities = { performance: 0.75, balanced: 1.0, high: 1.5, ultra: 2.0 };
+      const dpr = Math.min((window.devicePixelRatio || 1) * (qualities[val] || 1.0), val === 'ultra' ? 2.5 : 2.0);
+      renderer.setPixelRatio(dpr);
+      renderer.setSize(window.innerWidth, window.innerHeight, false);
+      uniforms.u_resolution.value.set(renderer.domElement.width, renderer.domElement.height);
+      const label = document.getElementById('qualityLabel');
+      if (label) label.textContent = val === 'performance' ? 'Performance' : val === 'balanced' ? 'Balanced' : val === 'ultra' ? 'Ultra' : 'High';
     }
 
     // --- BOTTOM SHEET COLLAPSIBLE / DRAG CONTROL ---
@@ -730,27 +791,36 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
 
     // --- RESIZE HANDLER ---
     window.addEventListener('resize', () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      renderer.setSize(w, h);
-      uniforms.u_resolution.value.set(w, h);
+      const w = Math.max(1, window.innerWidth);
+      const h = Math.max(1, window.innerHeight);
+      renderer.setSize(w, h, false);
+      uniforms.u_resolution.value.set(renderer.domElement.width, renderer.domElement.height);
     });
 
     // --- RENDER LOOP ---
     const clock = new THREE.Clock();
     function animate() {
       requestAnimationFrame(animate);
-      
-      const delta = clock.getDelta();
+      const delta = Math.min(clock.getDelta(), 0.05);
+
       uniforms.u_time.value += delta;
-      
-      uniforms.u_touchVelocity.value.multiplyScalar(0.92);
+      uniforms.u_touchVelocity.value.multiplyScalar(0.90);
       if (!isTouching) {
-        uniforms.u_touchForce.value *= 0.95;
+        uniforms.u_touchForce.value *= 0.94;
+        uniforms.u_touchActive.value *= 0.88;
       }
-      
+
       processAudio();
-      renderer.render(scene, camera);
+
+      try {
+        renderer.render(scene, camera);
+      } catch (err) {
+        if (!window.__auraRenderErrorShown) {
+          window.__auraRenderErrorShown = true;
+          console.error('AURA render error:', err);
+          showToast('Visual engine error — refresh AURA');
+        }
+      }
     }
     animate();
 </script>
