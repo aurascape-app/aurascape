@@ -26,6 +26,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:99px}
 .preset-card{transition:.2s transform,.2s border-color,.2s background}.preset-card:hover{transform:translateY(-1px)}
 </style>
+
+<style>
+#webglCanvas{image-rendering:auto}
+#auraSplash{transition:opacity 900ms cubic-bezier(.2,.7,.2,1),visibility 900ms}.splash-brand{position:relative;z-index:4;text-align:center;opacity:0;animation:splashBrand 1s 2.8s forwards}.splash-aura{font:800 clamp(64px,14vw,180px)/.8 Syne,sans-serif;letter-spacing:.08em;color:#fff;text-shadow:0 0 35px rgba(255,255,255,.22)}.splash-tag{margin-top:22px;font:500 10px/1.2 monospace;letter-spacing:.42em;color:rgba(255,255,255,.58)}.mercury-mercury{position:absolute;inset:0;z-index:2;filter:drop-shadow(0 0 20px rgba(255,255,255,.12))}.mercury-mercury:before{content:"";position:absolute;left:-8%;right:-8%;top:-10%;height:46%;background:radial-gradient(ellipse at 50% 0%,#fff 0,#d9dde2 12%,#6b7280 30%,#f8fafc 43%,#30343a 61%,#090a0c 75%);border-radius:0 0 48% 42%;animation:mercuryPool 3.4s ease-in-out forwards}.mercury-mercury span{position:absolute;top:-18%;width:clamp(8px,1.4vw,24px);border-radius:999px 999px 45% 45%;background:linear-gradient(90deg,#34383e,#f8fafc 35%,#7b8189 58%,#fff 72%,#17191d);box-shadow:inset 4px 0 7px rgba(255,255,255,.45),0 0 15px rgba(255,255,255,.12);animation:drop 2.5s cubic-bezier(.3,.7,.2,1) forwards}.mercury-mercury span:nth-child(1){left:14%;height:44vh;animation-delay:.35s}.mercury-mercury span:nth-child(2){left:31%;height:57vh;animation-delay:.65s}.mercury-mercury span:nth-child(3){left:51%;height:68vh;animation-delay:.2s}.mercury-mercury span:nth-child(4){left:72%;height:51vh;animation-delay:.8s}.mercury-mercury span:nth-child(5){left:86%;height:38vh;animation-delay:.5s}@keyframes drop{0%{transform:translateY(-20vh) scaleX(.7);opacity:0}20%{opacity:1}100%{transform:translateY(60vh) scaleX(1.15);opacity:1}}@keyframes mercuryPool{0%{transform:translateY(-12vh) scaleY(.5);opacity:.2}100%{transform:translateY(0) scaleY(1);opacity:1}}@keyframes splashBrand{to{opacity:1;transform:translateY(-2vh)}}
+</style>
 </head>
 <body class="relative w-screen h-screen overflow-hidden text-slate-100 bg-black">
 <div class="absolute inset-0 z-20 edge-vignette pointer-events-none"></div>
@@ -89,6 +94,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
       <button data-preset="toxicSmoke" onclick="applyPreset('toxicSmoke')" class="preset-card p-3 bg-lime-400/5 border border-lime-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-lime-300">💨 Biohazard</span><span class="text-[9px] text-slate-500">Acid · Nebula</span></button>
       <button data-preset="ghostSmoke" onclick="applyPreset('ghostSmoke')" class="preset-card p-3 bg-slate-400/5 border border-white/10 rounded-2xl text-left"><span class="text-xs font-bold block text-slate-200">💨 Phantom</span><span class="text-[9px] text-slate-500">Ghost · Nebula</span></button>
       <button data-preset="fireSmoke" onclick="applyPreset('fireSmoke')" class="preset-card p-3 bg-orange-400/5 border border-orange-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-orange-300">💨 Inferno</span><span class="text-[9px] text-slate-500">Fire · Nebula</span></button>
+      <button data-preset="mercuryLiquid" onclick="applyPreset('mercuryLiquid')" class="preset-card p-3 bg-slate-400/10 border border-white/15 rounded-2xl text-left"><span class="text-xs font-bold block text-slate-100">◈ Mercury</span><span class="text-[9px] text-slate-500">Liquid · Chrome</span></button>
+      <button data-preset="chromeFlow" onclick="applyPreset('chromeFlow')" class="preset-card p-3 bg-slate-400/10 border border-white/10 rounded-2xl text-left"><span class="text-xs font-bold block text-slate-200">◈ Chrome Flow</span><span class="text-[9px] text-slate-500">Liquid · Reflective</span></button>
+      <button data-preset="blackOil" onclick="applyPreset('blackOil')" class="preset-card p-3 bg-slate-400/5 border border-white/10 rounded-2xl text-left"><span class="text-xs font-bold block text-slate-100">◈ Black Oil</span><span class="text-[9px] text-slate-500">Liquid · Gloss</span></button>
+      <button data-preset="teslaCoil" onclick="applyPreset('teslaCoil')" class="preset-card p-3 bg-sky-400/5 border border-sky-300/20 rounded-2xl text-left"><span class="text-xs font-bold block text-sky-200">⚡ Tesla Coil</span><span class="text-[9px] text-slate-500">Electric · Arc</span></button>
+      <button data-preset="voidLightning" onclick="applyPreset('voidLightning')" class="preset-card p-3 bg-white/5 border border-white/15 rounded-2xl text-left"><span class="text-xs font-bold block text-white">⚡ Void Lightning</span><span class="text-[9px] text-slate-500">Electric · Razor</span></button>
+      <button data-preset="plasmaStorm" onclick="applyPreset('plasmaStorm')" class="preset-card p-3 bg-fuchsia-400/5 border border-fuchsia-300/15 rounded-2xl text-left"><span class="text-xs font-bold block text-fuchsia-200">⚡ Plasma Storm</span><span class="text-[9px] text-slate-500">Electric · Filaments</span></button>
+      <button data-preset="electricVeins" onclick="applyPreset('electricVeins')" class="preset-card p-3 bg-violet-400/5 border border-violet-300/15 rounded-2xl text-left"><span class="text-xs font-bold block text-violet-200">⚡ Electric Veins</span><span class="text-[9px] text-slate-500">Electric · Organic</span></button>
+      <button data-preset="cosmicDust" onclick="applyPreset('cosmicDust')" class="preset-card p-3 bg-indigo-400/5 border border-indigo-300/15 rounded-2xl text-left"><span class="text-xs font-bold block text-indigo-200">✦ Cosmic Dust</span><span class="text-[9px] text-slate-500">Cosmic · Particles</span></button>
+      <button data-preset="solarFlare" onclick="applyPreset('solarFlare')" class="preset-card p-3 bg-orange-400/5 border border-orange-300/15 rounded-2xl text-left"><span class="text-xs font-bold block text-orange-200">✦ Solar Flare</span><span class="text-[9px] text-slate-500">Cosmic · Energy</span></button>
     </div>
   </div>
 
@@ -96,6 +110,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
     <div class="grid grid-cols-2 gap-4">
       <div><div class="flex justify-between text-slate-300 mb-2"><span>Motion</span><span id="speedLabel" class="font-mono text-slate-500">1.0×</span></div><input type="range" id="sliderSpeed" min="0.1" max="3" step="0.1" value="1" class="w-full" oninput="updateUniforms();speedLabel.textContent=this.value+'×'"></div>
       <div><div class="flex justify-between text-slate-300 mb-2"><span>Glow</span><span id="glowLabel" class="font-mono text-slate-500">2.0</span></div><input type="range" id="sliderGlow" min=".5" max="8" step=".2" value="2" class="w-full" oninput="updateUniforms();glowLabel.textContent=this.value"></div>
+      <div><div class="flex justify-between text-slate-300 mb-2"><span>Render Quality</span><span id="qualityLabel" class="font-mono text-slate-500">High</span></div><select id="qualitySelect" onchange="setRenderQuality(this.value)" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-slate-200"><option value="performance">Performance</option><option value="balanced">Balanced</option><option value="high" selected>High</option><option value="ultra">Ultra</option></select><p class="text-[9px] text-slate-600 mt-2">Higher quality uses more GPU power. AURA automatically adapts to your screen.</p></div>
     </div>
     <div class="rounded-2xl bg-amber-400/5 border border-amber-400/10 p-3 flex items-center justify-between"><div><div class="font-semibold text-amber-200">Audio-reactive visuals</div><div class="text-[10px] text-slate-500 mt-0.5">Let music drive the atmosphere.</div></div><button onclick="toggleAudioSync()" class="px-3 py-1.5 rounded-xl bg-amber-400 text-black text-[10px] font-bold">Enable</button></div>
   </div>
@@ -157,6 +172,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
  </div>
 </div>
 
+<div id="auraSplash" class="fixed inset-0 z-[999] bg-black overflow-hidden flex items-center justify-center">
+  <div class="mercury-mercury" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="splash-brand"><div class="splash-aura">AURA</div><div class="splash-tag">TURN ANY SCREEN INTO A MOOD.</div></div>
+  <button onclick="skipSplash()" class="absolute bottom-7 right-7 text-[10px] tracking-[.25em] text-white/45 hover:text-white uppercase">Skip</button>
+</div>
+
 <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[100] opacity-0 translate-y-2 transition-all duration-300 px-4 py-2.5 rounded-full bg-white text-black text-xs font-bold shadow-2xl"></div>
 
 <script>
@@ -167,68 +188,93 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
     `;
 
     const fragmentShader = `
-      precision mediump float;
+      precision highp float;
       uniform vec2 u_resolution;
       uniform vec2 u_mouse;
       uniform float u_time;
       uniform float u_speed;
       uniform float u_glow;
       uniform float u_audioLevel;
-      uniform float u_mode; 
+      uniform float u_bass;
+      uniform float u_mid;
+      uniform float u_treble;
+      uniform float u_mode;
       uniform vec3 u_colorA;
       uniform vec3 u_colorB;
       uniform vec3 u_colorC;
-
       varying vec2 vUv;
 
-      float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-      float noise(vec2 p) {
-        vec2 i = floor(p); vec2 f = fract(p);
-        f = f*f*(3.0-2.0*f);
-        return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
-                   mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
+      float hash21(vec2 p){ p=fract(p*vec2(123.34,456.21)); p+=dot(p,p+45.32); return fract(p.x*p.y); }
+      float noise(vec2 p){
+        vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f);
+        return mix(mix(hash21(i),hash21(i+vec2(1,0)),f.x),mix(hash21(i+vec2(0,1)),hash21(i+vec2(1,1)),f.x),f.y);
       }
+      float fbm(vec2 p){ float v=0.0,a=0.5; for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+13.7;a*=0.5;} return v; }
+      float lineGlow(float d,float w){ return w/(abs(d)+w*0.018); }
+      mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
 
-      void main() {
-        vec2 st = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
-        vec2 mouse = (u_mouse - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
-        
-        float t = u_time * u_speed * (0.3 + u_audioLevel * 1.2); 
-        float activeGlow = u_glow * (1.0 + u_audioLevel * 2.5);
-        vec3 finalColor = u_colorA;
+      void main(){
+        vec2 st=(gl_FragCoord.xy-0.5*u_resolution.xy)/min(u_resolution.x,u_resolution.y);
+        vec2 mouse=(u_mouse-0.5*u_resolution.xy)/min(u_resolution.x,u_resolution.y);
+        float t=u_time*u_speed;
+        float audio=clamp(u_audioLevel,0.0,1.0);
+        float bass=clamp(u_bass,0.0,1.0), mid=clamp(u_mid,0.0,1.0), treble=clamp(u_treble,0.0,1.0);
+        float glow=u_glow*(1.0+audio*1.7);
+        vec3 col=u_colorA;
 
-        if (u_mode < 0.5) {
-          float dist = length(st - mouse);
-          st += normalize(st - mouse + 0.0001) * smoothstep(0.5, 0.0, dist) * 0.2;
-          vec2 c = st * 5.5; float v = 0.0;
-          for(int i = 1; i < 4; i++) {
-            float fi = float(i);
-            c += vec2(sin(fi * c.y + t * 0.8), cos(fi * c.x - t * 0.8));
-            v += sin(c.x + c.y) / fi;
+        if(u_mode<0.5){
+          // Sharper silk / liquid waves
+          vec2 p=st*3.2; p+=normalize(st-mouse+0.0001)*0.18;
+          float v=0.0;
+          for(int i=1;i<=5;i++){float fi=float(i);p+=vec2(sin(p.y*1.35+fi+t*.45),cos(p.x*1.25-fi-t*.38))*.085;v+=sin(p.x*2.2+p.y*1.7+t*fi*.28)/fi;}
+          v=0.5+0.5*sin(v*3.2); float ridge=smoothstep(.38,.72,v); float spec=pow(max(v-.54,0.0)*2.2,5.0)*glow;
+          col=mix(u_colorA,mix(u_colorB,u_colorC,ridge),smoothstep(.12,.9,v)); col+=spec;
+        } else if(u_mode<1.5){
+          // Layered electrical arcs: sharp core + halo + secondary branches
+          float total=0.0, core=0.0;
+          for(int b=0;b<6;b++){
+            float fb=float(b); vec2 p=st*2.4+vec2(fb*.37,sin(fb*2.1))*0.35; p*=rot(fb*.71+t*.035);
+            float n=fbm(p*3.1+vec2(t*.55,-t*.35)+fb);
+            float center=sin(p.y*7.0+n*4.0+t*(1.2+fb*.13)+fb)*0.26;
+            center+=sin(p.y*19.0-t*2.0)*0.055;
+            float d=abs(p.x-center);
+            float c=lineGlow(d,.011)*(0.55+0.45*noise(p*8.0+t));
+            core+=pow(c,1.45); total+=c*.22;
           }
-          v = abs(v);
-          float specular = pow(v, 3.0) * (activeGlow * 0.5);
-          vec3 waveColor = mix(u_colorB, u_colorC, sin(v * 3.1415) * 0.5 + 0.5);
-          finalColor = mix(u_colorA, waveColor + vec3(specular), pow(1.0 - v, 1.6) * 0.9);
-        } else if (u_mode > 0.5 && u_mode < 1.5) {
-          float totalBolt = 0.0;
-          for(int b = 0; b < 4; b++) {
-            float fb = float(b);
-            vec2 p = st * 3.0 + vec2(sin(fb + t * 0.5), cos(fb * 0.5 - t * 0.3));
-            float n = noise(p * 4.0 + t * 3.0 + fb);
-            p += normalize(st - mouse + 0.0001) * smoothstep(0.6, 0.0, length(st - mouse)) * 0.3;
-            float bolt = abs(p.x + sin(p.y * 5.0 + t * 4.0) * 0.4 + (n - 0.5) * 0.75);
-            totalBolt += pow(0.012 / (bolt + 0.001), 1.3);
-          }
-          finalColor = u_colorA + mix(u_colorB, u_colorC, noise(st * 2.0)) * (totalBolt * (activeGlow * 0.3));
+          float flash=pow(max(0.0,sin(t*2.8+noise(st*5.0)*5.0)),18.0)*treble*4.0;
+          col=u_colorA+u_colorB*(core*(1.15+glow*.34))+u_colorC*(total*glow*.55+flash);
+          col+=u_colorC*pow(max(0.0,noise(st*13.0+t*4.0)-.62),5.0)*treble*2.0;
+        } else if(u_mode<2.5){
+          // Deep atmospheric smoke
+          vec2 q=st*2.2; q*=rot(t*.035); float f=fbm(q+vec2(t*.12,-t*.08)); f=.72*f+.28*fbm(q*2.1-vec2(t*.18,t*.11));
+          float pocket=smoothstep(.78,.1,length(st-mouse)); f+=pocket*.18;
+          float m=smoothstep(.18,.82,f); col=mix(u_colorA,u_colorB,m); col+=u_colorC*pow(f,3.2)*glow*.34;
+        } else if(u_mode<3.5){
+          // Mercury / chrome liquid: bands + reflective ridges
+          vec2 p=st*2.6; p.y+=sin(p.x*2.0+t*.35)*.25;
+          float f=fbm(p*1.35+vec2(t*.16,-t*.12));
+          float ridge=abs(sin(p.x*5.0+f*7.0+t*.5));
+          float liquid=smoothstep(.16,.86,.5*f+.5*ridge);
+          float spec=pow(max(0.0,1.0-abs(fract(f*4.0)-.5)*2.0),7.0)*(1.2+glow);
+          col=mix(u_colorA,u_colorB,liquid); col=mix(col,u_colorC,spec*.72); col+=u_colorC*pow(spec,2.0)*.5;
+        } else if(u_mode<4.5){
+          // Glossy black oil with subtle spectral movement
+          vec2 p=st*3.0; float f=fbm(p+vec2(t*.09,-t*.13)); float r=sin(f*9.0+p.x*2.0+t*.25)*.5+.5;
+          float sheen=pow(smoothstep(.45,.9,r),3.0); col=mix(u_colorA,u_colorB,.18+.34*f); col=mix(col,u_colorC,sheen*.7); col+=u_colorC*sheen*glow*.25;
+        } else if(u_mode<5.5){
+          // Cosmic particles
+          vec2 p=st; float stars=0.0;
+          for(int i=0;i<3;i++){float fi=float(i);vec2 g=floor((p+fi*7.13)*18.0);vec2 f=fract((p+fi*7.13)*18.0)-.5;float h=hash21(g+fi);float d=length(f);stars+=smoothstep(.075*(.3+h*1.4),0.0,d)*(h>.72?1.0:0.0);}
+          float neb=fbm(st*2.4+vec2(t*.04,-t*.025)); col=mix(u_colorA,u_colorB,neb*.65)+u_colorC*stars*(1.0+treble*2.0)*glow;
         } else {
-          vec2 q = st * 2.5;
-          float f = noise(q + vec2(t * 0.2, t * 0.1)) + 0.5 * noise(q * 2.0 - vec2(t * 0.3));
-          f += smoothstep(0.4, 0.0, length(st - mouse)) * 0.6;
-          finalColor = mix(u_colorA, u_colorB, clamp(f * f * 1.5, 0.0, 1.0)) + u_colorC * (pow(f, 3.0) * (activeGlow * 0.3));
+          // Solar/plasma vortex
+          vec2 p=st; float r=length(p); float a=atan(p.y,p.x); float swirl=sin(a*9.0-r*16.0-t*1.4+fbm(p*3.0)*4.0); float band=smoothstep(.9,.05,r)*(.5+.5*swirl);
+          float flare=pow(max(0.0,1.0-r*1.25),3.0)*(1.0+bass*2.5); col=mix(u_colorA,u_colorB,band*.75)+u_colorC*(band*.8+flare)*glow*.55;
         }
-
-        gl_FragColor = vec4(finalColor, 1.0);
+        // subtle anti-flatness grain, kept extremely low
+        float grain=(hash21(gl_FragCoord.xy+u_time)-.5)*.012;
+        col+=grain;
+        gl_FragColor=vec4(max(col,vec3(0.0)),1.0);
       }
     `;
 
@@ -247,7 +293,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
           u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
           u_mouse: { value: new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2) },
           u_time: { value: 0.0 }, u_speed: { value: 1.0 }, u_glow: { value: 2.0 },
-          u_audioLevel: { value: 0.0 }, u_mode: { value: 0.0 }, 
+          u_audioLevel: { value: 0.0 }, u_bass: { value: 0.0 }, u_mid: { value: 0.0 }, u_treble: { value: 0.0 }, u_mode: { value: 0.0 }, 
           u_colorA: { value: new THREE.Color('#000000') }, 
           u_colorB: { value: new THREE.Color('#ffffff') }, 
           u_colorC: { value: new THREE.Color('#e2e8f0') }
@@ -257,15 +303,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
         mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
         scene.add(mesh);
 
-        renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
+        renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
         renderer.setSize(window.innerWidth, window.innerHeight);
 
-        window.addEventListener('resize', () => { renderer.setSize(window.innerWidth, window.innerHeight); uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight); });
+        window.addEventListener('resize', () => { renderer.setSize(window.innerWidth, window.innerHeight); uniforms.u_resolution.value.set(window.innerWidth * renderer.getPixelRatio(), window.innerHeight * renderer.getPixelRatio()); });
         window.addEventListener('pointermove', e => { targetMouse.x = e.clientX; targetMouse.y = window.innerHeight - e.clientY; });
 
         setInterval(updateWidgets, 1000); 
         updateWidgets();
         animate(0);
+        const savedQuality=localStorage.getItem('auraQuality')||'high';
+        const qs=document.getElementById('qualitySelect'); if(qs) qs.value=savedQuality;
+        setRenderQuality(savedQuality);
       } catch (err) { alert("ENGINE ERROR: " + err.message); }
     }
 
@@ -278,9 +328,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
 
       if (isAudioActive && analyser) {
         analyser.getByteFrequencyData(dataArray);
-        let sum = 0; for(let i = 0; i < dataArray.length; i++) { sum += dataArray[i]; }
-        let audioLevel = (sum / dataArray.length) / 255.0;
-        uniforms.u_audioLevel.value += (audioLevel - uniforms.u_audioLevel.value) * 0.2;
+        let sum=0,bass=0,mid=0,treble=0;
+        const n=dataArray.length;
+        for(let i=0;i<n;i++){ const v=dataArray[i]/255; sum+=v; if(i<n*.12) bass+=v; else if(i<n*.5) mid+=v; else treble+=v; }
+        const audioLevel=sum/n; bass/=(n*.12); mid/=(n*.38); treble/=(n*.5);
+        uniforms.u_audioLevel.value += (audioLevel-uniforms.u_audioLevel.value)*0.16;
+        uniforms.u_bass.value += (bass-uniforms.u_bass.value)*0.16;
+        uniforms.u_mid.value += (mid-uniforms.u_mid.value)*0.16;
+        uniforms.u_treble.value += (treble-uniforms.u_treble.value)*0.16;
       }
 
       renderer.render(scene, camera);
@@ -299,7 +354,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
         silkSmoke:       { mode: 2.0, a: '#000000', b: '#c084fc', c: '#f472b6' },
         toxicSmoke:      { mode: 2.0, a: '#000000', b: '#a3e635', c: '#fef08a' },
         ghostSmoke:      { mode: 2.0, a: '#000000', b: '#94a3b8', c: '#f8fafc' },
-        fireSmoke:       { mode: 2.0, a: '#000000', b: '#f97316', c: '#ef4444' }
+        fireSmoke:       { mode: 2.0, a: '#000000', b: '#f97316', c: '#ef4444' },
+        mercuryLiquid:   { mode: 3.0, a: '#020304', b: '#aeb6bf', c: '#ffffff' },
+        chromeFlow:      { mode: 3.0, a: '#050608', b: '#64748b', c: '#f8fafc' },
+        blackOil:        { mode: 4.0, a: '#000000', b: '#1e293b', c: '#cbd5e1' },
+        teslaCoil:       { mode: 1.0, a: '#010204', b: '#38bdf8', c: '#ffffff' },
+        voidLightning:   { mode: 1.0, a: '#000000', b: '#e2e8f0', c: '#ffffff' },
+        plasmaStorm:     { mode: 1.0, a: '#030007', b: '#d946ef', c: '#f5d0fe' },
+        electricVeins:   { mode: 1.0, a: '#010005', b: '#8b5cf6', c: '#ede9fe' },
+        cosmicDust:     { mode: 5.0, a: '#000008', b: '#6366f1', c: '#ffffff' },
+        solarFlare:     { mode: 6.0, a: '#070000', b: '#f97316', c: '#fef3c7' }
       };
       const p = presets[name];
       if (p) {
@@ -311,6 +375,18 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
     function updateUniforms() {
       uniforms.u_speed.value = parseFloat(document.getElementById('sliderSpeed').value);
       uniforms.u_glow.value = parseFloat(document.getElementById('sliderGlow').value);
+    }
+
+
+    function setRenderQuality(level){
+      const map={performance:0.75,balanced:1.0,high:1.5,ultra:2.0};
+      const labels={performance:'Performance',balanced:'Balanced',high:'High',ultra:'Ultra'};
+      const dpr=map[level] || 1.5;
+      if(renderer){ renderer.setPixelRatio(Math.min((window.devicePixelRatio||1)*dpr, level==='ultra'?2.5:2)); renderer.setSize(window.innerWidth,window.innerHeight,false); }
+      if(uniforms) uniforms.u_resolution.value.set(window.innerWidth*(renderer?.getPixelRatio?.()||1),window.innerHeight*(renderer?.getPixelRatio?.()||1));
+      const label=document.getElementById('qualityLabel'); if(label) label.textContent=labels[level]||'High';
+      localStorage.setItem('auraQuality',level);
+      toast('Render quality: '+(labels[level]||'High'));
     }
 
     function switchTab(tab) {
@@ -387,6 +463,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
       setTimeout(() => { modal.classList.add('hidden'); }, 300);
     }
 
+    function skipSplash(){ const el=document.getElementById('auraSplash'); if(!el) return; el.style.opacity='0'; el.style.visibility='hidden'; setTimeout(()=>el.remove(),950); }
+    window.addEventListener('load',()=>{ setTimeout(skipSplash,4600); });
     window.onload = initEngine;
   
 
@@ -410,6 +488,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
       ghostSmoke:{title:'Phantom',desc:'Nebula Smoke',tag:'GHOST'},
       fireSmoke:{title:'Inferno',desc:'Nebula Smoke',tag:'FIRE'}
     };
+    Object.assign(presetMeta,{
+      mercuryLiquid:{title:'Mercury',desc:'Liquid Chrome',tag:'SIGNATURE'}, chromeFlow:{title:'Chrome Flow',desc:'Liquid Reflective',tag:'LIQUID'}, blackOil:{title:'Black Oil',desc:'Gloss Liquid',tag:'LIQUID'},
+      teslaCoil:{title:'Tesla Coil',desc:'Electric Arc',tag:'ENERGY'}, voidLightning:{title:'Void Lightning',desc:'Razor Electric',tag:'ENERGY'}, plasmaStorm:{title:'Plasma Storm',desc:'Electric Filaments',tag:'ENERGY'}, electricVeins:{title:'Electric Veins',desc:'Organic Electric',tag:'ENERGY'},
+      cosmicDust:{title:'Cosmic Dust',desc:'Deep Particles',tag:'COSMIC'}, solarFlare:{title:'Solar Flare',desc:'Plasma Energy',tag:'COSMIC'}
+    });
 
     function openWelcome(){
       document.getElementById('welcomeModal').classList.remove('hidden');
