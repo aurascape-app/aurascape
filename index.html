@@ -26,28 +26,41 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:99px}
 .preset-card{transition:.2s transform,.2s border-color,.2s background}.preset-card:hover{transform:translateY(-1px)}
 </style>
-
 <style>
 #webglCanvas{image-rendering:auto}
+#webglCanvas{touch-action:none;-webkit-tap-highlight-color:transparent}
+#controlPanel{bottom:0!important;transform:translateX(-50%) translateY(calc(100% - 54px))!important;transition:transform .38s cubic-bezier(.22,.8,.22,1),box-shadow .38s ease;will-change:transform}
+#controlPanel.panel-open{transform:translateX(-50%) translateY(0)!important;box-shadow:0 -20px 70px rgba(0,0,0,.45),0 0 40px rgba(255,255,255,.04)}
+#panelHandle{touch-action:none;cursor:grab}
+#panelHandle:active{cursor:grabbing}
+#panelHandleBar{transition:width .2s ease,opacity .2s ease}
+#controlPanel.panel-open #panelHandleBar{width:48px!important;opacity:1}
+@media(max-width:640px){#controlPanel{width:96%!important;max-height:70vh!important;padding:12px!important;border-radius:24px 24px 18px 18px!important}.control-panel-content{padding-bottom:max(10px,env(safe-area-inset-bottom))}}
 #auraSplash{transition:opacity 900ms cubic-bezier(.2,.7,.2,1),visibility 900ms}.splash-brand{position:relative;z-index:4;text-align:center;opacity:0;animation:splashBrand 1s 2.8s forwards}.splash-aura{font:800 clamp(64px,14vw,180px)/.8 Syne,sans-serif;letter-spacing:.08em;color:#fff;text-shadow:0 0 35px rgba(255,255,255,.22)}.splash-tag{margin-top:22px;font:500 10px/1.2 monospace;letter-spacing:.42em;color:rgba(255,255,255,.58)}.mercury-mercury{position:absolute;inset:0;z-index:2;filter:drop-shadow(0 0 20px rgba(255,255,255,.12))}.mercury-mercury:before{content:"";position:absolute;left:-8%;right:-8%;top:-10%;height:46%;background:radial-gradient(ellipse at 50% 0%,#fff 0,#d9dde2 12%,#6b7280 30%,#f8fafc 43%,#30343a 61%,#090a0c 75%);border-radius:0 0 48% 42%;animation:mercuryPool 3.4s ease-in-out forwards}.mercury-mercury span{position:absolute;top:-18%;width:clamp(8px,1.4vw,24px);border-radius:999px 999px 45% 45%;background:linear-gradient(90deg,#34383e,#f8fafc 35%,#7b8189 58%,#fff 72%,#17191d);box-shadow:inset 4px 0 7px rgba(255,255,255,.45),0 0 15px rgba(255,255,255,.12);animation:drop 2.5s cubic-bezier(.3,.7,.2,1) forwards}.mercury-mercury span:nth-child(1){left:14%;height:44vh;animation-delay:.35s}.mercury-mercury span:nth-child(2){left:31%;height:57vh;animation-delay:.65s}.mercury-mercury span:nth-child(3){left:51%;height:68vh;animation-delay:.2s}.mercury-mercury span:nth-child(4){left:72%;height:51vh;animation-delay:.8s}.mercury-mercury span:nth-child(5){left:86%;height:38vh;animation-delay:.5s}@keyframes drop{0%{transform:translateY(-20vh) scaleX(.7);opacity:0}20%{opacity:1}100%{transform:translateY(60vh) scaleX(1.15);opacity:1}}@keyframes mercuryPool{0%{transform:translateY(-12vh) scaleY(.5);opacity:.2}100%{transform:translateY(0) scaleY(1);opacity:1}}@keyframes splashBrand{to{opacity:1;transform:translateY(-2vh)}}
 </style>
 </head>
+
 <body class="relative w-screen h-screen overflow-hidden text-slate-100 bg-black">
+
 <div class="absolute inset-0 z-20 edge-vignette pointer-events-none"></div>
 <canvas id="webglCanvas" class="absolute inset-0 w-full h-full z-0 cursor-grab active:cursor-grabbing bg-black"></canvas>
 
-<!-- PRODUCT HEADER -->
 <header class="absolute top-0 left-0 right-0 z-30 px-4 sm:px-6 py-4 flex justify-between items-center pointer-events-auto">
   <div class="flex items-center gap-3">
     <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-200 text-black flex items-center justify-center font-extrabold text-sm font-syne shadow-xl shadow-amber-500/20">A</div>
     <div>
-      <div class="flex items-center gap-2"><h1 class="font-syne font-extrabold text-sm tracking-[.22em] text-white uppercase">AURA</h1><span class="text-[8px] font-mono tracking-widest text-amber-300 border border-amber-400/30 bg-amber-400/10 px-2 py-1 rounded-full">PRO STUDIO</span></div>
-      <div id="activeSceneName" class="text-[9px] text-slate-500 uppercase tracking-widest mt-0.5">Black & Gold</div>
+      <div class="flex items-center gap-2">
+        <h1 class="font-syne font-extrabold text-sm tracking-[.22em] text-white uppercase">AURA</h1>
+        <span class="text-[8px] font-mono tracking-widest text-amber-300 border border-amber-400/30 bg-amber-400/10 px-2 py-1 rounded-full">PRO STUDIO</span>
+      </div>
+      <div id="activeSceneName" class="text-[9px] text-slate-500 uppercase tracking-widest mt-0.5">White Void</div>
     </div>
   </div>
+
   <div class="hidden lg:flex items-center gap-2 text-[10px] text-slate-400 font-mono bg-black/20 px-3 py-2 rounded-full border border-white/10">
     <span>✦</span><span>YOUR SCREEN. YOUR ATMOSPHERE.</span>
   </div>
+
   <div class="flex items-center gap-2">
     <button onclick="openScenes()" class="hidden sm:block px-3 py-2 rounded-xl text-xs font-semibold bg-white/5 border border-white/10 text-slate-300 hover:text-white">Scenes</button>
     <button onclick="toggleAudioSync()" id="audioBtn" class="px-3 py-2 rounded-xl text-xs font-semibold bg-white/5 border border-white/10 text-slate-300 hover:text-white transition flex items-center gap-1.5">🎙️ <span class="hidden sm:inline" id="micText">Audio React</span></button>
@@ -55,7 +68,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
   </div>
 </header>
 
-<!-- CLOCK -->
 <div id="lockscreenOverlay" class="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-6 pt-24 pb-40 font-syne transition-opacity duration-300">
   <div class="text-center space-y-1 my-auto">
     <p id="lockscreenDate" class="text-xs font-semibold tracking-[.3em] uppercase text-amber-300/90 font-mono">LOADING...</p>
@@ -63,73 +75,184 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
   </div>
 </div>
 
-<!-- STUDIO PANEL -->
-<div id="controlPanel" class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 w-[94%] max-w-3xl glass-card rounded-[28px] p-4 shadow-2xl space-y-3 pointer-events-auto border border-white/15 max-h-[58vh] overflow-y-auto touch-scroll">
+<div id="controlPanel" class="absolute bottom-0 left-1/2 -translate-x-1/2 z-30 w-[94%] max-w-3xl glass-card rounded-[28px] p-4 shadow-2xl space-y-3 pointer-events-auto border border-white/15 max-h-[58vh] overflow-y-auto touch-scroll">
+
+  <div id="panelHandle" class="flex justify-center items-center -mx-2 -mt-2 h-10 select-none" aria-label="Drag controls up or down">
+    <div id="panelHandleBar" class="w-9 h-1.5 rounded-full bg-white/30 hover:bg-white/60"></div>
+  </div>
+
   <div class="flex items-center justify-between border-b border-white/10 pb-3">
     <div class="flex gap-1.5">
       <button onclick="switchTab('presets')" id="tabBtn-presets" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-400 text-black">Explore</button>
       <button onclick="switchTab('optics')" id="tabBtn-optics" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white">Tuning</button>
       <button onclick="switchTab('style')" id="tabBtn-style" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white">Clock</button>
     </div>
+
     <div class="flex gap-1.5">
       <button id="saveSceneBtn" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10 hover:bg-white/10">＋ Save</button>
       <button onclick="shareScene()" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10 hover:bg-white/10">↗ Share</button>
       <button onclick="toggleFullscreen()" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10 hover:bg-white/10">⛶</button>
       <button onclick="toggleOverlay()" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10 hover:bg-white/10">👁</button>
+      <button onclick="toggleCanvas()" id="canvasToggleBtn" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10 hover:bg-white/10">◉ Canvas</button>
     </div>
   </div>
 
   <div id="tabContent-presets" class="tab-content space-y-3">
-    <div class="flex items-end justify-between"><div><div class="text-white font-syne font-bold">Choose an atmosphere</div><div class="text-[10px] text-slate-500">Start with a mood, then make it yours.</div></div><button onclick="showUpgrade()" class="text-[9px] text-amber-300 uppercase tracking-widest">Unlock all ✦</button></div>
+    <div class="flex items-end justify-between">
+      <div>
+        <div class="text-white font-syne font-bold">Choose an atmosphere</div>
+        <div class="text-[10px] text-slate-500">Start with a mood, then make it yours.</div>
+      </div>
+      <button onclick="showUpgrade()" class="text-[9px] text-amber-300 uppercase tracking-widest">Unlock all ✦</button>
+    </div>
+
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-      <button data-preset="whiteVoidDark" onclick="applyPreset('whiteVoidDark')" class="preset-card p-3 bg-white/5 border border-white/10 rounded-2xl text-left"><span class="text-xs font-bold block">White Void</span><span class="text-[9px] text-slate-500">Minimal · Silk</span></button>
-      <button data-preset="goldDark" onclick="applyPreset('goldDark')" class="preset-card p-3 bg-amber-400/5 border border-amber-400/20 rounded-2xl text-left"><span class="text-xs font-bold block text-amber-300">Black & Gold</span><span class="text-[9px] text-slate-500">Signature · Silk</span></button>
-      <button data-preset="oceanDeep" onclick="applyPreset('oceanDeep')" class="preset-card p-3 bg-cyan-400/5 border border-cyan-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-cyan-300">Abyss</span><span class="text-[9px] text-slate-500">Deep · Silk</span></button>
-      <button data-preset="crimsonBlood" onclick="applyPreset('crimsonBlood')" class="preset-card p-3 bg-red-400/5 border border-red-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-red-300">Crimson</span><span class="text-[9px] text-slate-500">Bold · Silk</span></button>
-      <button data-preset="multiLightning" onclick="applyPreset('multiLightning')" class="preset-card p-3 bg-sky-400/5 border border-sky-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-sky-300">⚡ Plasma</span><span class="text-[9px] text-slate-500">Energy · Lightning</span></button>
-      <button data-preset="purpleLightning" onclick="applyPreset('purpleLightning')" class="preset-card p-3 bg-purple-400/5 border border-purple-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-purple-300">⚡ Void Ray</span><span class="text-[9px] text-slate-500">Neon · Lightning</span></button>
-      <button data-preset="goldLightning" onclick="applyPreset('goldLightning')" class="preset-card p-3 bg-yellow-400/5 border border-yellow-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-yellow-300">⚡ Zeus</span><span class="text-[9px] text-slate-500">Energy · Lightning</span></button>
-      <button data-preset="matrixLightning" onclick="applyPreset('matrixLightning')" class="preset-card p-3 bg-green-400/5 border border-green-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-green-300">⚡ Matrix</span><span class="text-[9px] text-slate-500">Cyber · Lightning</span></button>
-      <button data-preset="silkSmoke" onclick="applyPreset('silkSmoke')" class="preset-card p-3 bg-purple-400/5 border border-purple-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-purple-300">💨 Violet Fog</span><span class="text-[9px] text-slate-500">Dream · Nebula</span></button>
-      <button data-preset="toxicSmoke" onclick="applyPreset('toxicSmoke')" class="preset-card p-3 bg-lime-400/5 border border-lime-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-lime-300">💨 Biohazard</span><span class="text-[9px] text-slate-500">Acid · Nebula</span></button>
-      <button data-preset="ghostSmoke" onclick="applyPreset('ghostSmoke')" class="preset-card p-3 bg-slate-400/5 border border-white/10 rounded-2xl text-left"><span class="text-xs font-bold block text-slate-200">💨 Phantom</span><span class="text-[9px] text-slate-500">Ghost · Nebula</span></button>
-      <button data-preset="fireSmoke" onclick="applyPreset('fireSmoke')" class="preset-card p-3 bg-orange-400/5 border border-orange-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-orange-300">💨 Inferno</span><span class="text-[9px] text-slate-500">Fire · Nebula</span></button>
-      <button data-preset="mercuryLiquid" onclick="applyPreset('mercuryLiquid')" class="preset-card p-3 bg-slate-400/10 border border-white/15 rounded-2xl text-left"><span class="text-xs font-bold block text-slate-100">◈ Mercury</span><span class="text-[9px] text-slate-500">Liquid · Chrome</span></button>
-      <button data-preset="chromeFlow" onclick="applyPreset('chromeFlow')" class="preset-card p-3 bg-slate-400/10 border border-white/10 rounded-2xl text-left"><span class="text-xs font-bold block text-slate-200">◈ Chrome Flow</span><span class="text-[9px] text-slate-500">Liquid · Reflective</span></button>
-      <button data-preset="blackOil" onclick="applyPreset('blackOil')" class="preset-card p-3 bg-slate-400/5 border border-white/10 rounded-2xl text-left"><span class="text-xs font-bold block text-slate-100">◈ Black Oil</span><span class="text-[9px] text-slate-500">Liquid · Gloss</span></button>
-      <button data-preset="teslaCoil" onclick="applyPreset('teslaCoil')" class="preset-card p-3 bg-sky-400/5 border border-sky-300/20 rounded-2xl text-left"><span class="text-xs font-bold block text-sky-200">⚡ Tesla Coil</span><span class="text-[9px] text-slate-500">Electric · Arc</span></button>
-      <button data-preset="voidLightning" onclick="applyPreset('voidLightning')" class="preset-card p-3 bg-white/5 border border-white/15 rounded-2xl text-left"><span class="text-xs font-bold block text-white">⚡ Void Lightning</span><span class="text-[9px] text-slate-500">Electric · Razor</span></button>
-      <button data-preset="plasmaStorm" onclick="applyPreset('plasmaStorm')" class="preset-card p-3 bg-fuchsia-400/5 border border-fuchsia-300/15 rounded-2xl text-left"><span class="text-xs font-bold block text-fuchsia-200">⚡ Plasma Storm</span><span class="text-[9px] text-slate-500">Electric · Filaments</span></button>
-      <button data-preset="electricVeins" onclick="applyPreset('electricVeins')" class="preset-card p-3 bg-violet-400/5 border border-violet-300/15 rounded-2xl text-left"><span class="text-xs font-bold block text-violet-200">⚡ Electric Veins</span><span class="text-[9px] text-slate-500">Electric · Organic</span></button>
-      <button data-preset="cosmicDust" onclick="applyPreset('cosmicDust')" class="preset-card p-3 bg-indigo-400/5 border border-indigo-300/15 rounded-2xl text-left"><span class="text-xs font-bold block text-indigo-200">✦ Cosmic Dust</span><span class="text-[9px] text-slate-500">Cosmic · Particles</span></button>
-      <button data-preset="solarFlare" onclick="applyPreset('solarFlare')" class="preset-card p-3 bg-orange-400/5 border border-orange-300/15 rounded-2xl text-left"><span class="text-xs font-bold block text-orange-200">✦ Solar Flare</span><span class="text-[9px] text-slate-500">Cosmic · Energy</span></button>
+
+      <button data-preset="whiteVoidDark" onclick="applyPreset('whiteVoidDark')" class="preset-card p-3 bg-white/5 border border-white/10 rounded-2xl text-left">
+        <span class="text-xs font-bold block">White Void</span><span class="text-[9px] text-slate-500">Minimal · Silk</span>
+      </button>
+
+      <button data-preset="goldDark" onclick="applyPreset('goldDark')" class="preset-card p-3 bg-amber-400/5 border border-amber-400/20 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-amber-300">Black & Gold</span><span class="text-[9px] text-slate-500">Signature · Silk</span>
+      </button>
+
+      <button data-preset="oceanDeep" onclick="applyPreset('oceanDeep')" class="preset-card p-3 bg-cyan-400/5 border border-cyan-400/10 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-cyan-300">Abyss</span><span class="text-[9px] text-slate-500">Deep · Silk</span>
+      </button>
+
+      <button data-preset="crimsonBlood" onclick="applyPreset('crimsonBlood')" class="preset-card p-3 bg-red-400/5 border border-red-400/10 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-red-300">Crimson</span><span class="text-[9px] text-slate-500">Bold · Silk</span>
+      </button>
+
+      <button data-preset="multiLightning" onclick="applyPreset('multiLightning')" class="preset-card p-3 bg-sky-400/5 border border-sky-400/10 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-sky-300">⚡ Plasma</span><span class="text-[9px] text-slate-500">Energy · Lightning</span>
+      </button>
+
+      <button data-preset="purpleLightning" onclick="applyPreset('purpleLightning')" class="preset-card p-3 bg-purple-400/5 border border-purple-400/10 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-purple-300">⚡ Void Ray</span><span class="text-[9px] text-slate-500">Neon · Lightning</span>
+      </button>
+
+      <button data-preset="goldLightning" onclick="applyPreset('goldLightning')" class="preset-card p-3 bg-yellow-400/5 border border-yellow-400/10 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-yellow-300">⚡ Zeus</span><span class="text-[9px] text-slate-500">Energy · Lightning</span>
+      </button>
+
+      <button data-preset="matrixLightning" onclick="applyPreset('matrixLightning')" class="preset-card p-3 bg-green-400/5 border border-green-400/10 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-green-300">⚡ Matrix</span><span class="text-[9px] text-slate-500">Cyber · Lightning</span>
+      </button>
+
+      <button data-preset="silkSmoke" onclick="applyPreset('silkSmoke')" class="preset-card p-3 bg-purple-400/5 border border-purple-400/10 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-purple-300">💨 Violet Fog</span><span class="text-[9px] text-slate-500">Dream · Nebula</span>
+      </button>
+
+      <button data-preset="toxicSmoke" onclick="applyPreset('toxicSmoke')" class="preset-card p-3 bg-lime-400/5 border border-lime-400/10 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-lime-300">💨 Biohazard</span><span class="text-[9px] text-slate-500">Acid · Nebula</span>
+      </button>
+
+      <button data-preset="ghostSmoke" onclick="applyPreset('ghostSmoke')" class="preset-card p-3 bg-slate-400/5 border border-white/10 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-slate-200">💨 Phantom</span><span class="text-[9px] text-slate-500">Ghost · Nebula</span>
+      </button>
+
+      <button data-preset="fireSmoke" onclick="applyPreset('fireSmoke')" class="preset-card p-3 bg-orange-400/5 border border-orange-400/10 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-orange-300">💨 Inferno</span><span class="text-[9px] text-slate-500">Fire · Nebula</span>
+      </button>
+
+      <button data-preset="mercuryLiquid" onclick="applyPreset('mercuryLiquid')" class="preset-card p-3 bg-slate-400/10 border border-white/15 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-slate-100">◈ Mercury</span><span class="text-[9px] text-slate-500">Liquid · Chrome</span>
+      </button>
+
+      <button data-preset="chromeFlow" onclick="applyPreset('chromeFlow')" class="preset-card p-3 bg-slate-400/10 border border-white/10 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-slate-200">◈ Chrome Flow</span><span class="text-[9px] text-slate-500">Liquid · Reflective</span>
+      </button>
+
+      <button data-preset="blackOil" onclick="applyPreset('blackOil')" class="preset-card p-3 bg-slate-400/5 border border-white/10 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-slate-100">◈ Black Oil</span><span class="text-[9px] text-slate-500">Liquid · Gloss</span>
+      </button>
+
+      <button data-preset="teslaCoil" onclick="applyPreset('teslaCoil')" class="preset-card p-3 bg-sky-400/5 border border-sky-300/20 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-sky-200">⚡ Tesla Coil</span><span class="text-[9px] text-slate-500">Electric · Arc</span>
+      </button>
+
+      <button data-preset="voidLightning" onclick="applyPreset('voidLightning')" class="preset-card p-3 bg-white/5 border border-white/15 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-white">⚡ Void Lightning</span><span class="text-[9px] text-slate-500">Electric · Razor</span>
+      </button>
+
+      <button data-preset="plasmaStorm" onclick="applyPreset('plasmaStorm')" class="preset-card p-3 bg-fuchsia-400/5 border border-fuchsia-300/15 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-fuchsia-200">⚡ Plasma Storm</span><span class="text-[9px] text-slate-500">Electric · Filaments</span>
+      </button>
+
+      <button data-preset="electricVeins" onclick="applyPreset('electricVeins')" class="preset-card p-3 bg-violet-400/5 border border-violet-300/15 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-violet-200">⚡ Electric Veins</span><span class="text-[9px] text-slate-500">Electric · Organic</span>
+      </button>
+
+      <button data-preset="cosmicDust" onclick="applyPreset('cosmicDust')" class="preset-card p-3 bg-indigo-400/5 border border-indigo-300/15 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-indigo-200">✦ Cosmic Dust</span><span class="text-[9px] text-slate-500">Cosmic · Particles</span>
+      </button>
+
+      <button data-preset="solarFlare" onclick="applyPreset('solarFlare')" class="preset-card p-3 bg-orange-400/5 border border-orange-300/15 rounded-2xl text-left">
+        <span class="text-xs font-bold block text-orange-200">✦ Solar Flare</span><span class="text-[9px] text-slate-500">Cosmic · Energy</span>
+      </button>
+
     </div>
   </div>
 
   <div id="tabContent-optics" class="tab-content hidden space-y-4 text-xs">
     <div class="grid grid-cols-2 gap-4">
-      <div><div class="flex justify-between text-slate-300 mb-2"><span>Motion</span><span id="speedLabel" class="font-mono text-slate-500">1.0×</span></div><input type="range" id="sliderSpeed" min="0.1" max="3" step="0.1" value="1" class="w-full" oninput="updateUniforms();speedLabel.textContent=this.value+'×'"></div>
-      <div><div class="flex justify-between text-slate-300 mb-2"><span>Glow</span><span id="glowLabel" class="font-mono text-slate-500">2.0</span></div><input type="range" id="sliderGlow" min=".5" max="8" step=".2" value="2" class="w-full" oninput="updateUniforms();glowLabel.textContent=this.value"></div>
-      <div><div class="flex justify-between text-slate-300 mb-2"><span>Render Quality</span><span id="qualityLabel" class="font-mono text-slate-500">High</span></div><select id="qualitySelect" onchange="setRenderQuality(this.value)" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-slate-200"><option value="performance">Performance</option><option value="balanced">Balanced</option><option value="high" selected>High</option><option value="ultra">Ultra</option></select><p class="text-[9px] text-slate-600 mt-2">Higher quality uses more GPU power. AURA automatically adapts to your screen.</p></div>
+
+      <div>
+        <div class="flex justify-between text-slate-300 mb-2">
+          <span>Motion</span><span id="speedLabel" class="font-mono text-slate-500">1.0×</span>
+        </div>
+        <input type="range" id="sliderSpeed" min="0.1" max="3" step="0.1" value="1" class="w-full" oninput="updateUniforms();speedLabel.textContent=this.value+'×'">
+      </div>
+
+      <div>
+        <div class="flex justify-between text-slate-300 mb-2">
+          <span>Glow</span><span id="glowLabel" class="font-mono text-slate-500">2.0</span>
+        </div>
+        <input type="range" id="sliderGlow" min=".5" max="8" step=".2" value="2" class="w-full" oninput="updateUniforms();glowLabel.textContent=this.value">
+      </div>
+
+      <div>
+        <div class="flex justify-between text-slate-300 mb-2">
+          <span>Render Quality</span><span id="qualityLabel" class="font-mono text-slate-500">High</span>
+        </div>
+        <select id="qualitySelect" onchange="setRenderQuality(this.value)" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-slate-200">
+          <option value="performance">Performance</option>
+          <option value="balanced">Balanced</option>
+          <option value="high" selected>High</option>
+          <option value="ultra">Ultra</option>
+        </select>
+        <p class="text-[9px] text-slate-600 mt-2">Higher quality uses more GPU power. AURA automatically adapts to your screen.</p>
+      </div>
+
     </div>
-    <div class="rounded-2xl bg-amber-400/5 border border-amber-400/10 p-3 flex items-center justify-between"><div><div class="font-semibold text-amber-200">Audio-reactive visuals</div><div class="text-[10px] text-slate-500 mt-0.5">Let music drive the atmosphere.</div></div><button onclick="toggleAudioSync()" class="px-3 py-1.5 rounded-xl bg-amber-400 text-black text-[10px] font-bold">Enable</button></div>
+
+    <div class="rounded-2xl bg-amber-400/5 border border-amber-400/10 p-3 flex justify-between items-center">
+      <div>
+        <div class="text-xs font-bold text-amber-300">Touch Reactive</div>
+        <div class="text-[9px] text-slate-500">Tap or drag directly on the canvas.</div>
+      </div>
+      <div class="text-[9px] font-mono text-amber-300">ACTIVE</div>
+    </div>
   </div>
 
-  <div id="tabContent-style" class="tab-content hidden space-y-3 text-xs">
-    <label class="block text-slate-400 mb-1.5 font-semibold">Clock typography</label>
-    <div class="grid grid-cols-3 gap-2">
+  <div id="tabContent-style" class="tab-content hidden space-y-4 text-xs">
+    <div class="grid grid-cols-2 gap-2">
       <button onclick="setFont('font-syne')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-syne font-bold">Syne</button>
-      <button onclick="setFont('font-cinzel')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-cinzel font-bold">Cinzel</button>
       <button onclick="setFont('font-outfit')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-outfit font-bold">Outfit</button>
-      <button onclick="setFont('font-space')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-space font-bold">Space</button>
+      <button onclick="setFont('font-cinzel')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-cinzel font-bold">Cinzel</button>
       <button onclick="setFont('font-playfair')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-playfair font-bold">Playfair</button>
       <button onclick="setFont('font-mono')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-mono font-bold">Mono</button>
     </div>
-    <div class="flex items-center justify-between pt-1"><span class="text-slate-400 font-semibold">Time format</span><button onclick="toggleTimeFormat()" id="timeFormatBtn" class="px-3 py-1 rounded-xl bg-white/10 border border-white/15 font-mono">24H</button></div>
+
+    <div class="flex items-center justify-between pt-1">
+      <span class="text-slate-400 font-semibold">Time format</span>
+      <button onclick="toggleTimeFormat()" id="timeFormatBtn" class="px-3 py-1 rounded-xl bg-white/10 border border-white/15 font-mono">24H</button>
+    </div>
   </div>
+
 </div>
 
-<!-- WELCOME / SELLING MODAL -->
 <div id="welcomeModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-black/65 backdrop-blur-xl">
  <div id="welcomeCard" class="glass-modal max-w-lg w-full rounded-[32px] p-7 sm:p-9 opacity-0 translate-y-4 transition-all duration-500">
    <div class="text-[9px] font-mono tracking-[.3em] text-amber-300 uppercase mb-5">AURA · LIVING ATMOSPHERE</div>
@@ -145,29 +268,50 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
  </div>
 </div>
 
-<!-- SCENES -->
 <div id="scenesModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-lg">
  <div id="scenesCard" class="glass-modal max-w-md w-full rounded-[28px] p-6 opacity-0 translate-y-4 transition-all duration-300">
-  <div class="flex justify-between items-center mb-5"><div><h2 class="font-syne font-bold text-xl">Your scenes</h2><p class="text-[10px] text-slate-500">Saved locally in this browser.</p></div><button onclick="closeScenes()" class="text-slate-500 hover:text-white">✕</button></div>
+  <div class="flex justify-between items-center mb-5">
+    <div>
+      <h2 class="font-syne font-bold text-xl">Your scenes</h2>
+      <p class="text-[10px] text-slate-500">Saved locally in this browser.</p>
+    </div>
+    <button onclick="closeScenes()" class="text-slate-500 hover:text-white">✕</button>
+  </div>
   <div id="sceneList" class="space-y-2 max-h-[55vh] overflow-y-auto touch-scroll"></div>
  </div>
 </div>
 
-<!-- PAYWALL -->
 <div id="paywallModal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-xl">
- <div class="glass-modal max-w-md w-full rounded-[30px] p-6 relative border-amber-400/20">
+ <div id="paywallCard" class="glass-modal max-w-md w-full rounded-[30px] p-6 relative border-amber-400/20 scale-95 transition-all duration-300">
   <button onclick="closePaywall()" class="absolute top-4 right-4 text-slate-500 hover:text-white">✕</button>
-  <div class="text-[9px] font-mono tracking-[.25em] text-amber-300 uppercase">AURA PRO</div>
+  <div class="text-[9px] font-mono tracking-[.25em] text-amber-300 uppercase">AURA PRO+</div>
   <h2 class="font-syne font-extrabold text-3xl mt-2">Make your screen yours.</h2>
   <p class="text-sm text-slate-400 mt-2">Unlock the complete visual studio and turn AURA into your always-on atmosphere.</p>
+
   <div class="space-y-2 mt-6 text-xs">
-   <div>✓ Audio-reactive visuals</div><div>✓ Advanced visual engines</div><div>✓ Save & share scenes</div><div>✓ Fullscreen / TV mode</div><div>✓ All typography & controls</div><div>✓ New scenes as they ship</div>
+   <div>✓ Audio-reactive visuals</div>
+   <div>✓ Fully touch-reactive visual engines</div>
+   <div>✓ Advanced liquid, smoke, lightning & cosmic engines</div>
+   <div>✓ Save & share scenes</div>
+   <div>✓ Fullscreen / TV mode</div>
+   <div>✓ All typography & controls</div>
+   <div>✓ New scenes as they ship</div>
   </div>
+
   <div class="grid grid-cols-2 gap-2 mt-6">
-   <div class="rounded-2xl border border-white/10 bg-white/5 p-4"><div class="text-[9px] text-slate-500 uppercase">Monthly</div><div class="font-syne font-bold text-xl mt-1">$4.99</div><div class="text-[9px] text-slate-500">per month</div></div>
-   <div class="rounded-2xl border border-amber-400/40 bg-amber-400/10 p-4"><div class="text-[9px] text-amber-300 uppercase">Best value</div><div class="font-syne font-bold text-xl mt-1">$39.99</div><div class="text-[9px] text-slate-500">per year</div></div>
+   <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+    <div class="text-[9px] text-slate-500 uppercase">Monthly</div>
+    <div class="font-syne font-bold text-xl mt-1">$4.99</div>
+    <div class="text-[9px] text-slate-500">per month</div>
+   </div>
+   <div class="rounded-2xl border border-amber-400/40 bg-amber-400/10 p-4">
+    <div class="text-[9px] text-amber-300 uppercase">Best value</div>
+    <div class="font-syne font-bold text-xl mt-1">$39.99</div>
+    <div class="text-[9px] text-slate-500">per year</div>
+   </div>
   </div>
-  <button onclick="window.location.href='https://aurascape.lemonsqueezy.com/checkout/buy/7ac4533f-f0a6-421b-ac83-89c345f6fa50'" class="w-full mt-4 py-3.5 rounded-2xl bg-amber-400 text-black font-extrabold font-syne hover:bg-amber-300">Start AURA PRO</button>
+
+  <button onclick="window.location.href='https://aurascape.lemonsqueezy.com/checkout/buy/ae6daf37-98e5-4676-a6a3-743a60a412e7'" class="w-full mt-4 py-3.5 rounded-2xl bg-amber-400 text-black font-extrabold font-syne hover:bg-amber-300">Start AURA PRO+ Yearly</button>
   <p class="text-center text-[9px] text-slate-600 mt-3">Cancel anytime. Secure checkout.</p>
  </div>
 </div>
@@ -182,434 +326,2877 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
 
 <script>
 
-    const vertexShader = `
-      varying vec2 vUv;
-      void main() { vUv = uv; gl_Position = vec4(position, 1.0); }
-    `;
+const vertexShader = `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = vec4(position, 1.0);
+  }
+`;
 
-    const fragmentShader = `
-      precision highp float;
-      uniform vec2 u_resolution;
-      uniform vec2 u_mouse;
-      uniform float u_time;
-      uniform float u_speed;
-      uniform float u_glow;
-      uniform float u_audioLevel;
-      uniform float u_bass;
-      uniform float u_mid;
-      uniform float u_treble;
-      uniform float u_mode;
-      uniform vec3 u_colorA;
-      uniform vec3 u_colorB;
-      uniform vec3 u_colorC;
-      varying vec2 vUv;
+const fragmentShader = `
+  precision highp float;
 
-      float hash21(vec2 p){ p=fract(p*vec2(123.34,456.21)); p+=dot(p,p+45.32); return fract(p.x*p.y); }
-      float noise(vec2 p){
-        vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f);
-        return mix(mix(hash21(i),hash21(i+vec2(1,0)),f.x),mix(hash21(i+vec2(0,1)),hash21(i+vec2(1,1)),f.x),f.y);
+  uniform vec2 u_resolution;
+  uniform vec2 u_mouse;
+  uniform vec2 u_touch;
+  uniform vec2 u_touchVelocity;
+
+  uniform float u_touchForce;
+  uniform float u_touchActive;
+
+  uniform float u_time;
+  uniform float u_speed;
+  uniform float u_glow;
+
+  uniform float u_audioLevel;
+  uniform float u_bass;
+  uniform float u_mid;
+  uniform float u_treble;
+
+  uniform float u_mode;
+
+  uniform vec3 u_colorA;
+  uniform vec3 u_colorB;
+  uniform vec3 u_colorC;
+
+  varying vec2 vUv;
+
+  float hash21(vec2 p){
+    p=fract(p*vec2(123.34,456.21));
+    p+=dot(p,p+45.32);
+    return fract(p.x*p.y);
+  }
+
+  float noise(vec2 p){
+    vec2 i=floor(p), f=fract(p);
+    f=f*f*(3.0-2.0*f);
+    return mix(
+      mix(hash21(i),hash21(i+vec2(1,0)),f.x),
+      mix(hash21(i+vec2(0,1)),hash21(i+vec2(1,1)),f.x),
+      f.y
+    );
+  }
+
+  float fbm(vec2 p){
+    float v=0.0;
+    float a=0.5;
+
+    for(int i=0;i<5;i++){
+      v+=a*noise(p);
+      p=p*2.03+13.7;
+      a*=0.5;
+    }
+
+    return v;
+  }
+
+  float lineGlow(float d,float w){
+    return w/(abs(d)+w*0.018);
+  }
+
+  mat2 rot(float a){
+    float c=cos(a),s=sin(a);
+    return mat2(c,-s,s,c);
+  }
+
+  void main(){
+
+    vec2 st=
+      (gl_FragCoord.xy-0.5*u_resolution.xy)/
+      min(u_resolution.x,u_resolution.y);
+
+    vec2 mouse=
+      (u_mouse-0.5*u_resolution.xy)/
+      min(u_resolution.x,u_resolution.y);
+
+    float t=u_time*u_speed;
+
+    float audio=clamp(u_audioLevel,0.0,1.0);
+    float bass=clamp(u_bass,0.0,1.0);
+    float mid=clamp(u_mid,0.0,1.0);
+    float treble=clamp(u_treble,0.0,1.0);
+
+    float glow=u_glow*(1.0+audio*1.7);
+
+    float force=clamp(u_touchForce,0.0,1.5);
+    float active=u_touchActive;
+
+    vec2 tv=u_touchVelocity;
+
+    vec2 td=st-u_touch;
+
+    float touchDist=length(td);
+
+    vec2 radial=
+      td/(touchDist+0.0001);
+
+    float touchFall=
+      exp(-touchDist*5.0)*
+      force*
+      active;
+
+    float touchWave=
+      sin(touchDist*38.0-t*8.5)*
+      exp(-touchDist*5.5)*
+      force*
+      active;
+
+    float dragWake=
+      dot(tv,radial)*
+      exp(-touchDist*5.0)*
+      force*
+      active;
+
+    vec2 touchPush=
+      (
+        -radial*
+        (touchFall*.18+touchWave*.045)
+        -
+        tv*
+        exp(-touchDist*5.0)*
+        force*
+        .16
+      );
+
+    vec3 col=u_colorA;
+
+    if(u_mode<0.5){
+
+      // WHITE VOID
+      // Touch physically pushes the silk surface.
+
+      vec2 p=
+        st*3.2+
+        touchPush*3.0;
+
+      p+=
+        radial*
+        touchWave*
+        .55;
+
+      float v=0.0;
+
+      for(int i=1;i<=5;i++){
+
+        float fi=float(i);
+
+        p+=
+          vec2(
+            sin(
+              p.y*1.35+
+              fi+
+              t*.45+
+              dragWake*2.0
+            ),
+            cos(
+              p.x*1.25-
+              fi-
+              t*.38
+            )
+          )*
+          .085;
+
+        v+=
+          sin(
+            p.x*2.2+
+            p.y*1.7+
+            t*fi*.28+
+            touchWave*3.0
+          )/
+          fi;
       }
-      float fbm(vec2 p){ float v=0.0,a=0.5; for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+13.7;a*=0.5;} return v; }
-      float lineGlow(float d,float w){ return w/(abs(d)+w*0.018); }
-      mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
 
-      void main(){
-        vec2 st=(gl_FragCoord.xy-0.5*u_resolution.xy)/min(u_resolution.x,u_resolution.y);
-        vec2 mouse=(u_mouse-0.5*u_resolution.xy)/min(u_resolution.x,u_resolution.y);
-        float t=u_time*u_speed;
-        float audio=clamp(u_audioLevel,0.0,1.0);
-        float bass=clamp(u_bass,0.0,1.0), mid=clamp(u_mid,0.0,1.0), treble=clamp(u_treble,0.0,1.0);
-        float glow=u_glow*(1.0+audio*1.7);
-        vec3 col=u_colorA;
+      v=
+        0.5+
+        0.5*
+        sin(v*3.2);
 
-        if(u_mode<0.5){
-          // Sharper silk / liquid waves
-          vec2 p=st*3.2; p+=normalize(st-mouse+0.0001)*0.18;
-          float v=0.0;
-          for(int i=1;i<=5;i++){float fi=float(i);p+=vec2(sin(p.y*1.35+fi+t*.45),cos(p.x*1.25-fi-t*.38))*.085;v+=sin(p.x*2.2+p.y*1.7+t*fi*.28)/fi;}
-          v=0.5+0.5*sin(v*3.2); float ridge=smoothstep(.38,.72,v); float spec=pow(max(v-.54,0.0)*2.2,5.0)*glow;
-          col=mix(u_colorA,mix(u_colorB,u_colorC,ridge),smoothstep(.12,.9,v)); col+=spec;
-        } else if(u_mode<1.5){
-          // Layered electrical arcs: sharp core + halo + secondary branches
-          float total=0.0, core=0.0;
-          for(int b=0;b<6;b++){
-            float fb=float(b); vec2 p=st*2.4+vec2(fb*.37,sin(fb*2.1))*0.35; p*=rot(fb*.71+t*.035);
-            float n=fbm(p*3.1+vec2(t*.55,-t*.35)+fb);
-            float center=sin(p.y*7.0+n*4.0+t*(1.2+fb*.13)+fb)*0.26;
-            center+=sin(p.y*19.0-t*2.0)*0.055;
-            float d=abs(p.x-center);
-            float c=lineGlow(d,.011)*(0.55+0.45*noise(p*8.0+t));
-            core+=pow(c,1.45); total+=c*.22;
-          }
-          float flash=pow(max(0.0,sin(t*2.8+noise(st*5.0)*5.0)),18.0)*treble*4.0;
-          col=u_colorA+u_colorB*(core*(1.15+glow*.34))+u_colorC*(total*glow*.55+flash);
-          col+=u_colorC*pow(max(0.0,noise(st*13.0+t*4.0)-.62),5.0)*treble*2.0;
-        } else if(u_mode<2.5){
-          // Deep atmospheric smoke
-          vec2 q=st*2.2; q*=rot(t*.035); float f=fbm(q+vec2(t*.12,-t*.08)); f=.72*f+.28*fbm(q*2.1-vec2(t*.18,t*.11));
-          float pocket=smoothstep(.78,.1,length(st-mouse)); f+=pocket*.18;
-          float m=smoothstep(.18,.82,f); col=mix(u_colorA,u_colorB,m); col+=u_colorC*pow(f,3.2)*glow*.34;
-        } else if(u_mode<3.5){
-          // Mercury / chrome liquid: bands + reflective ridges
-          vec2 p=st*2.6; p.y+=sin(p.x*2.0+t*.35)*.25;
-          float f=fbm(p*1.35+vec2(t*.16,-t*.12));
-          float ridge=abs(sin(p.x*5.0+f*7.0+t*.5));
-          float liquid=smoothstep(.16,.86,.5*f+.5*ridge);
-          float spec=pow(max(0.0,1.0-abs(fract(f*4.0)-.5)*2.0),7.0)*(1.2+glow);
-          col=mix(u_colorA,u_colorB,liquid); col=mix(col,u_colorC,spec*.72); col+=u_colorC*pow(spec,2.0)*.5;
-        } else if(u_mode<4.5){
-          // Glossy black oil with subtle spectral movement
-          vec2 p=st*3.0; float f=fbm(p+vec2(t*.09,-t*.13)); float r=sin(f*9.0+p.x*2.0+t*.25)*.5+.5;
-          float sheen=pow(smoothstep(.45,.9,r),3.0); col=mix(u_colorA,u_colorB,.18+.34*f); col=mix(col,u_colorC,sheen*.7); col+=u_colorC*sheen*glow*.25;
-        } else if(u_mode<5.5){
-          // Cosmic particles
-          vec2 p=st; float stars=0.0;
-          for(int i=0;i<3;i++){float fi=float(i);vec2 g=floor((p+fi*7.13)*18.0);vec2 f=fract((p+fi*7.13)*18.0)-.5;float h=hash21(g+fi);float d=length(f);stars+=smoothstep(.075*(.3+h*1.4),0.0,d)*(h>.72?1.0:0.0);}
-          float neb=fbm(st*2.4+vec2(t*.04,-t*.025)); col=mix(u_colorA,u_colorB,neb*.65)+u_colorC*stars*(1.0+treble*2.0)*glow;
-        } else {
-          // Solar/plasma vortex
-          vec2 p=st; float r=length(p); float a=atan(p.y,p.x); float swirl=sin(a*9.0-r*16.0-t*1.4+fbm(p*3.0)*4.0); float band=smoothstep(.9,.05,r)*(.5+.5*swirl);
-          float flare=pow(max(0.0,1.0-r*1.25),3.0)*(1.0+bass*2.5); col=mix(u_colorA,u_colorB,band*.75)+u_colorC*(band*.8+flare)*glow*.55;
-        }
-        // subtle anti-flatness grain, kept extremely low
-        float grain=(hash21(gl_FragCoord.xy+u_time)-.5)*.012;
-        col+=grain;
-        gl_FragColor=vec4(max(col,vec3(0.0)),1.0);
-      }
-    `;
+      float ridge=
+        smoothstep(.38,.72,v);
 
-    let scene, camera, renderer, material, mesh, uniforms;
-    let targetMouse = new THREE.Vector2(0, 0), currentMouse = new THREE.Vector2(0, 0);
-    let audioContext, analyser, microphone, dataArray, isAudioActive = false;
-    let is24HourFormat = true;
+      float spec=
+        pow(
+          max(v-.54,0.0)*2.2,
+          5.0
+        )*
+        glow;
 
-    function initEngine() {
-      try {
-        const canvas = document.getElementById('webglCanvas');
-        scene = new THREE.Scene();
-        camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+      col=
+        mix(
+          u_colorA,
+          mix(u_colorB,u_colorC,ridge),
+          smoothstep(.12,.9,v)
+        );
 
-        uniforms = {
-          u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-          u_mouse: { value: new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2) },
-          u_time: { value: 0.0 }, u_speed: { value: 1.0 }, u_glow: { value: 2.0 },
-          u_audioLevel: { value: 0.0 }, u_bass: { value: 0.0 }, u_mid: { value: 0.0 }, u_treble: { value: 0.0 }, u_mode: { value: 0.0 }, 
-          u_colorA: { value: new THREE.Color('#000000') }, 
-          u_colorB: { value: new THREE.Color('#ffffff') }, 
-          u_colorC: { value: new THREE.Color('#e2e8f0') }
-        };
+      col+=
+        spec+
+        u_colorC*
+        max(0.0,touchWave)*
+        .65;
 
-        material = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms });
-        mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
-        scene.add(mesh);
+    }else if(u_mode<1.5){
 
-        renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-        renderer.setSize(window.innerWidth, window.innerHeight);
+      // LIGHTNING
+      // Touch bends the electric field.
 
-        window.addEventListener('resize', () => { renderer.setSize(window.innerWidth, window.innerHeight); uniforms.u_resolution.value.set(window.innerWidth * renderer.getPixelRatio(), window.innerHeight * renderer.getPixelRatio()); });
-        window.addEventListener('pointermove', e => { targetMouse.x = e.clientX; targetMouse.y = window.innerHeight - e.clientY; });
+      vec2 electricSt=
+        st+
+        touchPush*1.7+
+        tv*
+        exp(-touchDist*3.5)*
+        force*
+        .12;
 
-        setInterval(updateWidgets, 1000); 
-        updateWidgets();
-        animate(0);
-        const savedQuality=localStorage.getItem('auraQuality')||'high';
-        const qs=document.getElementById('qualitySelect'); if(qs) qs.value=savedQuality;
-        setRenderQuality(savedQuality);
-      } catch (err) { alert("ENGINE ERROR: " + err.message); }
-    }
+      float total=0.0;
+      float core=0.0;
 
-    function animate(timestamp) {
-      requestAnimationFrame(animate);
-      currentMouse.x += (targetMouse.x - currentMouse.x) * 0.1;
-      currentMouse.y += (targetMouse.y - currentMouse.y) * 0.1;
-      uniforms.u_mouse.value.set(currentMouse.x, currentMouse.y);
-      uniforms.u_time.value = timestamp * 0.001;
+      for(int b=0;b<6;b++){
 
-      if (isAudioActive && analyser) {
-        analyser.getByteFrequencyData(dataArray);
-        let sum=0,bass=0,mid=0,treble=0;
-        const n=dataArray.length;
-        for(let i=0;i<n;i++){ const v=dataArray[i]/255; sum+=v; if(i<n*.12) bass+=v; else if(i<n*.5) mid+=v; else treble+=v; }
-        const audioLevel=sum/n; bass/=(n*.12); mid/=(n*.38); treble/=(n*.5);
-        uniforms.u_audioLevel.value += (audioLevel-uniforms.u_audioLevel.value)*0.16;
-        uniforms.u_bass.value += (bass-uniforms.u_bass.value)*0.16;
-        uniforms.u_mid.value += (mid-uniforms.u_mid.value)*0.16;
-        uniforms.u_treble.value += (treble-uniforms.u_treble.value)*0.16;
+        float fb=float(b);
+
+        vec2 p=
+          electricSt*
+          2.4+
+          vec2(
+            fb*.37,
+            sin(fb*2.1)
+          )*
+          .35;
+
+        p*=
+          rot(
+            fb*.71+
+            t*.035+
+            dragWake*.18
+          );
+
+        float n=
+          fbm(
+            p*3.1+
+            vec2(
+              t*.55,
+              -t*.35
+            )+
+            fb
+          );
+
+        float center=
+          sin(
+            p.y*7.0+
+            n*4.0+
+            t*(1.2+fb*.13)+
+            fb
+          )*
+          .26;
+
+        center+=
+          sin(
+            p.y*19.0-
+            t*2.0
+          )*
+          .055;
+
+        center+=
+          touchFall*
+          (0.18+fb*.025)*
+          sin(
+            p.y*5.0+
+            t
+          );
+
+        float d=
+          abs(
+            p.x-center
+          );
+
+        float c=
+          lineGlow(d,.011)*
+          (
+            .55+
+            .45*
+            noise(
+              p*8.0+t
+            )
+          );
+
+        core+=
+          pow(c,1.45);
+
+        total+=
+          c*.22;
       }
 
-      renderer.render(scene, camera);
-    }
+      float discharge=
+        touchFall*
+        (1.0+treble*2.5)+
+        abs(dragWake)*
+        2.0;
 
-    function applyPreset(name) {
-      const presets = {
-        whiteVoidDark:   { mode: 0.0, a: '#000000', b: '#ffffff', c: '#f1f5f9' },
-        goldDark:        { mode: 0.0, a: '#000000', b: '#eab308', c: '#fef08a' },
-        oceanDeep:       { mode: 0.0, a: '#000000', b: '#06b6d4', c: '#1e3a8a' },
-        crimsonBlood:    { mode: 0.0, a: '#000000', b: '#ef4444', c: '#7f1d1d' },
-        multiLightning:  { mode: 1.0, a: '#000000', b: '#38bdf8', c: '#ffffff' },
-        purpleLightning: { mode: 1.0, a: '#000000', b: '#c084fc', c: '#d8b4fe' },
-        goldLightning:   { mode: 1.0, a: '#000000', b: '#facc15', c: '#ffffff' },
-        matrixLightning: { mode: 1.0, a: '#000000', b: '#4ade80', c: '#bbf7d0' },
-        silkSmoke:       { mode: 2.0, a: '#000000', b: '#c084fc', c: '#f472b6' },
-        toxicSmoke:      { mode: 2.0, a: '#000000', b: '#a3e635', c: '#fef08a' },
-        ghostSmoke:      { mode: 2.0, a: '#000000', b: '#94a3b8', c: '#f8fafc' },
-        fireSmoke:       { mode: 2.0, a: '#000000', b: '#f97316', c: '#ef4444' },
-        mercuryLiquid:   { mode: 3.0, a: '#020304', b: '#aeb6bf', c: '#ffffff' },
-        chromeFlow:      { mode: 3.0, a: '#050608', b: '#64748b', c: '#f8fafc' },
-        blackOil:        { mode: 4.0, a: '#000000', b: '#1e293b', c: '#cbd5e1' },
-        teslaCoil:       { mode: 1.0, a: '#010204', b: '#38bdf8', c: '#ffffff' },
-        voidLightning:   { mode: 1.0, a: '#000000', b: '#e2e8f0', c: '#ffffff' },
-        plasmaStorm:     { mode: 1.0, a: '#030007', b: '#d946ef', c: '#f5d0fe' },
-        electricVeins:   { mode: 1.0, a: '#010005', b: '#8b5cf6', c: '#ede9fe' },
-        cosmicDust:     { mode: 5.0, a: '#000008', b: '#6366f1', c: '#ffffff' },
-        solarFlare:     { mode: 6.0, a: '#070000', b: '#f97316', c: '#fef3c7' }
-      };
-      const p = presets[name];
-      if (p) {
-        uniforms.u_mode.value = p.mode;
-        uniforms.u_colorA.value.set(p.a); uniforms.u_colorB.value.set(p.b); uniforms.u_colorC.value.set(p.c);
+      float flash=
+        pow(
+          max(
+            0.0,
+            sin(
+              t*2.8+
+              noise(electricSt*5.0)*
+              5.0
+            )
+          ),
+          18.0
+        )*
+        treble*
+        4.0;
+
+      col=
+        u_colorA+
+        u_colorB*
+        (
+          core*
+          (1.15+glow*.34)
+        )+
+        u_colorC*
+        (
+          total*
+          glow*
+          .55+
+          flash+
+          discharge
+        );
+
+    }else if(u_mode<2.5){
+
+      // SMOKE
+      // Touch pushes the smoke field.
+
+      vec2 q=
+        st+
+        touchPush*
+        2.4-
+        tv*
+        exp(-touchDist*4.0)*
+        force*
+        .24;
+
+      q*=
+        rot(t*.035);
+
+      float f=
+        .72*
+        fbm(
+          q+
+          vec2(
+            t*.12,
+            -t*.08
+          )
+        )+
+        .28*
+        fbm(
+          q*2.1-
+          vec2(
+            t*.18,
+            t*.11
+          )
+        );
+
+      f+=
+        dragWake*
+        .22+
+        touchFall*
+        .16;
+
+      float m=
+        smoothstep(
+          .18,
+          .82,
+          f
+        );
+
+      col=
+        mix(
+          u_colorA,
+          u_colorB,
+          m
+        );
+
+      col+=
+        u_colorC*
+        pow(f,3.2)*
+        glow*
+        .34;
+
+    }else if(u_mode<3.5){
+
+      // MERCURY / CHROME
+      // Touch dents the reflective surface.
+
+      vec2 p=
+        st+
+        touchPush*
+        3.1;
+
+      p+=
+        rot(.55)*
+        tv*
+        exp(-touchDist*4.0)*
+        force*
+        .3;
+
+      p.y+=
+        sin(
+          p.x*2.0+
+          t*.35+
+          dragWake
+        )*
+        .25;
+
+      float f=
+        fbm(
+          p*1.35+
+          vec2(
+            t*.16,
+            -t*.12
+          )
+        );
+
+      f+=
+        touchWave*
+        .35;
+
+      float ridge=
+        abs(
+          sin(
+            p.x*5.0+
+            f*7.0+
+            t*.5+
+            dragWake*2.0
+          )
+        );
+
+      float liquid=
+        smoothstep(
+          .16,
+          .86,
+          .5*f+
+          .5*ridge
+        );
+
+      float spec=
+        pow(
+          max(
+            0.0,
+            1.0-
+            abs(
+              fract(f*4.0)-.5
+            )*
+            2.0
+          ),
+          7.0
+        )*
+        (1.2+glow);
+
+      spec+=
+        touchFall*
+        .9;
+
+      col=
+        mix(
+          u_colorA,
+          u_colorB,
+          liquid
+        );
+
+      col=
+        mix(
+          col,
+          u_colorC,
+          spec*.72
+        );
+
+      col+=
+        u_colorC*
+        pow(spec,2.0)*
+        .5;
+
+    }else if(u_mode<4.5){
+
+      // BLACK OIL
+      // Touch creates a heavy swirling wake.
+
+      vec2 p=
+        st+
+        touchPush*
+        3.2;
+
+      p+=
+        rot(.8)*
+        tv*
+        exp(-touchDist*3.7)*
+        force*
+        .42;
+
+      float f=
+        fbm(
+          p+
+          vec2(
+            t*.09,
+            -t*.13
+          )
+        );
+
+      f+=
+        dragWake*
+        .18+
+        touchFall*
+        .2;
+
+      float r=
+        sin(
+          f*9.0+
+          p.x*2.0+
+          t*.25
+        )*
+        .5+
+        .5;
+
+      float sheen=
+        pow(
+          smoothstep(.45,.9,r),
+          3.0
+        )+
+        touchFall*
+        .45;
+
+      col=
+        mix(
+          u_colorA,
+          u_colorB,
+          .18+
+          .34*f
+        );
+
+      col=
+        mix(
+          col,
+          u_colorC,
+          sheen*.7
+        );
+
+      col+=
+        u_colorC*
+        sheen*
+        glow*
+        .25;
+
+    }else if(u_mode<5.5){
+
+      // COSMIC
+      // Touch becomes a gravity well.
+
+      vec2 grav=
+        st-
+        touchPush*
+        1.4;
+
+      float gravDist=
+        length(grav);
+
+      float bend=
+        touchFall/
+        (
+          1.0+
+          gravDist*
+          8.0
+        );
+
+      grav=
+        rot(
+          bend*
+          1.7+
+          dragWake*
+          .7
+        )*
+        grav;
+
+      grav+=
+        tv*
+        exp(-touchDist*4.0)*
+        force*
+        .12;
+
+      float stars=0.0;
+
+      for(int i=0;i<3;i++){
+
+        float fi=float(i);
+
+        vec2 g=
+          floor(
+            (grav+
+            fi*7.13)*
+            18.0
+          );
+
+        vec2 f=
+          fract(
+            (grav+
+            fi*7.13)*
+            18.0
+          )-
+          .5;
+
+        float h=
+          hash21(
+            g+
+            fi
+          );
+
+        float d=
+          length(f);
+
+        stars+=
+          smoothstep(
+            .075*
+            (.3+h*1.4),
+            0.0,
+            d
+          )*
+          (
+            h>.72?
+            1.0:
+            0.0
+          );
       }
+
+      float neb=
+        fbm(
+          grav*2.4+
+          vec2(
+            t*.04,
+            -t*.025
+          )
+        );
+
+      neb+=
+        bend*.28;
+
+      col=
+        mix(
+          u_colorA,
+          u_colorB,
+          neb*.65
+        )+
+        u_colorC*
+        stars*
+        (1.0+treble*2.0)*
+        glow;
+
+      col+=
+        u_colorC*
+        bend*
+        .8;
+
+    }else{
+
+      // SOLAR / PLASMA
+      // Touch bends and steers the vortex.
+
+      vec2 p=
+        st+
+        touchPush*
+        1.8;
+
+      p+=
+        tv*
+        exp(-touchDist*3.5)*
+        force*
+        .2;
+
+      float r=
+        length(p);
+
+      float a=
+        atan(
+          p.y,
+          p.x
+        );
+
+      float swirl=
+        sin(
+          a*9.0-
+          r*16.0-
+          t*1.4+
+          fbm(p*3.0)*4.0+
+          dragWake*4.0
+        );
+
+      float band=
+        smoothstep(
+          .9,
+          .05,
+          r
+        )*
+        (
+          .5+
+          .5*swirl
+        );
+
+      float flare=
+        pow(
+          max(
+            0.0,
+            1.0-
+            r*
+            1.25
+          ),
+          3.0
+        )*
+        (
+          1.0+
+          bass*
+          2.5
+        );
+
+      flare+=
+        touchFall*
+        .8;
+
+      col=
+        mix(
+          u_colorA,
+          u_colorB,
+          band*.75
+        )+
+        u_colorC*
+        (
+          band*.8+
+          flare
+        )*
+        glow*
+        .55;
     }
 
-    function updateUniforms() {
-      uniforms.u_speed.value = parseFloat(document.getElementById('sliderSpeed').value);
-      uniforms.u_glow.value = parseFloat(document.getElementById('sliderGlow').value);
-    }
+    col+=
+      u_colorC*
+      max(
+        0.0,
+        touchWave
+      )*
+      (
+        .22+
+        glow*
+        .06
+      );
 
+    float grain=
+      (
+        hash21(
+          gl_FragCoord.xy+
+          u_time
+        )-
+        .5
+      )*
+      .012;
 
-    function setRenderQuality(level){
-      const map={performance:0.75,balanced:1.0,high:1.5,ultra:2.0};
-      const labels={performance:'Performance',balanced:'Balanced',high:'High',ultra:'Ultra'};
-      const dpr=map[level] || 1.5;
-      if(renderer){ renderer.setPixelRatio(Math.min((window.devicePixelRatio||1)*dpr, level==='ultra'?2.5:2)); renderer.setSize(window.innerWidth,window.innerHeight,false); }
-      if(uniforms) uniforms.u_resolution.value.set(window.innerWidth*(renderer?.getPixelRatio?.()||1),window.innerHeight*(renderer?.getPixelRatio?.()||1));
-      const label=document.getElementById('qualityLabel'); if(label) label.textContent=labels[level]||'High';
-      localStorage.setItem('auraQuality',level);
-      toast('Render quality: '+(labels[level]||'High'));
-    }
+    col+=grain;
 
-    function switchTab(tab) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(el => { el.classList.remove('bg-amber-400', 'text-black', 'font-bold'); el.classList.add('text-slate-400'); });
-      document.getElementById('tabContent-' + tab).classList.remove('hidden');
-      const active = document.getElementById('tabBtn-' + tab);
-      active.classList.add('bg-amber-400', 'text-black', 'font-bold'); active.classList.remove('text-slate-400');
-    }
+    gl_FragColor=
+      vec4(
+        max(
+          col,
+          vec3(0.0)
+        ),
+        1.0
+      );
+  }
+`;
 
-    function setFont(fontClass) {
-      const clock = document.getElementById('lockscreenClock');
-      clock.className = `text-7xl sm:text-9xl font-extralight tracking-tight text-white drop-shadow-2xl ${fontClass}`;
-    }
+let scene,camera,renderer,material,mesh,uniforms;
 
-    function toggleTimeFormat() {
-      is24HourFormat = !is24HourFormat;
-      document.getElementById('timeFormatBtn').innerText = is24HourFormat ? "24H" : "12H";
-      updateWidgets();
-    }
+let targetMouse=
+  new THREE.Vector2(0,0);
 
-    function toggleOverlay() { document.getElementById('lockscreenOverlay').classList.toggle('opacity-0'); }
-    
-    function updateWidgets() {
-      const now = new Date();
-      let hours = now.getHours();
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      
-      if (!is24HourFormat) {
-        hours = hours % 12 || 12;
+let currentMouse=
+  new THREE.Vector2(0,0);
+
+let panelOpen=false;
+
+let audioContext,analyser,microphone,dataArray;
+let isAudioActive=false;
+let is24HourFormat=true;
+
+function initEngine(){
+
+  try{
+
+    const canvas=
+      document.getElementById(
+        'webglCanvas'
+      );
+
+    scene=
+      new THREE.Scene();
+
+    camera=
+      new THREE.OrthographicCamera(
+        -1,
+        1,
+        1,
+        -1,
+        0,
+        1
+      );
+
+    uniforms={
+
+      u_resolution:{
+        value:new THREE.Vector2(
+          window.innerWidth,
+          window.innerHeight
+        )
+      },
+
+      u_mouse:{
+        value:new THREE.Vector2(
+          window.innerWidth/2,
+          window.innerHeight/2
+        )
+      },
+
+      u_touch:{
+        value:new THREE.Vector2(
+          -10,
+          -10
+        )
+      },
+
+      u_touchVelocity:{
+        value:new THREE.Vector2(
+          0,
+          0
+        )
+      },
+
+      u_touchForce:{
+        value:0
+      },
+
+      u_touchActive:{
+        value:0
+      },
+
+      u_time:{
+        value:0
+      },
+
+      u_speed:{
+        value:1
+      },
+
+      u_glow:{
+        value:2
+      },
+
+      u_audioLevel:{
+        value:0
+      },
+
+      u_bass:{
+        value:0
+      },
+
+      u_mid:{
+        value:0
+      },
+
+      u_treble:{
+        value:0
+      },
+
+      u_mode:{
+        value:0
+      },
+
+      u_colorA:{
+        value:new THREE.Color(
+          '#000000'
+        )
+      },
+
+      u_colorB:{
+        value:new THREE.Color(
+          '#ffffff'
+        )
+      },
+
+      u_colorC:{
+        value:new THREE.Color(
+          '#e2e8f0'
+        )
       }
-      document.getElementById('lockscreenClock').innerText = `${String(hours).padStart(2, '0')}:${minutes}`;
-      
-      const options = { weekday: 'short', month: 'short', day: 'numeric' };
-      document.getElementById('lockscreenDate').innerText = now.toLocaleDateString('en-US', options).toUpperCase();
-    }
-
-    async function toggleAudioSync() {
-      const btn = document.getElementById('audioBtn');
-      if (isAudioActive) {
-        isAudioActive = false;
-        if(microphone) microphone.disconnect();
-        uniforms.u_audioLevel.value = 0.0;
-        btn.classList.remove('bg-amber-500/20', 'border-amber-500/50', 'text-amber-300');
-        btn.classList.add('bg-white/5', 'border-white/10', 'text-slate-300');
-      } else {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-          audioContext = new (window.AudioContext || window.webkitAudioContext)();
-          analyser = audioContext.createAnalyser();
-          analyser.fftSize = 64;
-          dataArray = new Uint8Array(analyser.frequencyBinCount);
-          microphone = audioContext.createMediaStreamSource(stream);
-          microphone.connect(analyser);
-          isAudioActive = true;
-          btn.classList.add('bg-amber-500/20', 'border-amber-500/50', 'text-amber-300');
-          btn.classList.remove('bg-white/5', 'border-white/10', 'text-slate-300');
-        } catch (err) {
-          alert("Microphone security restriction: Browsers block local mic access without HTTPS.");
-        }
-      }
-    }
-
-    function openPaywall() {
-      const modal = document.getElementById('paywallModal');
-      const card = document.getElementById('paywallCard');
-      modal.classList.remove('hidden');
-      setTimeout(() => { modal.classList.remove('opacity-0'); card.classList.remove('scale-95'); }, 10);
-    }
-    function closePaywall() {
-      const modal = document.getElementById('paywallModal');
-      const card = document.getElementById('paywallCard');
-      modal.classList.add('opacity-0'); card.classList.add('scale-95');
-      setTimeout(() => { modal.classList.add('hidden'); }, 300);
-    }
-
-    function skipSplash(){ const el=document.getElementById('auraSplash'); if(!el) return; el.style.opacity='0'; el.style.visibility='hidden'; setTimeout(()=>el.remove(),950); }
-    window.addEventListener('load',()=>{ setTimeout(skipSplash,4600); });
-    window.onload = initEngine;
-  
-
-    /* AURA PRO PRODUCT LAYER */
-    const AURA_PRO_PRICE = '$4.99/month';
-    const AURA_YEAR_PRICE = '$39.99/year';
-    let currentPresetName = 'goldDark';
-    let savedScenes = JSON.parse(localStorage.getItem('auraScenes') || '[]');
-
-    const presetMeta = {
-      whiteVoidDark:{title:'White Void',desc:'Silky Waves',tag:'MINIMAL'},
-      goldDark:{title:'Black & Gold',desc:'Silky Waves',tag:'SIGNATURE'},
-      oceanDeep:{title:'Abyss',desc:'Silky Waves',tag:'DEEP'},
-      crimsonBlood:{title:'Crimson',desc:'Silky Waves',tag:'BOLD'},
-      multiLightning:{title:'Plasma',desc:'Lightning',tag:'ENERGY'},
-      purpleLightning:{title:'Void Ray',desc:'Lightning',tag:'NEON'},
-      goldLightning:{title:'Zeus',desc:'Lightning',tag:'ENERGY'},
-      matrixLightning:{title:'Matrix',desc:'Lightning',tag:'CYBER'},
-      silkSmoke:{title:'Violet Fog',desc:'Nebula Smoke',tag:'DREAM'},
-      toxicSmoke:{title:'Biohazard',desc:'Nebula Smoke',tag:'ACID'},
-      ghostSmoke:{title:'Phantom',desc:'Nebula Smoke',tag:'GHOST'},
-      fireSmoke:{title:'Inferno',desc:'Nebula Smoke',tag:'FIRE'}
     };
-    Object.assign(presetMeta,{
-      mercuryLiquid:{title:'Mercury',desc:'Liquid Chrome',tag:'SIGNATURE'}, chromeFlow:{title:'Chrome Flow',desc:'Liquid Reflective',tag:'LIQUID'}, blackOil:{title:'Black Oil',desc:'Gloss Liquid',tag:'LIQUID'},
-      teslaCoil:{title:'Tesla Coil',desc:'Electric Arc',tag:'ENERGY'}, voidLightning:{title:'Void Lightning',desc:'Razor Electric',tag:'ENERGY'}, plasmaStorm:{title:'Plasma Storm',desc:'Electric Filaments',tag:'ENERGY'}, electricVeins:{title:'Electric Veins',desc:'Organic Electric',tag:'ENERGY'},
-      cosmicDust:{title:'Cosmic Dust',desc:'Deep Particles',tag:'COSMIC'}, solarFlare:{title:'Solar Flare',desc:'Plasma Energy',tag:'COSMIC'}
+
+    material=
+      new THREE.ShaderMaterial({
+        vertexShader,
+        fragmentShader,
+        uniforms
+      });
+
+    mesh=
+      new THREE.Mesh(
+        new THREE.PlaneGeometry(
+          2,
+          2
+        ),
+        material
+      );
+
+    scene.add(mesh);
+
+    renderer=
+      new THREE.WebGLRenderer({
+        canvas,
+        antialias:false,
+        powerPreference:'high-performance'
+      });
+
+    renderer.setPixelRatio(
+      Math.min(
+        window.devicePixelRatio||1,
+        2
+      )
+    );
+
+    renderer.setSize(
+      window.innerWidth,
+      window.innerHeight
+    );
+
+    window.addEventListener(
+      'resize',
+      ()=>{
+        renderer.setSize(
+          window.innerWidth,
+          window.innerHeight
+        );
+
+        uniforms.u_resolution.value.set(
+          window.innerWidth*
+          renderer.getPixelRatio(),
+          window.innerHeight*
+          renderer.getPixelRatio()
+        );
+      }
+    );
+
+    window.addEventListener(
+      'pointermove',
+      e=>{
+        targetMouse.x=
+          e.clientX;
+
+        targetMouse.y=
+          window.innerHeight-
+          e.clientY;
+      }
+    );
+
+    setupCanvasTouch();
+    setupControlSheet();
+
+    setInterval(
+      updateWidgets,
+      1000
+    );
+
+    updateWidgets();
+
+    animate(0);
+
+    const savedQuality=
+      localStorage.getItem(
+        'auraQuality'
+      )||
+      'high';
+
+    const qs=
+      document.getElementById(
+        'qualitySelect'
+      );
+
+    if(qs)
+      qs.value=
+        savedQuality;
+
+    setRenderQuality(
+      savedQuality
+    );
+
+  }catch(err){
+
+    alert(
+      "ENGINE ERROR: "+
+      err.message
+    );
+  }
+}
+
+function addCanvasRipple(
+  clientX,
+  clientY,
+  strength=1.0,
+  vx=0,
+  vy=0
+){
+
+  if(
+    !uniforms||
+    !renderer
+  )
+    return;
+
+  const canvas=
+    document.getElementById(
+      'webglCanvas'
+    );
+
+  const rect=
+    canvas.getBoundingClientRect();
+
+  const dpr=
+    renderer.getPixelRatio();
+
+  const px=
+    (clientX-
+    rect.left)*
+    dpr;
+
+  const py=
+    (rect.height-
+    (clientY-
+    rect.top))*
+    dpr;
+
+  const scale=
+    Math.min(
+      rect.width,
+      rect.height
+    )*
+    dpr;
+
+  uniforms.u_touch.value.set(
+    (
+      px-
+      rect.width*
+      dpr*
+      .5
+    )/
+    scale,
+
+    (
+      py-
+      rect.height*
+      dpr*
+      .5
+    )/
+    scale
+  );
+
+  uniforms.u_touchVelocity.value.set(
+    vx*1.8,
+    -vy*1.8
+  );
+
+  uniforms.u_touchForce.value=
+    Math.min(
+      1.5,
+      Math.max(
+        .2,
+        strength
+      )
+    );
+
+  uniforms.u_touchActive.value=
+    1;
+}
+
+function setupCanvasTouch(){
+
+  const canvas=
+    document.getElementById(
+      'webglCanvas'
+    );
+
+  let down=false;
+  let lastX=0;
+  let lastY=0;
+  let lastAt=0;
+
+  canvas.addEventListener(
+    'pointerdown',
+    e=>{
+
+      down=true;
+
+      lastX=
+        e.clientX;
+
+      lastY=
+        e.clientY;
+
+      lastAt=
+        performance.now();
+
+      canvas.setPointerCapture?.(
+        e.pointerId
+      );
+
+      addCanvasRipple(
+        e.clientX,
+        e.clientY,
+        1.45,
+        0,
+        0
+      );
+    }
+  );
+
+  canvas.addEventListener(
+    'pointermove',
+    e=>{
+
+      if(!down)
+        return;
+
+      const now=
+        performance.now();
+
+      const dt=
+        Math.max(
+          12,
+          now-lastAt
+        );
+
+      const dx=
+        (
+          e.clientX-
+          lastX
+        )/
+        dt;
+
+      const dy=
+        (
+          e.clientY-
+          lastY
+        )/
+        dt;
+
+      const distance=
+        Math.hypot(
+          e.clientX-lastX,
+          e.clientY-lastY
+        );
+
+      if(distance>2){
+
+        addCanvasRipple(
+          e.clientX,
+          e.clientY,
+          .7+
+          Math.min(
+            .7,
+            distance/28
+          ),
+          dx,
+          dy
+        );
+
+        lastX=
+          e.clientX;
+
+        lastY=
+          e.clientY;
+
+        lastAt=
+          now;
+      }
+    }
+  );
+
+  const end=
+    e=>{
+
+      down=false;
+
+      uniforms.u_touchActive.value=
+        0;
+
+      uniforms.u_touchForce.value*=
+        .35;
+
+      try{
+        canvas.releasePointerCapture?.(
+          e.pointerId
+        );
+      }catch(_){}
+    };
+
+  canvas.addEventListener(
+    'pointerup',
+    end
+  );
+
+  canvas.addEventListener(
+    'pointercancel',
+    end
+  );
+
+  canvas.addEventListener(
+    'pointerleave',
+    ()=>{
+      if(down){
+        uniforms.u_touchActive.value=
+          .35;
+      }
+    }
+  );
+}
+
+function setupControlSheet(){
+
+  const panel=
+    document.getElementById(
+      'controlPanel'
+    );
+
+  const handle=
+    document.getElementById(
+      'panelHandle'
+    );
+
+  if(!panel||!handle)
+    return;
+
+  let startY=0;
+  let startOffset=0;
+  let currentOffset=0;
+  let dragging=false;
+
+  const closedOffset=
+    ()=>Math.max(
+      0,
+      panel.getBoundingClientRect().height-
+      54
+    );
+
+  const setOffset=
+    (
+      px,
+      animate=true
+    )=>{
+
+      currentOffset=
+        Math.max(
+          0,
+          Math.min(
+            closedOffset(),
+            px
+          )
+        );
+
+      panel.style.transition=
+        animate
+        ?
+        'transform .38s cubic-bezier(.22,.8,.22,1)'
+        :
+        'none';
+
+      panel.style.setProperty(
+        'transform',
+        `translateX(-50%) translateY(${currentOffset}px)`,
+        'important'
+      );
+
+      panel.classList.toggle(
+        'panel-open',
+        currentOffset<
+        closedOffset()/2
+      );
+
+      panelOpen=
+        currentOffset<
+        closedOffset()/2;
+    };
+
+  handle.addEventListener(
+    'pointerdown',
+    e=>{
+
+      dragging=true;
+
+      startY=
+        e.clientY;
+
+      startOffset=
+        currentOffset;
+
+      handle.setPointerCapture?.(
+        e.pointerId
+      );
+
+      panel.style.transition=
+        'none';
+    }
+  );
+
+  handle.addEventListener(
+    'pointermove',
+    e=>{
+
+      if(!dragging)
+        return;
+
+      setOffset(
+        startOffset+
+        e.clientY-
+        startY,
+        false
+      );
+    }
+  );
+
+  const end=
+    e=>{
+
+      if(!dragging)
+        return;
+
+      dragging=false;
+
+      try{
+        handle.releasePointerCapture?.(
+          e.pointerId
+        );
+      }catch(_){}
+
+      const threshold=
+        closedOffset()*.38;
+
+      panelOpen=
+        currentOffset<
+        threshold;
+
+      setOffset(
+        panelOpen
+        ?
+        0
+        :
+        closedOffset(),
+        true
+      );
+    };
+
+  handle.addEventListener(
+    'pointerup',
+    end
+  );
+
+  handle.addEventListener(
+    'pointercancel',
+    end
+  );
+
+  handle.addEventListener(
+    'click',
+    ()=>{
+      if(
+        Math.abs(
+          currentOffset-
+          startOffset
+        )<8
+      ){
+        setOffset(
+          panelOpen
+          ?
+          closedOffset()
+          :
+          0,
+          true
+        );
+      }
+    }
+  );
+
+  requestAnimationFrame(
+    ()=>{
+      setOffset(
+        closedOffset(),
+        false
+      );
+    }
+  );
+}
+
+function animate(timestamp){
+
+  requestAnimationFrame(
+    animate
+  );
+
+  currentMouse.x+=
+    (
+      targetMouse.x-
+      currentMouse.x
+    )*
+    .1;
+
+  currentMouse.y+=
+    (
+      targetMouse.y-
+      currentMouse.y
+    )*
+    .1;
+
+  uniforms.u_mouse.value.set(
+    currentMouse.x,
+    currentMouse.y
+  );
+
+  uniforms.u_time.value=
+    timestamp*
+    .001;
+
+  uniforms.u_touchVelocity.value.multiplyScalar(
+    .91
+  );
+
+  uniforms.u_touchForce.value*=
+    .965;
+
+  if(
+    isAudioActive&&
+    analyser
+  ){
+
+    analyser.getByteFrequencyData(
+      dataArray
+    );
+
+    let sum=0;
+    let bass=0;
+    let mid=0;
+    let treble=0;
+
+    const n=
+      dataArray.length;
+
+    for(
+      let i=0;
+      i<n;
+      i++
+    ){
+
+      const v=
+        dataArray[i]/
+        255;
+
+      sum+=v;
+
+      if(i<n*.12)
+        bass+=v;
+      else if(i<n*.5)
+        mid+=v;
+      else
+        treble+=v;
+    }
+
+    const audioLevel=
+      sum/n;
+
+    bass/=
+      n*.12;
+
+    mid/=
+      n*.38;
+
+    treble/=
+      n*.5;
+
+    uniforms.u_audioLevel.value+=
+      (
+        audioLevel-
+        uniforms.u_audioLevel.value
+      )*
+      .16;
+
+    uniforms.u_bass.value+=
+      (
+        bass-
+        uniforms.u_bass.value
+      )*
+      .16;
+
+    uniforms.u_mid.value+=
+      (
+        mid-
+        uniforms.u_mid.value
+      )*
+      .16;
+
+    uniforms.u_treble.value+=
+      (
+        treble-
+        uniforms.u_treble.value
+      )*
+      .16;
+  }
+
+  renderer.render(
+    scene,
+    camera
+  );
+}
+
+function applyPreset(name){
+
+  const presets={
+
+    whiteVoidDark:{
+      mode:0,
+      a:'#000000',
+      b:'#ffffff',
+      c:'#f1f5f9'
+    },
+
+    goldDark:{
+      mode:0,
+      a:'#000000',
+      b:'#eab308',
+      c:'#fef08a'
+    },
+
+    oceanDeep:{
+      mode:0,
+      a:'#000000',
+      b:'#06b6d4',
+      c:'#1e3a8a'
+    },
+
+    crimsonBlood:{
+      mode:0,
+      a:'#000000',
+      b:'#ef4444',
+      c:'#7f1d1d'
+    },
+
+    multiLightning:{
+      mode:1,
+      a:'#000000',
+      b:'#38bdf8',
+      c:'#ffffff'
+    },
+
+    purpleLightning:{
+      mode:1,
+      a:'#000000',
+      b:'#c084fc',
+      c:'#d8b4fe'
+    },
+
+    goldLightning:{
+      mode:1,
+      a:'#000000',
+      b:'#facc15',
+      c:'#ffffff'
+    },
+
+    matrixLightning:{
+      mode:1,
+      a:'#000000',
+      b:'#4ade80',
+      c:'#bbf7d0'
+    },
+
+    silkSmoke:{
+      mode:2,
+      a:'#000000',
+      b:'#c084fc',
+      c:'#f472b6'
+    },
+
+    toxicSmoke:{
+      mode:2,
+      a:'#000000',
+      b:'#a3e635',
+      c:'#fef08a'
+    },
+
+    ghostSmoke:{
+      mode:2,
+      a:'#000000',
+      b:'#94a3b8',
+      c:'#f8fafc'
+    },
+
+    fireSmoke:{
+      mode:2,
+      a:'#000000',
+      b:'#f97316',
+      c:'#ef4444'
+    },
+
+    mercuryLiquid:{
+      mode:3,
+      a:'#020304',
+      b:'#aeb6bf',
+      c:'#ffffff'
+    },
+
+    chromeFlow:{
+      mode:3,
+      a:'#050608',
+      b:'#64748b',
+      c:'#f8fafc'
+    },
+
+    blackOil:{
+      mode:4,
+      a:'#000000',
+      b:'#1e293b',
+      c:'#cbd5e1'
+    },
+
+    teslaCoil:{
+      mode:1,
+      a:'#010204',
+      b:'#38bdf8',
+      c:'#ffffff'
+    },
+
+    voidLightning:{
+      mode:1,
+      a:'#000000',
+      b:'#e2e8f0',
+      c:'#ffffff'
+    },
+
+    plasmaStorm:{
+      mode:1,
+      a:'#030007',
+      b:'#d946ef',
+      c:'#f5d0fe'
+    },
+
+    electricVeins:{
+      mode:1,
+      a:'#010005',
+      b:'#8b5cf6',
+      c:'#ede9fe'
+    },
+
+    cosmicDust:{
+      mode:5,
+      a:'#000008',
+      b:'#6366f1',
+      c:'#ffffff'
+    },
+
+    solarFlare:{
+      mode:6,
+      a:'#070000',
+      b:'#f97316',
+      c:'#fef3c7'
+    }
+  };
+
+  const p=
+    presets[name];
+
+  if(p){
+
+    uniforms.u_mode.value=
+      p.mode;
+
+    uniforms.u_colorA.value.set(
+      p.a
+    );
+
+    uniforms.u_colorB.value.set(
+      p.b
+    );
+
+    uniforms.u_colorC.value.set(
+      p.c
+    );
+  }
+}
+
+function updateUniforms(){
+
+  uniforms.u_speed.value=
+    parseFloat(
+      document.getElementById(
+        'sliderSpeed'
+      ).value
+    );
+
+  uniforms.u_glow.value=
+    parseFloat(
+      document.getElementById(
+        'sliderGlow'
+      ).value
+    );
+}
+
+function setRenderQuality(level){
+
+  const map={
+    performance:.75,
+    balanced:1,
+    high:1.5,
+    ultra:2
+  };
+
+  const labels={
+    performance:'Performance',
+    balanced:'Balanced',
+    high:'High',
+    ultra:'Ultra'
+  };
+
+  const dpr=
+    map[level]||
+    1.5;
+
+  if(renderer){
+
+    renderer.setPixelRatio(
+      Math.min(
+        (
+          window.devicePixelRatio||
+          1
+        )*
+        dpr,
+        level==='ultra'
+        ?
+        2.5
+        :
+        2
+      )
+    );
+
+    renderer.setSize(
+      window.innerWidth,
+      window.innerHeight,
+      false
+    );
+  }
+
+  if(
+    uniforms&&
+    renderer
+  ){
+
+    uniforms.u_resolution.value.set(
+      window.innerWidth*
+      renderer.getPixelRatio(),
+      window.innerHeight*
+      renderer.getPixelRatio()
+    );
+  }
+
+  const label=
+    document.getElementById(
+      'qualityLabel'
+    );
+
+  if(label)
+    label.textContent=
+      labels[level]||
+      'High';
+
+  localStorage.setItem(
+    'auraQuality',
+    level
+  );
+
+  toast(
+    'Render quality: '+
+    (
+      labels[level]||
+      'High'
+    )
+  );
+}
+
+function switchTab(tab){
+
+  document
+    .querySelectorAll(
+      '.tab-content'
+    )
+    .forEach(
+      el=>
+        el.classList.add(
+          'hidden'
+        )
+    );
+
+  document
+    .querySelectorAll(
+      '.tab-btn'
+    )
+    .forEach(
+      el=>{
+        el.classList.remove(
+          'bg-amber-400',
+          'text-black',
+          'font-bold'
+        );
+
+        el.classList.add(
+          'text-slate-400'
+        );
+      }
+    );
+
+  document
+    .getElementById(
+      'tabContent-'+tab
+    )
+    .classList.remove(
+      'hidden'
+    );
+
+  const active=
+    document.getElementById(
+      'tabBtn-'+tab
+    );
+
+  active.classList.add(
+    'bg-amber-400',
+    'text-black',
+    'font-bold'
+  );
+
+  active.classList.remove(
+    'text-slate-400'
+  );
+}
+
+function setFont(fontClass){
+
+  const clock=
+    document.getElementById(
+      'lockscreenClock'
+    );
+
+  clock.className=
+    `text-7xl sm:text-9xl font-extralight tracking-tight text-white drop-shadow-2xl ${fontClass}`;
+}
+
+function toggleTimeFormat(){
+
+  is24HourFormat=
+    !is24HourFormat;
+
+  document.getElementById(
+    'timeFormatBtn'
+  ).innerText=
+    is24HourFormat
+    ?
+    '24H'
+    :
+    '12H';
+
+  updateWidgets();
+}
+
+function toggleCanvas(){
+
+  const canvas=
+    document.getElementById(
+      'webglCanvas'
+    );
+
+  const hidden=
+    canvas.style.opacity===
+    '0';
+
+  canvas.style.opacity=
+    hidden
+    ?
+    '1'
+    :
+    '0';
+
+  canvas.style.pointerEvents=
+    hidden
+    ?
+    'auto'
+    :
+    'none';
+
+  const btn=
+    document.getElementById(
+      'canvasToggleBtn'
+    );
+
+  if(btn)
+    btn.textContent=
+      hidden
+      ?
+      '◉ Canvas'
+      :
+      '○ Canvas';
+
+  toast(
+    hidden
+    ?
+    'Canvas on'
+    :
+    'Canvas off'
+  );
+}
+
+function toggleOverlay(){
+
+  document
+    .getElementById(
+      'lockscreenOverlay'
+    )
+    .classList.toggle(
+      'opacity-0'
+    );
+}
+
+function updateWidgets(){
+
+  const now=
+    new Date();
+
+  let hours=
+    now.getHours();
+
+  const minutes=
+    String(
+      now.getMinutes()
+    ).padStart(
+      2,
+      '0'
+    );
+
+  if(!is24HourFormat){
+
+    hours=
+      hours%12||
+      12;
+  }
+
+  document
+    .getElementById(
+      'lockscreenClock'
+    )
+    .innerText=
+      `${
+        String(hours)
+        .padStart(2,'0')
+      }:${
+        minutes
+      }`;
+
+  const options={
+    weekday:'short',
+    month:'short',
+    day:'numeric'
+  };
+
+  document
+    .getElementById(
+      'lockscreenDate'
+    )
+    .innerText=
+      now
+      .toLocaleDateString(
+        'en-US',
+        options
+      )
+      .toUpperCase();
+}
+
+async function toggleAudioSync(){
+
+  const btn=
+    document.getElementById(
+      'audioBtn'
+    );
+
+  if(isAudioActive){
+
+    isAudioActive=false;
+
+    if(microphone)
+      microphone.disconnect();
+
+    uniforms.u_audioLevel.value=
+      0;
+
+    btn.classList.remove(
+      'bg-amber-500/20',
+      'border-amber-500/50',
+      'text-amber-300'
+    );
+
+    btn.classList.add(
+      'bg-white/5',
+      'border-white/10',
+      'text-slate-300'
+    );
+
+  }else{
+
+    try{
+
+      const stream=
+        await navigator.mediaDevices
+        .getUserMedia({
+          audio:true,
+          video:false
+        });
+
+      audioContext=
+        new(
+          window.AudioContext||
+          window.webkitAudioContext
+        )();
+
+      analyser=
+        audioContext
+        .createAnalyser();
+
+      analyser.fftSize=
+        64;
+
+      dataArray=
+        new Uint8Array(
+          analyser.frequencyBinCount
+        );
+
+      microphone=
+        audioContext
+        .createMediaStreamSource(
+          stream
+        );
+
+      microphone.connect(
+        analyser
+      );
+
+      isAudioActive=true;
+
+      btn.classList.add(
+        'bg-amber-500/20',
+        'border-amber-500/50',
+        'text-amber-300'
+      );
+
+      btn.classList.remove(
+        'bg-white/5',
+        'border-white/10',
+        'text-slate-300'
+      );
+
+    }catch(err){
+
+      alert(
+        "Microphone security restriction: Browsers block local mic access without HTTPS."
+      );
+    }
+  }
+}
+
+function openPaywall(){
+
+  const modal=
+    document.getElementById(
+      'paywallModal'
+    );
+
+  const card=
+    document.getElementById(
+      'paywallCard'
+    );
+
+  modal.classList.remove(
+    'hidden'
+  );
+
+  setTimeout(
+    ()=>{
+      modal.classList.remove(
+        'opacity-0'
+      );
+
+      card.classList.remove(
+        'scale-95'
+      );
+    },
+    10
+  );
+}
+
+function closePaywall(){
+
+  const modal=
+    document.getElementById(
+      'paywallModal'
+    );
+
+  const card=
+    document.getElementById(
+      'paywallCard'
+    );
+
+  modal.classList.add(
+    'opacity-0'
+  );
+
+  card.classList.add(
+    'scale-95'
+  );
+
+  setTimeout(
+    ()=>{
+      modal.classList.add(
+        'hidden'
+      );
+    },
+    300
+  );
+}
+
+function skipSplash(){
+
+  const el=
+    document.getElementById(
+      'auraSplash'
+    );
+
+  if(!el)
+    return;
+
+  el.style.opacity=
+    '0';
+
+  el.style.visibility=
+    'hidden';
+
+  setTimeout(
+    ()=>{
+      el.remove();
+    },
+    950
+  );
+}
+
+window.addEventListener(
+  'load',
+  ()=>{
+    setTimeout(
+      skipSplash,
+      4600
+    );
+  }
+);
+
+window.onload=
+  initEngine;
+
+
+/* AURA PRO PRODUCT LAYER */
+
+const AURA_PRO_PRICE=
+  '$4.99/month';
+
+const AURA_YEAR_PRICE=
+  '$39.99/year';
+
+let currentPresetName=
+  'whiteVoidDark';
+
+let savedScenes=
+  JSON.parse(
+    localStorage.getItem(
+      'auraScenes'
+    )||
+    '[]'
+  );
+
+const presetMeta={
+
+  whiteVoidDark:{
+    title:'White Void',
+    desc:'Silky Waves',
+    tag:'MINIMAL'
+  },
+
+  goldDark:{
+    title:'Black & Gold',
+    desc:'Silky Waves',
+    tag:'SIGNATURE'
+  },
+
+  oceanDeep:{
+    title:'Abyss',
+    desc:'Silky Waves',
+    tag:'DEEP'
+  },
+
+  crimsonBlood:{
+    title:'Crimson',
+    desc:'Silky Waves',
+    tag:'BOLD'
+  },
+
+  multiLightning:{
+    title:'Plasma',
+    desc:'Lightning',
+    tag:'ENERGY'
+  },
+
+  purpleLightning:{
+    title:'Void Ray',
+    desc:'Lightning',
+    tag:'NEON'
+  },
+
+  goldLightning:{
+    title:'Zeus',
+    desc:'Lightning',
+    tag:'ENERGY'
+  },
+
+  matrixLightning:{
+    title:'Matrix',
+    desc:'Lightning',
+    tag:'CYBER'
+  },
+
+  silkSmoke:{
+    title:'Violet Fog',
+    desc:'Nebula Smoke',
+    tag:'DREAM'
+  },
+
+  toxicSmoke:{
+    title:'Biohazard',
+    desc:'Nebula Smoke',
+    tag:'ACID'
+  },
+
+  ghostSmoke:{
+    title:'Phantom',
+    desc:'Nebula Smoke',
+    tag:'GHOST'
+  },
+
+  fireSmoke:{
+    title:'Inferno',
+    desc:'Nebula Smoke',
+    tag:'FIRE'
+  }
+};
+
+Object.assign(
+  presetMeta,
+  {
+    mercuryLiquid:{
+      title:'Mercury',
+      desc:'Liquid Chrome',
+      tag:'SIGNATURE'
+    },
+
+    chromeFlow:{
+      title:'Chrome Flow',
+      desc:'Liquid Reflective',
+      tag:'LIQUID'
+    },
+
+    blackOil:{
+      title:'Black Oil',
+      desc:'Gloss Liquid',
+      tag:'LIQUID'
+    },
+
+    teslaCoil:{
+      title:'Tesla Coil',
+      desc:'Electric Arc',
+      tag:'ENERGY'
+    },
+
+    voidLightning:{
+      title:'Void Lightning',
+      desc:'Razor Electric',
+      tag:'ENERGY'
+    },
+
+    plasmaStorm:{
+      title:'Plasma Storm',
+      desc:'Electric Filaments',
+      tag:'ENERGY'
+    },
+
+    electricVeins:{
+      title:'Electric Veins',
+      desc:'Organic Electric',
+      tag:'ENERGY'
+    },
+
+    cosmicDust:{
+      title:'Cosmic Dust',
+      desc:'Deep Particles',
+      tag:'COSMIC'
+    },
+
+    solarFlare:{
+      title:'Solar Flare',
+      desc:'Plasma Energy',
+      tag:'COSMIC'
+    }
+  }
+);
+
+function openWelcome(){
+
+  document
+    .getElementById(
+      'welcomeModal'
+    )
+    .classList.remove(
+      'hidden'
+    );
+
+  requestAnimationFrame(
+    ()=>{
+      document
+        .getElementById(
+          'welcomeCard'
+        )
+        .classList.remove(
+          'translate-y-4',
+          'opacity-0'
+        );
+    }
+  );
+}
+
+function closeWelcome(){
+
+  document
+    .getElementById(
+      'welcomeModal'
+    )
+    .classList.add(
+      'hidden'
+    );
+
+  localStorage.setItem(
+    'auraVisited',
+    '1'
+  );
+}
+
+function openScenes(){
+
+  renderScenes();
+
+  const m=
+    document.getElementById(
+      'scenesModal'
+    );
+
+  m.classList.remove(
+    'hidden'
+  );
+
+  requestAnimationFrame(
+    ()=>{
+      document
+        .getElementById(
+          'scenesCard'
+        )
+        .classList.remove(
+          'translate-y-4',
+          'opacity-0'
+        );
+    }
+  );
+}
+
+function closeScenes(){
+
+  document
+    .getElementById(
+      'scenesModal'
+    )
+    .classList.add(
+      'hidden'
+    );
+}
+
+function saveScene(){
+
+  const name=
+    prompt(
+      'Name your AURA scene:',
+      presetMeta[
+        currentPresetName
+      ]?.title||
+      'My AURA'
+    );
+
+  if(!name)
+    return;
+
+  const scene={
+    id:Date.now(),
+    name,
+    preset:currentPresetName,
+    speed:
+      document
+      .getElementById(
+        'sliderSpeed'
+      )
+      .value,
+
+    glow:
+      document
+      .getElementById(
+        'sliderGlow'
+      )
+      .value,
+
+    font:
+      document
+      .getElementById(
+        'lockscreenClock'
+      )
+      .className
+      .match(
+        /font-[a-z]+/
+      )?.[0]||
+      'font-syne',
+
+    format:
+      is24HourFormat
+      ?
+      '24H'
+      :
+      '12H'
+  };
+
+  savedScenes.unshift(
+    scene
+  );
+
+  savedScenes=
+    savedScenes.slice(
+      0,
+      12
+    );
+
+  localStorage.setItem(
+    'auraScenes',
+    JSON.stringify(
+      savedScenes
+    )
+  );
+
+  toast(
+    'Scene saved'
+  );
+}
+
+function loadScene(id){
+
+  const s=
+    savedScenes.find(
+      x=>x.id===id
+    );
+
+  if(!s)
+    return;
+
+  currentPresetName=
+    s.preset;
+
+  applyPreset(
+    s.preset
+  );
+
+  document
+    .getElementById(
+      'sliderSpeed'
+    )
+    .value=
+      s.speed;
+
+  document
+    .getElementById(
+      'sliderGlow'
+    )
+    .value=
+      s.glow;
+
+  updateUniforms();
+
+  setFont(
+    s.font
+  );
+
+  const want24=
+    s.format===
+    '24H';
+
+  if(
+    is24HourFormat!==
+    want24
+  )
+    toggleTimeFormat();
+
+  closeScenes();
+
+  toast(
+    'Loaded '+
+    s.name
+  );
+}
+
+function deleteScene(id){
+
+  savedScenes=
+    savedScenes.filter(
+      x=>x.id!==id
+    );
+
+  localStorage.setItem(
+    'auraScenes',
+    JSON.stringify(
+      savedScenes
+    )
+  );
+
+  renderScenes();
+}
+
+function renderScenes(){
+
+  const box=
+    document.getElementById(
+      'sceneList'
+    );
+
+  if(!savedScenes.length){
+
+    box.innerHTML=
+      '<div class="py-10 text-center text-slate-500 text-sm">No saved scenes yet.<br><span class="text-slate-600">Build an atmosphere and save it.</span></div>';
+
+    return;
+  }
+
+  box.innerHTML=
+    savedScenes
+    .map(
+      s=>`
+
+        <div class="flex items-center justify-between gap-3 p-3 rounded-2xl bg-white/[.04] border border-white/10">
+
+          <div class="min-w-0">
+
+            <div class="font-semibold text-white truncate">
+              ${escapeHtml(s.name)}
+            </div>
+
+            <div class="text-[10px] text-slate-500 uppercase tracking-widest">
+              ${escapeHtml(
+                presetMeta[
+                  s.preset
+                ]?.title||
+                s.preset
+              )}
+            </div>
+
+          </div>
+
+          <div class="flex gap-2 shrink-0">
+
+            <button
+              onclick="loadScene(${s.id})"
+              class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs">
+              Load
+            </button>
+
+            <button
+              onclick="deleteScene(${s.id})"
+              class="px-2.5 py-1.5 rounded-xl text-slate-500 hover:text-red-300 text-xs">
+              ×
+            </button>
+
+          </div>
+
+        </div>
+
+      `
+    )
+    .join('');
+}
+
+function escapeHtml(v){
+
+  return String(v).replace(
+    /[&<>"']/g,
+    m=>({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#039;'
+    }[m])
+  );
+}
+
+function shareScene(){
+
+  const params=
+    new URLSearchParams({
+      p:currentPresetName,
+      s:
+        document
+        .getElementById(
+          'sliderSpeed'
+        )
+        .value,
+      g:
+        document
+        .getElementById(
+          'sliderGlow'
+        )
+        .value
     });
 
-    function openWelcome(){
-      document.getElementById('welcomeModal').classList.remove('hidden');
-      requestAnimationFrame(()=>document.getElementById('welcomeCard').classList.remove('translate-y-4','opacity-0'));
-    }
-    function closeWelcome(){
-      document.getElementById('welcomeModal').classList.add('hidden');
-      localStorage.setItem('auraVisited','1');
-    }
-    function openScenes(){
-      renderScenes();
-      const m=document.getElementById('scenesModal');
-      m.classList.remove('hidden');
-      requestAnimationFrame(()=>document.getElementById('scenesCard').classList.remove('translate-y-4','opacity-0'));
-    }
-    function closeScenes(){
-      document.getElementById('scenesModal').classList.add('hidden');
-    }
-    function saveScene(){
-      const name = prompt('Name your AURA scene:', presetMeta[currentPresetName]?.title || 'My AURA');
-      if(!name) return;
-      const scene = {
-        id: Date.now(),
-        name,
-        preset: currentPresetName,
-        speed: document.getElementById('sliderSpeed').value,
-        glow: document.getElementById('sliderGlow').value,
-        font: document.getElementById('lockscreenClock').className.match(/font-[a-z]+/)?.[0] || 'font-syne',
-        format: is24HourFormat ? '24H' : '12H'
-      };
-      savedScenes.unshift(scene);
-      savedScenes = savedScenes.slice(0,12);
-      localStorage.setItem('auraScenes',JSON.stringify(savedScenes));
-      toast('Scene saved');
-    }
-    function loadScene(id){
-      const s=savedScenes.find(x=>x.id===id); if(!s) return;
-      currentPresetName=s.preset;
-      applyPreset(s.preset);
-      document.getElementById('sliderSpeed').value=s.speed;
-      document.getElementById('sliderGlow').value=s.glow;
-      updateUniforms();
-      setFont(s.font);
-      const want24=s.format==='24H';
-      if(is24HourFormat!==want24) toggleTimeFormat();
-      closeScenes();
-      toast('Loaded '+s.name);
-    }
-    function deleteScene(id){
-      savedScenes=savedScenes.filter(x=>x.id!==id);
-      localStorage.setItem('auraScenes',JSON.stringify(savedScenes));
-      renderScenes();
-    }
-    function renderScenes(){
-      const box=document.getElementById('sceneList');
-      if(!savedScenes.length){
-        box.innerHTML='<div class="py-10 text-center text-slate-500 text-sm">No saved scenes yet.<br><span class="text-slate-600">Build an atmosphere and save it.</span></div>';
-        return;
+  const url=
+    location.origin+
+    location.pathname+
+    '?'+
+    params.toString();
+
+  navigator
+    .clipboard
+    ?.writeText(url)
+    .then(
+      ()=>{
+        toast(
+          'Share link copied'
+        );
       }
-      box.innerHTML=savedScenes.map(s=>`
-        <div class="flex items-center justify-between gap-3 p-3 rounded-2xl bg-white/[.04] border border-white/10">
-          <div class="min-w-0"><div class="font-semibold text-white truncate">${escapeHtml(s.name)}</div><div class="text-[10px] text-slate-500 uppercase tracking-widest">${escapeHtml(presetMeta[s.preset]?.title || s.preset)}</div></div>
-          <div class="flex gap-2 shrink-0"><button onclick="loadScene(${s.id})" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs">Load</button><button onclick="deleteScene(${s.id})" class="px-2.5 py-1.5 rounded-xl text-slate-500 hover:text-red-300 text-xs">×</button></div>
-        </div>`).join('');
-    }
-    function escapeHtml(v){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
-
-    function shareScene(){
-      const params=new URLSearchParams({p:currentPresetName,s:document.getElementById('sliderSpeed').value,g:document.getElementById('sliderGlow').value});
-      const url=location.origin+location.pathname+'?'+params.toString();
-      navigator.clipboard?.writeText(url).then(()=>toast('Share link copied')).catch(()=>prompt('Copy your scene link:',url));
-    }
-    function readSharedScene(){
-      const q=new URLSearchParams(location.search);
-      if(q.get('p')){
-        if(presetMeta[q.get('p')]) { currentPresetName=q.get('p'); applyPreset(currentPresetName); }
-        if(q.get('s')) document.getElementById('sliderSpeed').value=q.get('s');
-        if(q.get('g')) document.getElementById('sliderGlow').value=q.get('g');
-        updateUniforms();
+    )
+    .catch(
+      ()=>{
+        prompt(
+          'Copy your scene link:',
+          url
+        );
       }
-    }
-    function toggleFullscreen(){
-      if(!document.fullscreenElement) document.documentElement.requestFullscreen?.();
-      else document.exitFullscreen?.();
-    }
-    function toast(message){
-      const t=document.getElementById('toast');
-      t.textContent=message;t.classList.remove('opacity-0','translate-y-2');
-      clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.add('opacity-0','translate-y-2'),1800);
-    }
-    function showUpgrade(){
-      closeScenes();
-      openPaywall();
+    );
+}
+
+function readSharedScene(){
+
+  const q=
+    new URLSearchParams(
+      location.search
+    );
+
+  if(q.get('p')){
+
+    if(
+      presetMeta[
+        q.get('p')
+      ]
+    ){
+
+      currentPresetName=
+        q.get('p');
+
+      applyPreset(
+        currentPresetName
+      );
     }
 
-    /* Wrap preset application so the active scene is always tracked. */
-    const _applyPreset = applyPreset;
-    applyPreset = function(name){
-      currentPresetName=name;
-      _applyPreset(name);
-      document.querySelectorAll('[data-preset]').forEach(b=>b.classList.toggle('ring-1',b.dataset.preset===name));
-      const meta=presetMeta[name];
-      if(meta) document.getElementById('activeSceneName').textContent=meta.title;
-    };
+    if(q.get('s')){
 
-    function initProductLayer(){
-      readSharedScene();
-      document.getElementById('saveSceneBtn').addEventListener('click',saveScene);
-      if(!localStorage.getItem('auraVisited')) setTimeout(openWelcome,700);
-      applyPreset(currentPresetName);
+      document
+        .getElementById(
+          'sliderSpeed'
+        )
+        .value=
+          q.get('s');
     }
 
-    const __originalOnload = window.onload;
-    window.onload = function(){
-      if(__originalOnload) __originalOnload();
-      setTimeout(initProductLayer, 80);
-    };
+    if(q.get('g')){
+
+      document
+        .getElementById(
+          'sliderGlow'
+        )
+        .value=
+          q.get('g');
+    }
+
+    updateUniforms();
+  }
+}
+
+function toggleFullscreen(){
+
+  if(
+    !document.fullscreenElement
+  ){
+
+    document
+      .documentElement
+      .requestFullscreen?.();
+
+  }else{
+
+    document
+      .exitFullscreen?.();
+  }
+}
+
+function toast(message){
+
+  const t=
+    document.getElementById(
+      'toast'
+    );
+
+  t.textContent=
+    message;
+
+  t.classList.remove(
+    'opacity-0',
+    'translate-y-2'
+  );
+
+  clearTimeout(
+    window.__toast
+  );
+
+  window.__toast=
+    setTimeout(
+      ()=>{
+        t.classList.add(
+          'opacity-0',
+          'translate-y-2'
+        );
+      },
+      1800
+    );
+}
+
+function showUpgrade(){
+
+  closeScenes();
+
+  openPaywall();
+}
+
+const _applyPreset=
+  applyPreset;
+
+applyPreset=
+  function(name){
+
+    currentPresetName=
+      name;
+
+    _applyPreset(
+      name
+    );
+
+    document
+      .querySelectorAll(
+        '[data-preset]'
+      )
+      .forEach(
+        b=>
+          b.classList.toggle(
+            'ring-1',
+            b.dataset.preset===
+            name
+          )
+      );
+
+    const meta=
+      presetMeta[name];
+
+    if(meta){
+
+      document
+        .getElementById(
+          'activeSceneName'
+        )
+        .textContent=
+          meta.title;
+    }
+  };
+
+function initProductLayer(){
+
+  readSharedScene();
+
+  document
+    .getElementById(
+      'saveSceneBtn'
+    )
+    .addEventListener(
+      'click',
+      saveScene
+    );
+
+  if(
+    !localStorage.getItem(
+      'auraVisited'
+    )
+  ){
+
+    setTimeout(
+      openWelcome,
+      700
+    );
+  }
+
+  applyPreset(
+    currentPresetName
+  );
+}
+
+const __originalOnload=
+  window.onload;
+
+window.onload=
+  function(){
+
+    if(__originalOnload)
+      __originalOnload();
+
+    setTimeout(
+      initProductLayer,
+      80
+    );
+  };
 
 </script>
 </body>
