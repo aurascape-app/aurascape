@@ -2,88 +2,424 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aurascape</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AURA PRO • High-End Dynamic Canvas Engine</title>
+
+  <script>
+    window.tailwind = {
+      config: {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Plus Jakarta Sans', 'sans-serif'],
+              syne: ['Syne', 'sans-serif'],
+              playfair: ['Playfair Display', 'serif'],
+              cinzel: ['Cinzel', 'serif'],
+              space: ['Space Grotesk', 'sans-serif'],
+              outfit: ['Outfit', 'sans-serif'],
+              mono: ['Space Mono', 'monospace'],
+            }
+          }
+        }
+      }
+    }
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+
   <style>
-    body { font-family: 'Outfit', sans-serif; background: #050505; color: #fff; overflow: hidden; }
-    .font-syne { font-family: 'Syne', sans-serif; }
-    .glass-modal { background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(20px); }
+    * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+    html, body { margin: 0; padding: 0; overflow: hidden; background-color: #000000 !important; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; touch-action: none; width: 100vw; height: 100vh; }
+    
+    .edge-vignette { pointer-events: none; box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.95); border: 1px solid rgba(255, 255, 255, 0.05); }
+    .glass-card { background: rgba(8, 8, 12, 0.82); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    .glass-modal { background: rgba(4, 4, 6, 0.94); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); }
+
+    input[type=range] { -webkit-appearance: none; background: rgba(255, 255, 255, 0.15); height: 4px; border-radius: 99px; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #fbbf24; cursor: pointer; box-shadow: 0 0 12px rgba(251, 191, 36, 0.8); }
+    ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 99px; }
   </style>
 </head>
-<body class="w-screen h-screen relative flex flex-col justify-between p-6">
+<body class="relative w-screen h-screen overflow-hidden text-slate-100 bg-black">
 
-  <!-- TOP BAR -->
-  <header class="flex justify-between items-center z-10">
-    <h1 class="text-xl font-syne font-extrabold tracking-wider bg-gradient-to-r from-amber-200 to-amber-500 bg-clip-text text-transparent">AURASCAPE</h1>
-    <button onclick="openPaywall()" class="px-4 py-2 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 font-semibold text-sm hover:bg-amber-400/20 transition cursor-pointer">✨ Aura Pro</button>
+  <div class="absolute inset-0 z-20 edge-vignette pointer-events-none"></div>
+
+  <!-- WEBGL CANVAS ENGINE -->
+  <canvas id="webglCanvas" class="absolute inset-0 w-full h-full z-0 cursor-grab active:cursor-grabbing bg-black" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0;"></canvas>
+
+  <!-- TOP HEADER WIDGETS -->
+  <header class="absolute top-0 left-0 right-0 z-30 glass-card px-4 sm:px-6 py-3 flex justify-between items-center pointer-events-auto border-b border-white/10">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 text-black flex items-center justify-center font-extrabold text-xs font-syne shadow-lg shadow-amber-500/20">A</div>
+      <div class="flex items-center gap-2">
+        <h1 class="font-syne font-extrabold text-sm tracking-widest text-white uppercase">AURA PRO</h1>
+        <span class="bg-amber-400/20 text-amber-300 font-mono text-[9px] px-2 py-0.5 rounded border border-amber-400/30 uppercase tracking-widest">STUDIO</span>
+      </div>
+    </div>
+    
+    <div class="hidden md:flex items-center gap-2 text-xs text-slate-300 font-mono bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
+      <span>☀️</span>
+      <span>72°F • Clear</span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button onclick="toggleAudioSync()" id="audioBtn" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/5 border border-white/10 text-slate-300 hover:text-white transition flex items-center gap-1.5 cursor-pointer">
+        <span id="micIcon">🎙️</span><span id="micText" class="hidden sm:inline">Audio React</span>
+      </button>
+      <button onclick="openPaywall()" class="bg-gradient-to-r from-amber-400 to-amber-600 text-black font-extrabold px-4 py-1.5 rounded-xl text-xs hover:brightness-110 transition shadow-lg shadow-amber-500/20 font-syne cursor-pointer">
+        ⚡ PRO
+      </button>
+    </div>
   </header>
 
-  <!-- CENTER DISPLAY -->
-  <main class="absolute inset-0 flex items-center justify-center pointer-events-none">
-    <div class="text-center">
-      <h2 id="activeCanvasTitle" class="text-3xl font-syne font-bold text-slate-200 mb-2">Silky Waves</h2>
-      <p class="text-xs text-slate-400">Select a canvas style below</p>
+  <!-- CENTER CLOCK WIDGET -->
+  <div id="lockscreenOverlay" class="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-6 pt-24 pb-36 font-syne transition-opacity duration-300">
+    <div class="text-center space-y-1 my-auto">
+      <p id="lockscreenDate" class="text-xs font-semibold tracking-[0.3em] uppercase text-amber-300/90 font-mono">LOADING...</p>
+      <h1 id="lockscreenClock" class="text-7xl sm:text-9xl font-extralight tracking-tight text-white drop-shadow-2xl font-syne">00:00</h1>
+      <p class="text-[10px] tracking-[0.3em] text-slate-400 uppercase font-mono">SHADERTOY FLUID ENGINE ACTIVE</p>
     </div>
-  </main>
+  </div>
 
-  <!-- BOTTOM CANVAS SELECTOR BAR -->
-  <nav class="relative z-10 flex gap-2 overflow-x-auto pb-2 max-w-3xl mx-auto w-full no-scrollbar">
-    <button onclick="switchCanvas('Silky Waves', false)" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-sm whitespace-nowrap cursor-pointer">Silky Waves</button>
-    <button onclick="switchCanvas('Plasma Lightning', false)" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-sm whitespace-nowrap cursor-pointer">Plasma Lightning</button>
-    <button onclick="switchCanvas('Volumetric Smoke', false)" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-sm whitespace-nowrap cursor-pointer">Volumetric Smoke</button>
-    <button onclick="switchCanvas('⚡ High-Voltage Lightning', true)" class="px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 hover:bg-amber-500/20 text-sm whitespace-nowrap cursor-pointer">⚡ High-Voltage Lightning (Pro)</button>
-    <button onclick="switchCanvas('Neon Aurora', false)" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-sm whitespace-nowrap cursor-pointer">Neon Aurora</button>
-    <button onclick="switchCanvas('Quantum Matrix', false)" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-sm whitespace-nowrap cursor-pointer">Quantum Matrix</button>
-  </nav>
+  <!-- CONTROL PANEL WITH RESTORED FONTS & PRESETS -->
+  <div id="controlPanel" class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 w-[94%] max-w-2xl glass-card rounded-3xl p-4 shadow-2xl space-y-3 pointer-events-auto border border-white/15">
+    <div class="flex items-center justify-between border-b border-white/10 pb-2">
+      <div class="flex gap-2">
+        <button onclick="switchTab('presets')" id="tabBtn-presets" class="tab-btn px-3 py-1 rounded-xl text-xs font-bold bg-amber-400 text-black transition cursor-pointer font-syne">Canvases</button>
+        <button onclick="switchTab('optics')" id="tabBtn-optics" class="tab-btn px-3 py-1 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition cursor-pointer font-syne">Optics</button>
+        <button onclick="switchTab('style')" id="tabBtn-style" class="tab-btn px-3 py-1 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition cursor-pointer font-syne">Fonts & Clock</button>
+      </div>
+      <button onclick="toggleOverlay()" class="px-2.5 py-1 rounded-xl text-xs bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 transition cursor-pointer">👁️ Toggle UI</button>
+    </div>
+
+    <!-- PRESETS TAB (ALL 12 PRESETS) -->
+    <div id="tabContent-presets" class="tab-content space-y-2.5 max-h-52 overflow-y-auto pr-1">
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+        <button onclick="applyPreset('whiteVoidDark')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left cursor-pointer">
+          <span class="text-xs font-bold block text-white">White Void</span>
+          <span class="text-[9px] text-slate-400">Silky Waves</span>
+        </button>
+        <button onclick="applyPreset('goldDark')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left cursor-pointer">
+          <span class="text-xs font-bold block text-amber-300">Black & Gold</span>
+          <span class="text-[9px] text-slate-400">Silky Waves</span>
+        </button>
+        <button onclick="applyPreset('oceanDeep')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left cursor-pointer">
+          <span class="text-xs font-bold block text-cyan-400">Abyss</span>
+          <span class="text-[9px] text-slate-400">Silky Waves</span>
+        </button>
+        <button onclick="applyPreset('crimsonBlood')" class="p-2.5 bg-white/5 border border-white/10 rounded-2xl hover:border-amber-400/50 transition text-left cursor-pointer">
+          <span class="text-xs font-bold block text-red-500">Crimson</span>
+          <span class="text-[9px] text-slate-400">Silky Waves</span>
+        </button>
+        <button onclick="applyPreset('multiLightning')" class="p-2.5 bg-amber-400/5 border border-amber-400/20 rounded-2xl hover:border-amber-400 transition text-left cursor-pointer">
+          <span class="text-xs font-bold block text-blue-300">⚡ Plasma</span>
+          <span class="text-[9px] text-slate-300">Lightning</span>
+        </button>
+        <button onclick="applyPreset('purpleLightning')" class="p-2.5 bg-amber-400/5 border border-amber-400/20 rounded-2xl hover:border-amber-400 transition text-left cursor-pointer">
+          <span class="text-xs font-bold block text-purple-400">⚡ Void Ray</span>
+          <span class="text-[9px] text-slate-300">Lightning</span>
+        </button>
+        <button onclick="applyPreset('goldLightning')" class="p-2.5 bg-amber-400/5 border border-amber-400/20 rounded-2xl hover:border-amber-400 transition text-left cursor-pointer">
+          <span class="text-xs font-bold block text-yellow-400">⚡ Zeus</span>
+          <span class="text-[9px] text-slate-300">Lightning</span>
+        </button>
+        <button onclick="applyPreset('matrixLightning')" class="p-2.5 bg-amber-400/5 border border-amber-400/20 rounded-2xl hover:border-amber-400 transition text-left cursor-pointer">
+          <span class="text-xs font-bold block text-green-400">⚡ Matrix</span>
+          <span class="text-[9px] text-slate-300">Lightning</span>
+        </button>
+        <button onclick="applyPreset('silkSmoke')" class="p-2.5 bg-purple-500/10 border border-purple-500/30 rounded-2xl hover:border-purple-400 transition text-left cursor-pointer">
+          <span class="text-xs font-bold block text-purple-300">💨 Violet Fog</span>
+          <span class="text-[9px] text-slate-300">Nebula Smoke</span>
+        </button>
+        <button onclick="applyPreset('toxicSmoke')" class="p-2.5 bg-purple-500/10 border border-purple-500/30 rounded-2xl hover:border-purple-400 transition text-left cursor-pointer">
+          <span class="text-xs font-bold block text-lime-400">💨 Biohazard</span>
+          <span class="text-[9px] text-slate-300">Nebula Smoke</span>
+        </button>
+        <button onclick="applyPreset('ghostSmoke')" class="p-2.5 bg-purple-500/10 border border-purple-500/30 rounded-2xl hover:border-purple-400 transition text-left cursor-pointer">
+          <span class="text-xs font-bold block text-slate-300">💨 Phantom</span>
+          <span class="text-[9px] text-slate-300">Nebula Smoke</span>
+        </button>
+        <button onclick="applyPreset('fireSmoke')" class="p-2.5 bg-purple-500/10 border border-purple-500/30 rounded-2xl hover:border-purple-400 transition text-left cursor-pointer">
+          <span class="text-xs font-bold block text-orange-500">💨 Inferno</span>
+          <span class="text-[9px] text-slate-300">Nebula Smoke</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- OPTICS TAB -->
+    <div id="tabContent-optics" class="tab-content hidden space-y-2.5">
+      <div class="grid grid-cols-2 gap-3 text-xs">
+        <div class="space-y-1"><div class="flex justify-between text-slate-300"><span>Speed</span></div><input type="range" id="sliderSpeed" min="0.1" max="3.0" step="0.1" value="1.0" class="w-full" oninput="updateUniforms()"></div>
+        <div class="space-y-1"><div class="flex justify-between text-slate-300"><span>Glow Density</span></div><input type="range" id="sliderGlow" min="0.5" max="8.0" step="0.2" value="2.0" class="w-full" oninput="updateUniforms()"></div>
+      </div>
+    </div>
+
+    <!-- FONTS & CLOCK TAB (RESTORED) -->
+    <div id="tabContent-style" class="tab-content hidden space-y-3 text-xs">
+      <div>
+        <label class="block text-slate-400 mb-1.5 font-semibold">Clock Typography Style</label>
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="setFont('font-syne')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-syne font-bold text-white cursor-pointer">Syne</button>
+          <button onclick="setFont('font-cinzel')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-cinzel font-bold text-white cursor-pointer">Cinzel</button>
+          <button onclick="setFont('font-outfit')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-outfit font-bold text-white cursor-pointer">Outfit</button>
+          <button onclick="setFont('font-space')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-space font-bold text-white cursor-pointer">Space Grotesk</button>
+          <button onclick="setFont('font-playfair')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-playfair font-bold text-white cursor-pointer">Playfair</button>
+          <button onclick="setFont('font-mono')" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-amber-400 font-mono font-bold text-white cursor-pointer">Mono</button>
+        </div>
+      </div>
+      <div class="flex items-center justify-between pt-1">
+        <span class="text-slate-400 font-semibold">Time Format (12h / 24h)</span>
+        <button onclick="toggleTimeFormat()" id="timeFormatBtn" class="px-3 py-1 rounded-xl bg-white/10 border border-white/15 text-white font-mono cursor-pointer">24H</button>
+      </div>
+    </div>
+  </div>
 
   <!-- PRO PAYWALL MODAL -->
-  <div id="paywallModal" class="absolute inset-0 z-50 hidden items-center justify-center p-4 bg-black/70 backdrop-blur-md opacity-0 transition-opacity duration-300 flex">
+  <div id="paywallModal" class="absolute inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300">
     <div class="glass-modal w-full max-w-sm rounded-3xl p-6 relative border border-amber-500/20 shadow-2xl scale-95 transition-transform duration-300" id="paywallCard">
       <button onclick="closePaywall()" class="absolute top-4 right-4 text-slate-400 hover:text-white cursor-pointer">✕</button>
       <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-xl mb-4 shadow-lg shadow-amber-500/30">⚡</div>
       <h2 class="text-2xl font-syne font-extrabold text-white mb-2">Unlock AURA PRO</h2>
-      <p class="text-sm text-slate-300 mb-6">Gain instant access to our ultra-detailed High-Voltage Electricity engine, volumetric smoke, and all pro canvases.</p>
-      <button onclick="handleSubscribe()" class="w-full py-3 rounded-xl bg-amber-400 text-black font-bold font-syne hover:bg-amber-300 transition cursor-pointer">Subscribe Now ($4.99/mo)</button>
-      <p class="text-center text-[10px] text-slate-500 mt-4">Instant billing for 1 full month. Cancel anytime.</p>
+      <p class="text-sm text-slate-300 mb-6">Gain access to Shadertoy fluid engines, audio-reactive physics, and live widgets.</p>
+      <button onclick="window.location.href='https://aurascape.lemonsqueezy.com/checkout/buy/7ac4533f-f0a6-421b-ac83-89c345f6fa50'" class="w-full py-3 rounded-xl bg-amber-400 text-black font-bold font-syne hover:bg-amber-300 transition cursor-pointer">Start Free Trial</button>
+      <p class="text-center text-[10px] text-slate-500 mt-4">$4.99/month after. Cancel anytime.</p>
     </div>
   </div>
 
   <script>
-    const LEMON_SQUEEZY_URL = "https://aurascape.lemonsqueezy.com/checkout/buy/7ac4533f-f0a6-421b-ac83-89c345f6fa50";
+    const vertexShader = `
+      varying vec2 vUv;
+      void main() { vUv = uv; gl_Position = vec4(position, 1.0); }
+    `;
 
-    function switchCanvas(name, isPro) {
-      if (isPro) {
-        openPaywall();
-        return;
+    const fragmentShader = `
+      precision mediump float;
+      uniform vec2 u_resolution;
+      uniform vec2 u_mouse;
+      uniform float u_time;
+      uniform float u_speed;
+      uniform float u_glow;
+      uniform float u_audioLevel;
+      uniform float u_mode; 
+      uniform vec3 u_colorA;
+      uniform vec3 u_colorB;
+      uniform vec3 u_colorC;
+
+      varying vec2 vUv;
+
+      float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      float noise(vec2 p) {
+        vec2 i = floor(p); vec2 f = fract(p);
+        f = f*f*(3.0-2.0*f);
+        return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+                   mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
       }
-      document.getElementById('activeCanvasTitle').innerText = name;
+
+      void main() {
+        vec2 st = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+        vec2 mouse = (u_mouse - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+        
+        float t = u_time * u_speed * (0.3 + u_audioLevel * 1.2); 
+        float activeGlow = u_glow * (1.0 + u_audioLevel * 2.5);
+        vec3 finalColor = u_colorA;
+
+        if (u_mode < 0.5) {
+          float dist = length(st - mouse);
+          st += normalize(st - mouse + 0.0001) * smoothstep(0.5, 0.0, dist) * 0.2;
+          vec2 c = st * 5.5; float v = 0.0;
+          for(int i = 1; i < 4; i++) {
+            float fi = float(i);
+            c += vec2(sin(fi * c.y + t * 0.8), cos(fi * c.x - t * 0.8));
+            v += sin(c.x + c.y) / fi;
+          }
+          v = abs(v);
+          float specular = pow(v, 3.0) * (activeGlow * 0.5);
+          vec3 waveColor = mix(u_colorB, u_colorC, sin(v * 3.1415) * 0.5 + 0.5);
+          finalColor = mix(u_colorA, waveColor + vec3(specular), pow(1.0 - v, 1.6) * 0.9);
+        } else if (u_mode > 0.5 && u_mode < 1.5) {
+          float totalBolt = 0.0;
+          for(int b = 0; b < 4; b++) {
+            float fb = float(b);
+            vec2 p = st * 3.0 + vec2(sin(fb + t * 0.5), cos(fb * 0.5 - t * 0.3));
+            float n = noise(p * 4.0 + t * 3.0 + fb);
+            p += normalize(st - mouse + 0.0001) * smoothstep(0.6, 0.0, length(st - mouse)) * 0.3;
+            float bolt = abs(p.x + sin(p.y * 5.0 + t * 4.0) * 0.4 + (n - 0.5) * 0.75);
+            totalBolt += pow(0.012 / (bolt + 0.001), 1.3);
+          }
+          finalColor = u_colorA + mix(u_colorB, u_colorC, noise(st * 2.0)) * (totalBolt * (activeGlow * 0.3));
+        } else {
+          vec2 q = st * 2.5;
+          float f = noise(q + vec2(t * 0.2, t * 0.1)) + 0.5 * noise(q * 2.0 - vec2(t * 0.3));
+          f += smoothstep(0.4, 0.0, length(st - mouse)) * 0.6;
+          finalColor = mix(u_colorA, u_colorB, clamp(f * f * 1.5, 0.0, 1.0)) + u_colorC * (pow(f, 3.0) * (activeGlow * 0.3));
+        }
+
+        gl_FragColor = vec4(finalColor, 1.0);
+      }
+    `;
+
+    let scene, camera, renderer, material, mesh, uniforms;
+    let targetMouse = new THREE.Vector2(0, 0), currentMouse = new THREE.Vector2(0, 0);
+    let audioContext, analyser, microphone, dataArray, isAudioActive = false;
+    let is24HourFormat = true;
+
+    function initEngine() {
+      try {
+        const canvas = document.getElementById('webglCanvas');
+        scene = new THREE.Scene();
+        camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+        uniforms = {
+          u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+          u_mouse: { value: new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2) },
+          u_time: { value: 0.0 }, u_speed: { value: 1.0 }, u_glow: { value: 2.0 },
+          u_audioLevel: { value: 0.0 }, u_mode: { value: 0.0 }, 
+          u_colorA: { value: new THREE.Color('#000000') }, 
+          u_colorB: { value: new THREE.Color('#ffffff') }, 
+          u_colorC: { value: new THREE.Color('#e2e8f0') }
+        };
+
+        material = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms });
+        mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+        scene.add(mesh);
+
+        renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        window.addEventListener('resize', () => { renderer.setSize(window.innerWidth, window.innerHeight); uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight); });
+        window.addEventListener('pointermove', e => { targetMouse.x = e.clientX; targetMouse.y = window.innerHeight - e.clientY; });
+
+        setInterval(updateWidgets, 1000); 
+        updateWidgets();
+        animate(0);
+      } catch (err) { alert("ENGINE ERROR: " + err.message); }
+    }
+
+    function animate(timestamp) {
+      requestAnimationFrame(animate);
+      currentMouse.x += (targetMouse.x - currentMouse.x) * 0.1;
+      currentMouse.y += (targetMouse.y - currentMouse.y) * 0.1;
+      uniforms.u_mouse.value.set(currentMouse.x, currentMouse.y);
+      uniforms.u_time.value = timestamp * 0.001;
+
+      if (isAudioActive && analyser) {
+        analyser.getByteFrequencyData(dataArray);
+        let sum = 0; for(let i = 0; i < dataArray.length; i++) { sum += dataArray[i]; }
+        let audioLevel = (sum / dataArray.length) / 255.0;
+        uniforms.u_audioLevel.value += (audioLevel - uniforms.u_audioLevel.value) * 0.2;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    function applyPreset(name) {
+      const presets = {
+        whiteVoidDark:   { mode: 0.0, a: '#000000', b: '#ffffff', c: '#f1f5f9' },
+        goldDark:        { mode: 0.0, a: '#000000', b: '#eab308', c: '#fef08a' },
+        oceanDeep:       { mode: 0.0, a: '#000000', b: '#06b6d4', c: '#1e3a8a' },
+        crimsonBlood:    { mode: 0.0, a: '#000000', b: '#ef4444', c: '#7f1d1d' },
+        multiLightning:  { mode: 1.0, a: '#000000', b: '#38bdf8', c: '#ffffff' },
+        purpleLightning: { mode: 1.0, a: '#000000', b: '#c084fc', c: '#d8b4fe' },
+        goldLightning:   { mode: 1.0, a: '#000000', b: '#facc15', c: '#ffffff' },
+        matrixLightning: { mode: 1.0, a: '#000000', b: '#4ade80', c: '#bbf7d0' },
+        silkSmoke:       { mode: 2.0, a: '#000000', b: '#c084fc', c: '#f472b6' },
+        toxicSmoke:      { mode: 2.0, a: '#000000', b: '#a3e635', c: '#fef08a' },
+        ghostSmoke:      { mode: 2.0, a: '#000000', b: '#94a3b8', c: '#f8fafc' },
+        fireSmoke:       { mode: 2.0, a: '#000000', b: '#f97316', c: '#ef4444' }
+      };
+      const p = presets[name];
+      if (p) {
+        uniforms.u_mode.value = p.mode;
+        uniforms.u_colorA.value.set(p.a); uniforms.u_colorB.value.set(p.b); uniforms.u_colorC.value.set(p.c);
+      }
+    }
+
+    function updateUniforms() {
+      uniforms.u_speed.value = parseFloat(document.getElementById('sliderSpeed').value);
+      uniforms.u_glow.value = parseFloat(document.getElementById('sliderGlow').value);
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => { el.classList.remove('bg-amber-400', 'text-black', 'font-bold'); el.classList.add('text-slate-400'); });
+      document.getElementById('tabContent-' + tab).classList.remove('hidden');
+      const active = document.getElementById('tabBtn-' + tab);
+      active.classList.add('bg-amber-400', 'text-black', 'font-bold'); active.classList.remove('text-slate-400');
+    }
+
+    function setFont(fontClass) {
+      const clock = document.getElementById('lockscreenClock');
+      clock.className = `text-7xl sm:text-9xl font-extralight tracking-tight text-white drop-shadow-2xl ${fontClass}`;
+    }
+
+    function toggleTimeFormat() {
+      is24HourFormat = !is24HourFormat;
+      document.getElementById('timeFormatBtn').innerText = is24HourFormat ? "24H" : "12H";
+      updateWidgets();
+    }
+
+    function toggleOverlay() { document.getElementById('lockscreenOverlay').classList.toggle('opacity-0'); }
+    
+    function updateWidgets() {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      
+      if (!is24HourFormat) {
+        hours = hours % 12 || 12;
+      }
+      document.getElementById('lockscreenClock').innerText = `${String(hours).padStart(2, '0')}:${minutes}`;
+      
+      const options = { weekday: 'short', month: 'short', day: 'numeric' };
+      document.getElementById('lockscreenDate').innerText = now.toLocaleDateString('en-US', options).toUpperCase();
+    }
+
+    async function toggleAudioSync() {
+      const btn = document.getElementById('audioBtn');
+      if (isAudioActive) {
+        isAudioActive = false;
+        if(microphone) microphone.disconnect();
+        uniforms.u_audioLevel.value = 0.0;
+        btn.classList.remove('bg-amber-500/20', 'border-amber-500/50', 'text-amber-300');
+        btn.classList.add('bg-white/5', 'border-white/10', 'text-slate-300');
+      } else {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          analyser = audioContext.createAnalyser();
+          analyser.fftSize = 64;
+          dataArray = new Uint8Array(analyser.frequencyBinCount);
+          microphone = audioContext.createMediaStreamSource(stream);
+          microphone.connect(analyser);
+          isAudioActive = true;
+          btn.classList.add('bg-amber-500/20', 'border-amber-500/50', 'text-amber-300');
+          btn.classList.remove('bg-white/5', 'border-white/10', 'text-slate-300');
+        } catch (err) {
+          alert("Microphone security restriction: Browsers block local mic access without HTTPS.");
+        }
+      }
     }
 
     function openPaywall() {
       const modal = document.getElementById('paywallModal');
       const card = document.getElementById('paywallCard');
       modal.classList.remove('hidden');
-      setTimeout(() => {
-        modal.classList.remove('opacity-0');
-        card.classList.remove('scale-95');
-      }, 10);
+      setTimeout(() => { modal.classList.remove('opacity-0'); card.classList.remove('scale-95'); }, 10);
     }
-
     function closePaywall() {
       const modal = document.getElementById('paywallModal');
       const card = document.getElementById('paywallCard');
-      modal.classList.add('opacity-0');
-      card.classList.add('scale-95');
-      setTimeout(() => {
-        modal.classList.add('hidden');
-      }, 300);
+      modal.classList.add('opacity-0'); card.classList.add('scale-95');
+      setTimeout(() => { modal.classList.add('hidden'); }, 300);
     }
 
-    function handleSubscribe() {
-      window.location.href = LEMON_SQUEEZY_URL;
-    }
+    window.onload = initEngine;
   </script>
 </body>
 </html>
