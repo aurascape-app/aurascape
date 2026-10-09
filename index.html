@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>AURA PRO — Living Atmosphere Engine</title>
-<meta name="description" content="AURA turns any screen into a living atmosphere. Create cinematic visuals, save scenes, react to audio and transform your space.">
+<meta name="description" content="AURA turns any screen into a living atmosphere.">
 <script>
 window.tailwind={config:{darkMode:'class',theme:{extend:{fontFamily:{sans:['Plus Jakarta Sans','sans-serif'],syne:['Syne','sans-serif'],playfair:['Playfair Display','serif'],cinzel:['Cinzel','serif'],space:['Space Grotesk','sans-serif'],outfit:['Outfit','sans-serif'],mono:['Space Mono','monospace']}}}}};
 </script>
@@ -15,814 +15,560 @@ window.tailwind={config:{darkMode:'class',theme:{extend:{fontFamily:{sans:['Plus
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;user-select:none;-webkit-user-select:none}
-html,body{margin:0;padding:0;overflow:hidden;background:#000;color:#f8fafc;font-family:'Plus Jakarta Sans',sans-serif;width:100vw;height:100vh}
-.edge-vignette{pointer-events:none;box-shadow:inset 0 0 90px rgba(0,0,0,.98);border:1px solid rgba(255,255,255,.05)}
-.glass-card{background:rgba(7,7,10,.76);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,.10)}
-.glass-modal{background:rgba(5,5,7,.92);backdrop-filter:blur(42px);-webkit-backdrop-filter:blur(42px);border:1px solid rgba(255,255,255,.13);box-shadow:0 30px 100px rgba(0,0,0,.75)}
+html,body{margin:0;padding:0;overflow:hidden;background:#000;color:#f8fafc;font-family:'Plus Jakarta Sans',sans-serif;width:100%;height:100%}
 .font-syne{font-family:'Syne',sans-serif!important}.font-cinzel{font-family:'Cinzel',serif!important}.font-outfit{font-family:'Outfit',sans-serif!important}.font-space{font-family:'Space Grotesk',sans-serif!important}.font-playfair{font-family:'Playfair Display',serif!important}.font-mono{font-family:'Space Mono',monospace!important}
+.glass-card{background:rgba(7,7,10,.76);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,.1)}
+.glass-modal{background:rgba(5,5,7,.92);backdrop-filter:blur(42px);-webkit-backdrop-filter:blur(42px);border:1px solid rgba(255,255,255,.13);box-shadow:0 30px 100px rgba(0,0,0,.75)}
+.edge-vignette{pointer-events:none;box-shadow:inset 0 0 90px rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.05)}
 .touch-scroll{touch-action:pan-y!important;-webkit-overflow-scrolling:touch}
+#webglCanvas{touch-action:none;-webkit-tap-highlight-color:transparent}
+#controlPanel{bottom:0;transform:translateX(-50%);transition:transform .32s cubic-bezier(.22,.8,.22,1),box-shadow .3s ease;will-change:transform}
+#controlPanel.panel-closed{transform:translateX(-50%) translateY(calc(100% - 54px))}
+#panelHandle{touch-action:manipulation;cursor:pointer}
+#panelHandleBar{transition:width .2s ease}
 input[type=range]{-webkit-appearance:none;background:rgba(255,255,255,.15);height:4px;border-radius:99px}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;width:16px;border-radius:50%;background:#fbbf24;cursor:pointer;box-shadow:0 0 12px rgba(251,191,36,.7)}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:99px}
-.preset-card{transition:.2s transform,.2s border-color,.2s background}.preset-card:hover{transform:translateY(-1px)}
-</style>
-
-<style>
-#webglCanvas{image-rendering:auto}
-#webglCanvas{touch-action:none;-webkit-tap-highlight-color:transparent}
-#controlPanel{bottom:0!important;transform:translateX(-50%) translateY(calc(100% - 54px))!important;transition:transform .38s cubic-bezier(.22,.8,.22,1),box-shadow .38s ease;will-change:transform}
-#controlPanel.panel-open{transform:translateX(-50%) translateY(0)!important;box-shadow:0 -20px 70px rgba(0,0,0,.45),0 0 40px rgba(255,255,255,.04)}
-#panelHandle{touch-action:none;cursor:grab}
-#panelHandle:active{cursor:grabbing}
-#panelHandleBar{transition:width .2s ease,opacity .2s ease}
-#controlPanel.panel-open #panelHandleBar{width:48px!important;opacity:1}
-@media(max-width:640px){#controlPanel{width:96%!important;max-height:70vh!important;padding:12px!important;border-radius:24px 24px 18px 18px!important}.control-panel-content{padding-bottom:max(10px,env(safe-area-inset-bottom))}}
-#auraSplash{transition:opacity 900ms cubic-bezier(.2,.7,.2,1),visibility 900ms}.splash-brand{position:relative;z-index:4;text-align:center;opacity:0;animation:splashBrand 1s 2.8s forwards}.splash-aura{font:800 clamp(64px,14vw,180px)/.8 Syne,sans-serif;letter-spacing:.08em;color:#fff;text-shadow:0 0 35px rgba(255,255,255,.22)}.splash-tag{margin-top:22px;font:500 10px/1.2 monospace;letter-spacing:.42em;color:rgba(255,255,255,.58)}.mercury-mercury{position:absolute;inset:0;z-index:2;filter:drop-shadow(0 0 20px rgba(255,255,255,.12))}.mercury-mercury:before{content:"";position:absolute;left:-8%;right:-8%;top:-10%;height:46%;background:radial-gradient(ellipse at 50% 0%,#fff 0,#d9dde2 12%,#6b7280 30%,#f8fafc 43%,#30343a 61%,#090a0c 75%);border-radius:0 0 48% 42%;animation:mercuryPool 3.4s ease-in-out forwards}.mercury-mercury span{position:absolute;top:-18%;width:clamp(8px,1.4vw,24px);border-radius:999px 999px 45% 45%;background:linear-gradient(90deg,#34383e,#f8fafc 35%,#7b8189 58%,#fff 72%,#17191d);box-shadow:inset 4px 0 7px rgba(255,255,255,.45),0 0 15px rgba(255,255,255,.12);animation:drop 2.5s cubic-bezier(.3,.7,.2,1) forwards}.mercury-mercury span:nth-child(1){left:14%;height:44vh;animation-delay:.35s}.mercury-mercury span:nth-child(2){left:31%;height:57vh;animation-delay:.65s}.mercury-mercury span:nth-child(3){left:51%;height:68vh;animation-delay:.2s}.mercury-mercury span:nth-child(4){left:72%;height:51vh;animation-delay:.8s}.mercury-mercury span:nth-child(5){left:86%;height:38vh;animation-delay:.5s}@keyframes drop{0%{transform:translateY(-20vh) scaleX(.7);opacity:0}20%{opacity:1}100%{transform:translateY(60vh) scaleX(1.15);opacity:1}}@keyframes mercuryPool{0%{transform:translateY(-12vh) scaleY(.5);opacity:.2}100%{transform:translateY(0) scaleY(1);opacity:1}}@keyframes splashBrand{to{opacity:1;transform:translateY(-2vh)}}
+.preset-card{transition:.2s transform,.2s border-color,.2s background}
+.preset-card:hover{transform:translateY(-1px)}
+.aura-panel-toggle{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:45;display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 17px;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:rgba(5,5,8,.9);color:#f8fafc;font:700 10px/1 'Space Mono',monospace;letter-spacing:.12em;box-shadow:0 8px 28px rgba(0,0,0,.35);backdrop-filter:blur(16px);cursor:pointer;touch-action:manipulation}
+#auraSplash{transition:opacity .8s ease,visibility .8s}
+.splash-brand{position:relative;z-index:4;text-align:center;opacity:0;animation:splashBrand 1s 1.6s forwards}
+.splash-aura{font:800 clamp(64px,14vw,180px)/.8 Syne,sans-serif;letter-spacing:.08em;color:#fff;text-shadow:0 0 35px rgba(255,255,255,.22)}
+.splash-tag{margin-top:22px;font:500 10px/1.2 monospace;letter-spacing:.42em;color:rgba(255,255,255,.58)}
+.mercury-mercury{position:absolute;inset:0;z-index:2}
+.mercury-mercury:before{content:"";position:absolute;left:-8%;right:-8%;top:-10%;height:46%;background:radial-gradient(ellipse at 50% 0%,#fff 0,#d9dde2 12%,#6b7280 30%,#f8fafc 43%,#30343a 61%,#090a0c 75%);border-radius:0 0 48% 42%;animation:mercuryPool 3s ease-in-out forwards}
+.mercury-mercury span{position:absolute;top:-18%;width:clamp(8px,1.4vw,24px);border-radius:999px 999px 45% 45%;background:linear-gradient(90deg,#34383e,#f8fafc 35%,#7b8189 58%,#fff 72%,#17191d);box-shadow:inset 4px 0 7px rgba(255,255,255,.45);animation:drop 2.5s cubic-bezier(.3,.7,.2,1) forwards}
+.mercury-mercury span:nth-child(1){left:14%;height:44vh;animation-delay:.35s}.mercury-mercury span:nth-child(2){left:31%;height:57vh;animation-delay:.65s}.mercury-mercury span:nth-child(3){left:51%;height:68vh;animation-delay:.2s}.mercury-mercury span:nth-child(4){left:72%;height:51vh;animation-delay:.8s}.mercury-mercury span:nth-child(5){left:86%;height:38vh;animation-delay:.5s}
+@keyframes drop{0%{transform:translateY(-20vh) scaleX(.7);opacity:0}20%{opacity:1}100%{transform:translateY(60vh) scaleX(1.15);opacity:1}}
+@keyframes mercuryPool{0%{transform:translateY(-12vh) scaleY(.5);opacity:.2}100%{transform:translateY(0) scaleY(1);opacity:1}}
+@keyframes splashBrand{to{opacity:1;transform:translateY(-2vh)}}
+@media(max-width:640px){#controlPanel{width:96%!important;max-height:70vh!important;padding:12px!important;border-radius:24px 24px 18px 18px!important}}
 </style>
 </head>
 <body class="relative w-screen h-screen overflow-hidden text-slate-100 bg-black">
 <div class="absolute inset-0 z-20 edge-vignette pointer-events-none"></div>
 <canvas id="webglCanvas" class="absolute inset-0 w-full h-full z-0 cursor-grab active:cursor-grabbing bg-black"></canvas>
 
-<!-- PRODUCT HEADER -->
 <header class="absolute top-0 left-0 right-0 z-30 px-4 sm:px-6 py-4 flex justify-between items-center pointer-events-auto">
   <div class="flex items-center gap-3">
-    <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-200 text-black flex items-center justify-center font-extrabold text-sm font-syne shadow-xl shadow-amber-500/20">A</div>
-    <div>
-      <div class="flex items-center gap-2"><h1 class="font-syne font-extrabold text-sm tracking-[.22em] text-white uppercase">AURA</h1><span class="text-[8px] font-mono tracking-widest text-amber-300 border border-amber-400/30 bg-amber-400/10 px-2 py-1 rounded-full">PRO STUDIO</span></div>
-      <div id="activeSceneName" class="text-[9px] text-slate-500 uppercase tracking-widest mt-0.5">Black & Gold</div>
-    </div>
+    <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-200 text-black flex items-center justify-center font-extrabold text-sm font-syne">A</div>
+    <div><div class="flex items-center gap-2"><h1 class="font-syne font-extrabold text-sm tracking-[.22em] text-white">AURA</h1><span class="text-[8px] font-mono tracking-widest text-amber-300 border border-amber-400/30 bg-amber-400/10 px-2 py-1 rounded-full">PRO STUDIO</span></div><div id="activeSceneName" class="text-[9px] text-slate-500 uppercase tracking-widest mt-0.5">White Void</div></div>
   </div>
-  <div class="hidden lg:flex items-center gap-2 text-[10px] text-slate-400 font-mono bg-black/20 px-3 py-2 rounded-full border border-white/10">
-    <span>✦</span><span>YOUR SCREEN. YOUR ATMOSPHERE.</span>
-  </div>
+  <div class="hidden lg:flex items-center gap-2 text-[10px] text-slate-400 font-mono bg-black/20 px-3 py-2 rounded-full border border-white/10">✦ YOUR SCREEN. YOUR ATMOSPHERE.</div>
   <div class="flex items-center gap-2">
-    <button onclick="openScenes()" class="hidden sm:block px-3 py-2 rounded-xl text-xs font-semibold bg-white/5 border border-white/10 text-slate-300 hover:text-white">Scenes</button>
-    <button onclick="toggleAudioSync()" id="audioBtn" class="px-3 py-2 rounded-xl text-xs font-semibold bg-white/5 border border-white/10 text-slate-300 hover:text-white transition flex items-center gap-1.5">🎙️ <span class="hidden sm:inline" id="micText">Audio React</span></button>
-    <button onclick="openPaywall()" class="bg-gradient-to-r from-amber-300 to-amber-500 text-black font-extrabold px-4 py-2 rounded-xl text-xs hover:brightness-110 transition shadow-lg shadow-amber-500/20 font-syne">⚡ UPGRADE</button>
+    <button onclick="openScenes()" class="hidden sm:block px-3 py-2 rounded-xl text-xs font-semibold bg-white/5 border border-white/10 text-slate-300">Scenes</button>
+    <button onclick="toggleAudioSync()" id="audioBtn" class="px-3 py-2 rounded-xl text-xs font-semibold bg-white/5 border border-white/10 text-slate-300 flex items-center gap-1.5">🎙️ <span class="hidden sm:inline" id="micText">Audio React</span></button>
+    <button onclick="openPaywall()" class="bg-gradient-to-r from-amber-300 to-amber-500 text-black font-extrabold px-4 py-2 rounded-xl text-xs shadow-lg font-syne">⚡ UPGRADE</button>
   </div>
 </header>
 
-<!-- CLOCK -->
 <div id="lockscreenOverlay" class="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-6 pt-24 pb-40 font-syne transition-opacity duration-300">
-  <div class="text-center space-y-1 my-auto">
-    <p id="lockscreenDate" class="text-xs font-semibold tracking-[.3em] uppercase text-amber-300/90 font-mono">LOADING...</p>
-    <h1 id="lockscreenClock" class="text-7xl sm:text-9xl font-extralight tracking-tight text-white drop-shadow-2xl font-syne">00:00</h1>
-  </div>
+  <div class="text-center space-y-1 my-auto"><p id="lockscreenDate" class="text-xs font-semibold tracking-[.3em] uppercase text-amber-300/90 font-mono">LOADING...</p><h1 id="lockscreenClock" class="text-7xl sm:text-9xl font-extralight tracking-tight text-white drop-shadow-2xl font-syne">00:00</h1></div>
 </div>
 
-<!-- STUDIO PANEL -->
 <div id="controlPanel" class="absolute bottom-0 left-1/2 -translate-x-1/2 z-30 w-[94%] max-w-3xl glass-card rounded-[28px] p-4 shadow-2xl space-y-3 pointer-events-auto border border-white/15 max-h-[58vh] overflow-y-auto touch-scroll">
-  <div id="panelHandle" class="flex justify-center items-center -mx-2 -mt-2 h-10 select-none" aria-label="Drag controls up or down">
-    <div id="panelHandleBar" class="w-9 h-1.5 rounded-full bg-white/30 hover:bg-white/60"></div>
-  </div>
+  <div id="panelHandle" class="flex justify-center items-center -mx-2 -mt-2 h-10 select-none" aria-label="Tap to hide or show controls"><div id="panelHandleBar" class="w-9 h-1.5 rounded-full bg-white/30"></div></div>
   <div class="flex items-center justify-between border-b border-white/10 pb-3">
-    <div class="flex gap-1.5">
-      <button onclick="switchTab('presets')" id="tabBtn-presets" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-400 text-black">Explore</button>
-      <button onclick="switchTab('optics')" id="tabBtn-optics" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white">Tuning</button>
-      <button onclick="switchTab('style')" id="tabBtn-style" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white">Clock</button>
-    </div>
-    <div class="flex gap-1.5">
-      <button id="saveSceneBtn" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10 hover:bg-white/10">＋ Save</button>
-      <button onclick="shareScene()" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10 hover:bg-white/10">↗ Share</button>
-      <button onclick="toggleFullscreen()" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10 hover:bg-white/10">⛶</button>
-      <button onclick="toggleCanvas()" id="canvasToggleBtn" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10 hover:bg-white/10">◉ Canvas</button>
-      <button onclick="toggleOverlay()" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10 hover:bg-white/10">👁</button>
-    </div>
+    <div class="flex gap-1.5"><button onclick="switchTab('presets')" id="tabBtn-presets" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-400 text-black">Explore</button><button onclick="switchTab('optics')" id="tabBtn-optics" class="tab-btn px-3 py-1.5 rounded-xl text-xs text-slate-400">Tuning</button><button onclick="switchTab('style')" id="tabBtn-style" class="tab-btn px-3 py-1.5 rounded-xl text-xs text-slate-400">Clock</button></div>
+    <div class="flex gap-1.5"><button id="saveSceneBtn" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10">＋ Save</button><button onclick="shareScene()" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10">↗ Share</button><button onclick="toggleFullscreen()" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10">⛶</button><button onclick="toggleCanvas()" id="canvasToggleBtn" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10">◉ Canvas</button><button onclick="toggleOverlay()" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10">👁</button></div>
   </div>
-
   <div id="tabContent-presets" class="tab-content space-y-3">
     <div class="flex items-end justify-between"><div><div class="text-white font-syne font-bold">Choose an atmosphere</div><div class="text-[10px] text-slate-500">Start with a mood, then make it yours.</div></div><button onclick="showUpgrade()" class="text-[9px] text-amber-300 uppercase tracking-widest">Unlock all ✦</button></div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-      <button data-preset="whiteVoidDark" onclick="applyPreset('whiteVoidDark')" class="preset-card p-3 bg-white/5 border border-white/10 rounded-2xl text-left"><span class="text-xs font-bold block">White Void</span><span class="text-[9px] text-slate-500">Minimal · Silk</span></button>
-      <button data-preset="goldDark" onclick="applyPreset('goldDark')" class="preset-card p-3 bg-amber-400/5 border border-amber-400/20 rounded-2xl text-left"><span class="text-xs font-bold block text-amber-300">Black & Gold</span><span class="text-[9px] text-slate-500">Signature · Silk</span></button>
-      <button data-preset="oceanDeep" onclick="applyPreset('oceanDeep')" class="preset-card p-3 bg-cyan-400/5 border border-cyan-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-cyan-300">Abyss</span><span class="text-[9px] text-slate-500">Deep · Silk</span></button>
-      <button data-preset="crimsonBlood" onclick="applyPreset('crimsonBlood')" class="preset-card p-3 bg-red-400/5 border border-red-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-red-300">Crimson</span><span class="text-[9px] text-slate-500">Bold · Silk</span></button>
-      <button data-preset="multiLightning" onclick="applyPreset('multiLightning')" class="preset-card p-3 bg-sky-400/5 border border-sky-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-sky-300">⚡ Plasma</span><span class="text-[9px] text-slate-500">Energy · Lightning</span></button>
-      <button data-preset="purpleLightning" onclick="applyPreset('purpleLightning')" class="preset-card p-3 bg-purple-400/5 border border-purple-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-purple-300">⚡ Void Ray</span><span class="text-[9px] text-slate-500">Neon · Lightning</span></button>
-      <button data-preset="goldLightning" onclick="applyPreset('goldLightning')" class="preset-card p-3 bg-yellow-400/5 border border-yellow-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-yellow-300">⚡ Zeus</span><span class="text-[9px] text-slate-500">Energy · Lightning</span></button>
-      <button data-preset="matrixLightning" onclick="applyPreset('matrixLightning')" class="preset-card p-3 bg-green-400/5 border border-green-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-green-300">⚡ Matrix</span><span class="text-[9px] text-slate-500">Cyber · Lightning</span></button>
-      <button data-preset="silkSmoke" onclick="applyPreset('silkSmoke')" class="preset-card p-3 bg-purple-400/5 border border-purple-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-purple-300">💨 Violet Fog</span><span class="text-[9px] text-slate-500">Dream · Nebula</span></button>
-      <button data-preset="toxicSmoke" onclick="applyPreset('toxicSmoke')" class="preset-card p-3 bg-lime-400/5 border border-lime-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-lime-300">💨 Biohazard</span><span class="text-[9px] text-slate-500">Acid · Nebula</span></button>
-      <button data-preset="ghostSmoke" onclick="applyPreset('ghostSmoke')" class="preset-card p-3 bg-slate-400/5 border border-white/10 rounded-2xl text-left"><span class="text-xs font-bold block text-slate-200">💨 Phantom</span><span class="text-[9px] text-slate-500">Ghost · Nebula</span></button>
-      <button data-preset="fireSmoke" onclick="applyPreset('fireSmoke')" class="preset-card p-3 bg-orange-400/5 border border-orange-400/10 rounded-2xl text-left"><span class="text-xs font-bold block text-orange-300">💨 Inferno</span><span class="text-[9px] text-slate-500">Fire · Nebula</span></button>
-      <button data-preset="mercuryLiquid" onclick="applyPreset('mercuryLiquid')" class="preset-card p-3 bg-slate-400/10 border border-white/15 rounded-2xl text-left"><span class="text-xs font-bold block text-slate-100">◈ Mercury</span><span class="text-[9px] text-slate-500">Liquid · Chrome</span></button>
-      <button data-preset="chromeFlow" onclick="applyPreset('chromeFlow')" class="preset-card p-3 bg-slate-400/10 border border-white/10 rounded-2xl text-left"><span class="text-xs font-bold block text-slate-200">◈ Chrome Flow</span><span class="text-[9px] text-slate-500">Liquid · Reflective</span></button>
-      <button data-preset="blackOil" onclick="applyPreset('blackOil')" class="preset-card p-3 bg-slate-400/5 border border-white/10 rounded-2xl text-left"><span class="text-xs font-bold block text-slate-100">◈ Black Oil</span><span class="text-[9px] text-slate-500">Liquid · Gloss</span></button>
-      <button data-preset="teslaCoil" onclick="applyPreset('teslaCoil')" class="preset-card p-3 bg-sky-400/5 border border-sky-300/20 rounded-2xl text-left"><span class="text-xs font-bold block text-sky-200">⚡ Tesla Coil</span><span class="text-[9px] text-slate-500">Electric · Arc</span></button>
-      <button data-preset="voidLightning" onclick="applyPreset('voidLightning')" class="preset-card p-3 bg-white/5 border border-white/15 rounded-2xl text-left"><span class="text-xs font-bold block text-white">⚡ Void Lightning</span><span class="text-[9px] text-slate-500">Electric · Razor</span></button>
-      <button data-preset="plasmaStorm" onclick="applyPreset('plasmaStorm')" class="preset-card p-3 bg-fuchsia-400/5 border border-fuchsia-300/15 rounded-2xl text-left"><span class="text-xs font-bold block text-fuchsia-200">⚡ Plasma Storm</span><span class="text-[9px] text-slate-500">Electric · Filaments</span></button>
-      <button data-preset="electricVeins" onclick="applyPreset('electricVeins')" class="preset-card p-3 bg-violet-400/5 border border-violet-300/15 rounded-2xl text-left"><span class="text-xs font-bold block text-violet-200">⚡ Electric Veins</span><span class="text-[9px] text-slate-500">Electric · Organic</span></button>
-      <button data-preset="cosmicDust" onclick="applyPreset('cosmicDust')" class="preset-card p-3 bg-indigo-400/5 border border-indigo-300/15 rounded-2xl text-left"><span class="text-xs font-bold block text-indigo-200">✦ Cosmic Dust</span><span class="text-[9px] text-slate-500">Cosmic · Particles</span></button>
-      <button data-preset="solarFlare" onclick="applyPreset('solarFlare')" class="preset-card p-3 bg-orange-400/5 border border-orange-300/15 rounded-2xl text-left"><span class="text-xs font-bold block text-orange-200">✦ Solar Flare</span><span class="text-[9px] text-slate-500">Cosmic · Energy</span></button>
-    </div>
+    <div id="presetGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2"></div>
   </div>
-
   <div id="tabContent-optics" class="tab-content hidden space-y-4 text-xs">
     <div class="grid grid-cols-2 gap-4">
-      <div><div class="flex justify-between text-slate-300 mb-2"><span>Motion</span><span id="speedLabel" class="font-mono text-slate-500">1.0×</span></div><input type="range" id="sliderSpeed" min="0.1" max="3" step="0.1" value="1" class="w-full" oninput="updateUniforms();speedLabel.textContent=this.value+'×'"></div>
-      <div><div class="flex justify-between text-slate-300 mb-2"><span>Glow</span><span id="glowLabel" class="font-mono text-slate-500">2.0</span></div><input type="range" id="sliderGlow" min=".5" max="8" step=".2" value="2" class="w-full" oninput="updateUniforms();glowLabel.textContent=this.value"></div>
-      <div><div class="flex justify-between text-slate-300 mb-2"><span>Render Quality</span><span id="qualityLabel" class="font-mono text-slate-500">High</span></div><select id="qualitySelect" onchange="setRenderQuality(this.value)" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-slate-200"><option value="performance">Performance</option><option value="balanced">Balanced</option><option value="high" selected>High</option><option value="ultra">Ultra</option></select><p class="text-[9px] text-slate-600 mt-2">Higher quality uses more GPU power. AURA automatically adapts to your screen.</p></div>
+      <div><div class="flex justify-between text-slate-300 mb-2"><span>Motion</span><span id="speedLabel" class="font-mono text-slate-500">1.0×</span></div><input type="range" id="sliderSpeed" min="0.1" max="3" step="0.1" value="1" class="w-full"></div>
+      <div><div class="flex justify-between text-slate-300 mb-2"><span>Glow</span><span id="glowLabel" class="font-mono text-slate-500">2.0</span></div><input type="range" id="sliderGlow" min=".5" max="8" step=".2" value="2" class="w-full"></div>
+      <div><div class="flex justify-between text-slate-300 mb-2"><span>Render Quality</span><span id="qualityLabel" class="font-mono text-slate-500">High</span></div><select id="qualitySelect" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-slate-200"><option value="performance">Performance</option><option value="balanced">Balanced</option><option value="high" selected>High</option><option value="ultra">Ultra</option></select><p class="text-[9px] text-slate-600 mt-2">Higher quality uses more GPU power.</p></div>
     </div>
     <div class="rounded-2xl bg-amber-400/5 border border-amber-400/10 p-3 flex items-center justify-between"><div><div class="font-semibold text-amber-200">Audio-reactive visuals</div><div class="text-[10px] text-slate-500 mt-0.5">Let music drive the atmosphere.</div></div><button onclick="toggleAudioSync()" class="px-3 py-1.5 rounded-xl bg-amber-400 text-black text-[10px] font-bold">Enable</button></div>
   </div>
-
   <div id="tabContent-style" class="tab-content hidden space-y-3 text-xs">
     <label class="block text-slate-400 mb-1.5 font-semibold">Clock typography</label>
-    <div class="grid grid-cols-3 gap-2">
-      <button onclick="setFont('font-syne')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-syne font-bold">Syne</button>
-      <button onclick="setFont('font-cinzel')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-cinzel font-bold">Cinzel</button>
-      <button onclick="setFont('font-outfit')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-outfit font-bold">Outfit</button>
-      <button onclick="setFont('font-space')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-space font-bold">Space</button>
-      <button onclick="setFont('font-playfair')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-playfair font-bold">Playfair</button>
-      <button onclick="setFont('font-mono')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-mono font-bold">Mono</button>
-    </div>
+    <div class="grid grid-cols-3 gap-2"><button onclick="setFont('font-syne')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-syne font-bold">Syne</button><button onclick="setFont('font-cinzel')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-cinzel font-bold">Cinzel</button><button onclick="setFont('font-outfit')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-outfit font-bold">Outfit</button><button onclick="setFont('font-space')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-space font-bold">Space</button><button onclick="setFont('font-playfair')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-playfair font-bold">Playfair</button><button onclick="setFont('font-mono')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-mono font-bold">Mono</button></div>
     <div class="flex items-center justify-between pt-1"><span class="text-slate-400 font-semibold">Time format</span><button onclick="toggleTimeFormat()" id="timeFormatBtn" class="px-3 py-1 rounded-xl bg-white/10 border border-white/15 font-mono">24H</button></div>
   </div>
 </div>
+<button id="panelToggleBtn" type="button" aria-expanded="true" aria-controls="controlPanel" class="aura-panel-toggle">⌄ HIDE CONTROLS</button>
 
-<!-- WELCOME / SELLING MODAL -->
 <div id="welcomeModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-black/65 backdrop-blur-xl">
  <div id="welcomeCard" class="glass-modal max-w-lg w-full rounded-[32px] p-7 sm:p-9 opacity-0 translate-y-4 transition-all duration-500">
-   <div class="text-[9px] font-mono tracking-[.3em] text-amber-300 uppercase mb-5">AURA · LIVING ATMOSPHERE</div>
-   <h2 class="font-syne font-extrabold text-4xl sm:text-5xl tracking-tight leading-[.95]">Turn any screen<br><span class="text-amber-300">into a mood.</span></h2>
-   <p class="text-slate-400 text-sm leading-6 mt-5 max-w-md">Cinematic visuals, reactive motion and beautiful typography built for your desk, studio, stream or TV.</p>
-   <div class="grid grid-cols-3 gap-2 mt-7 text-center">
-     <div class="p-3 rounded-2xl bg-white/5 border border-white/10"><div class="text-lg">✦</div><div class="text-[9px] text-slate-500 mt-1">CINEMATIC</div></div>
-     <div class="p-3 rounded-2xl bg-white/5 border border-white/10"><div class="text-lg">◉</div><div class="text-[9px] text-slate-500 mt-1">REACTIVE</div></div>
-     <div class="p-3 rounded-2xl bg-white/5 border border-white/10"><div class="text-lg">∞</div><div class="text-[9px] text-slate-500 mt-1">CUSTOM</div></div>
-   </div>
-   <button onclick="closeWelcome()" class="w-full mt-7 py-3.5 rounded-2xl bg-amber-400 text-black font-extrabold font-syne hover:bg-amber-300">Enter AURA</button>
-   <p class="text-center text-[9px] text-slate-600 mt-3">Free to explore · Pro unlocks the full studio</p>
+  <div class="text-[9px] font-mono tracking-[.3em] text-amber-300 uppercase mb-5">AURA · LIVING ATMOSPHERE</div><h2 class="font-syne font-extrabold text-4xl sm:text-5xl tracking-tight leading-[.95]">Turn any screen<br><span class="text-amber-300">into a mood.</span></h2>
+  <p class="text-slate-400 text-sm leading-6 mt-5 max-w-md">Cinematic visuals, reactive motion and beautiful typography built for your desk, studio, stream or TV.</p>
+  <div class="grid grid-cols-3 gap-2 mt-7 text-center"><div class="p-3 rounded-2xl bg-white/5 border border-white/10"><div class="text-lg">✦</div><div class="text-[9px] text-slate-500 mt-1">CINEMATIC</div></div><div class="p-3 rounded-2xl bg-white/5 border border-white/10"><div class="text-lg">◉</div><div class="text-[9px] text-slate-500 mt-1">REACTIVE</div></div><div class="p-3 rounded-2xl bg-white/5 border border-white/10"><div class="text-lg">∞</div><div class="text-[9px] text-slate-500 mt-1">CUSTOM</div></div></div>
+  <button onclick="closeWelcome()" class="w-full mt-7 py-3.5 rounded-2xl bg-amber-400 text-black font-extrabold font-syne">Enter AURA</button><p class="text-center text-[9px] text-slate-600 mt-3">Free to explore · Pro unlocks the full studio</p>
  </div>
 </div>
 
-<!-- SCENES -->
 <div id="scenesModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-lg">
  <div id="scenesCard" class="glass-modal max-w-md w-full rounded-[28px] p-6 opacity-0 translate-y-4 transition-all duration-300">
-  <div class="flex justify-between items-center mb-5"><div><h2 class="font-syne font-bold text-xl">Your scenes</h2><p class="text-[10px] text-slate-500">Saved locally in this browser.</p></div><button onclick="closeScenes()" class="text-slate-500 hover:text-white">✕</button></div>
-  <div id="sceneList" class="space-y-2 max-h-[55vh] overflow-y-auto touch-scroll"></div>
+  <div class="flex justify-between items-center mb-5"><div><h2 class="font-syne font-bold text-xl">Your scenes</h2><p class="text-[10px] text-slate-500">Saved locally in this browser.</p></div><button onclick="closeScenes()" class="text-slate-500">✕</button></div><div id="sceneList" class="space-y-2 max-h-[55vh] overflow-y-auto touch-scroll"></div>
  </div>
 </div>
 
-<!-- PAYWALL -->
 <div id="paywallModal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-xl">
  <div class="glass-modal max-w-md w-full rounded-[30px] p-6 relative border-amber-400/20">
-  <button onclick="closePaywall()" class="absolute top-4 right-4 text-slate-500 hover:text-white">✕</button>
-  <div class="text-[9px] font-mono tracking-[.25em] text-amber-300 uppercase">AURA PRO</div>
-  <h2 class="font-syne font-extrabold text-3xl mt-2">Make your screen yours.</h2>
-  <p class="text-sm text-slate-400 mt-2">Unlock the complete visual studio and turn AURA into your always-on atmosphere.</p>
-  <div class="space-y-2 mt-6 text-xs">
-   <div>✓ Audio-reactive visuals</div><div>✓ Advanced visual engines</div><div>✓ Save & share scenes</div><div>✓ Fullscreen / TV mode</div><div>✓ All typography & controls</div><div>✓ New scenes as they ship</div>
-  </div>
-  <div class="grid grid-cols-2 gap-2 mt-6">
-   <div class="rounded-2xl border border-white/10 bg-white/5 p-4"><div class="text-[9px] text-slate-500 uppercase">Monthly</div><div class="font-syne font-bold text-xl mt-1">$4.99</div><div class="text-[9px] text-slate-500">per month</div></div>
-   <div class="rounded-2xl border border-amber-400/40 bg-amber-400/10 p-4"><div class="text-[9px] text-amber-300 uppercase">Best value</div><div class="font-syne font-bold text-xl mt-1">$39.99</div><div class="text-[9px] text-slate-500">per year</div></div>
-  </div>
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4">
-   <button onclick="window.location.href='https://aurascape.lemonsqueezy.com/checkout/buy/7ac4533f-f0a6-421b-ac83-89c345f6fa50'" class="py-3.5 rounded-2xl bg-white/10 border border-white/15 text-white font-extrabold font-syne hover:bg-white/15">$4.99 Monthly</button>
-   <button onclick="window.location.href='https://aurascape.lemonsqueezy.com/checkout/buy/ae6daf37-98e5-4676-a6a3-743a60a412e7'" class="py-3.5 rounded-2xl bg-amber-400 text-black font-extrabold font-syne hover:bg-amber-300">$39.99 Yearly</button>
-  </div>
+  <button onclick="closePaywall()" class="absolute top-4 right-4 text-slate-500">✕</button><div class="text-[9px] font-mono tracking-[.25em] text-amber-300 uppercase">AURA PRO</div><h2 class="font-syne font-extrabold text-3xl mt-2">Make your screen yours.</h2><p class="text-sm text-slate-400 mt-2">Unlock the complete visual studio and turn AURA into your always-on atmosphere.</p>
+  <div class="space-y-2 mt-6 text-xs"><div>✓ Audio-reactive visuals</div><div>✓ Advanced visual engines</div><div>✓ Save & share scenes</div><div>✓ Fullscreen / TV mode</div><div>✓ All typography & controls</div><div>✓ New scenes as they ship</div></div>
+  <div class="grid grid-cols-2 gap-2 mt-6"><div class="rounded-2xl border border-white/10 bg-white/5 p-4"><div class="text-[9px] text-slate-500 uppercase">Monthly</div><div class="font-syne font-bold text-xl mt-1">$4.99</div><div class="text-[9px] text-slate-500">per month</div></div><div class="rounded-2xl border border-amber-400/40 bg-amber-400/10 p-4"><div class="text-[9px] text-amber-300 uppercase">Best value</div><div class="font-syne font-bold text-xl mt-1">$39.99</div><div class="text-[9px] text-slate-500">per year</div></div></div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4"><button onclick="window.location.href='https://aurascape.lemonsqueezy.com/checkout/buy/7ac4533f-f0a6-421b-ac83-89c345f6fa50'" class="py-3.5 rounded-2xl bg-white/10 border border-white/15 text-white font-extrabold font-syne">$4.99 Monthly</button><button onclick="window.location.href='https://aurascape.lemonsqueezy.com/checkout/buy/ae6daf37-98e5-4676-a6a3-743a60a412e7'" class="py-3.5 rounded-2xl bg-amber-400 text-black font-extrabold font-syne">$39.99 Yearly</button></div>
   <p class="text-center text-[9px] text-slate-600 mt-3">Cancel anytime. Secure checkout.</p>
  </div>
 </div>
 
-<div id="auraSplash" class="fixed inset-0 z-[999] bg-black overflow-hidden flex items-center justify-center">
-  <div class="mercury-mercury" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-  <div class="splash-brand"><div class="splash-aura">AURA</div><div class="splash-tag">TURN ANY SCREEN INTO A MOOD.</div></div>
-  <button onclick="skipSplash()" class="absolute bottom-7 right-7 text-[10px] tracking-[.25em] text-white/45 hover:text-white uppercase">Skip</button>
-</div>
-
+<div id="auraSplash" class="fixed inset-0 z-[999] bg-black overflow-hidden flex items-center justify-center"><div class="mercury-mercury" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><div class="splash-brand"><div class="splash-aura">AURA</div><div class="splash-tag">TURN ANY SCREEN INTO A MOOD.</div></div><button onclick="skipSplash()" class="absolute bottom-7 right-7 text-[10px] tracking-[.25em] text-white/45 uppercase">Skip</button></div>
 <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[100] opacity-0 translate-y-2 transition-all duration-300 px-4 py-2.5 rounded-full bg-white text-black text-xs font-bold shadow-2xl"></div>
 
 <script>
-    const vertexShader = `
-      varying vec2 vUv;
-      void main() { vUv = uv; gl_Position = vec4(position, 1.0); }
-    `;
+const vertexShader = `
+varying vec2 vUv;
+void main(){vUv=uv;gl_Position=vec4(position,1.0);}
+`;
 
-    const fragmentShader = `
-      precision mediump float;
-      uniform vec2 u_resolution;
-      uniform vec2 u_mouse;
-      uniform vec2 u_touch;
-      uniform vec2 u_touchVelocity;
-      uniform float u_touchForce;
-      uniform float u_touchActive;
-      uniform float u_time;
-      uniform float u_speed;
-      uniform float u_glow;
-      uniform float u_audioLevel;
-      uniform float u_bass;
-      uniform float u_mid;
-      uniform float u_treble;
-      uniform float u_mode;
-      uniform vec3 u_colorA;
-      uniform vec3 u_colorB;
-      uniform vec3 u_colorC;
-      varying vec2 vUv;
+const fragmentShader = `
+precision mediump float;
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform vec2 u_touch;
+uniform vec2 u_touchVelocity;
+uniform float u_touchForce;
+uniform float u_touchActive;
+uniform float u_time;
+uniform float u_speed;
+uniform float u_glow;
+uniform float u_audioLevel;
+uniform float u_bass;
+uniform float u_mid;
+uniform float u_treble;
+uniform float u_mode;
+uniform vec3 u_colorA;
+uniform vec3 u_colorB;
+uniform vec3 u_colorC;
+varying vec2 vUv;
 
-      float hash21(vec2 p){
-        p = fract(p * vec2(123.34, 456.21));
-        p += dot(p, p + 45.32);
-        return fract(p.x * p.y);
-      }
+float hash21(vec2 p){
+  p=fract(p*vec2(123.34,456.21));
+  p+=vec2(dot(p,p+vec2(45.32)));
+  return fract(p.x*p.y);
+}
+float noise(vec2 p){
+  vec2 i=floor(p),f=fract(p);
+  f=f*f*(3.0-2.0*f);
+  float a=hash21(i),b=hash21(i+vec2(1.0,0.0));
+  float c=hash21(i+vec2(0.0,1.0)),d=hash21(i+vec2(1.0,1.0));
+  return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);
+}
+float fbm(vec2 p){
+  float v=0.0,a=0.5;
+  for(int i=0;i<4;i++){v+=noise(p)*a;p=p*2.0+vec2(17.0);a*=0.5;}
+  return v;
+}
+float glowLine(float d,float width){return width/(abs(d)+width);}
+vec2 rotate2D(vec2 p,float a){float c=cos(a),s=sin(a);return vec2(c*p.x-s*p.y,s*p.x+c*p.y);}
 
-      float noise(vec2 p){
-        vec2 i = floor(p);
-        vec2 f = fract(p);
-        f = f * f * (3.0 - 2.0 * f);
-        float a = hash21(i);
-        float b = hash21(i + vec2(1.0,0.0));
-        float c = hash21(i + vec2(0.0,1.0));
-        float d = hash21(i + vec2(1.0,1.0));
-        return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);
-      }
+void main(){
+  vec2 px=gl_FragCoord.xy;
+  vec2 res=max(u_resolution,vec2(1.0));
+  float aspect=res.x/res.y;
+  vec2 st=(px/res)*2.0-vec2(1.0);
+  st.x*=aspect;
+  vec2 mouse=(u_mouse/res)*2.0-vec2(1.0);mouse.x*=aspect;
+  vec2 touch=(u_touch/res)*2.0-vec2(1.0);touch.x*=aspect;
 
-      float fbm(vec2 p){
-        float v = 0.0;
-        float a = 0.5;
-        for(int i=0;i<4;i++){
-          v += noise(p) * a;
-          p = p * 2.0 + 17.0;
-          a *= 0.5;
-        }
-        return v;
-      }
+  float t=u_time*max(u_speed,0.05);
+  float force=clamp(u_touchForce,0.0,1.8);
+  float active=clamp(u_touchActive,0.0,1.0);
+  float audio=clamp(u_audioLevel,0.0,1.0);
+  float bass=clamp(u_bass,0.0,1.0);
+  float mid=clamp(u_mid,0.0,1.0);
+  float treble=clamp(u_treble,0.0,1.0);
+  float glow=max(u_glow,0.1);
 
-      float glowLine(float d, float width){
-        return width / (abs(d) + width);
-      }
+  vec2 d=st-touch;
+  float distTouch=length(d);
+  vec2 radial=d/max(distTouch,0.0005);
+  vec2 tangent=vec2(-radial.y,radial.x);
+  vec2 vel=u_touchVelocity/res*2.0;
+  float field=exp(-distTouch*3.5)*force*active;
+  float ring=sin(distTouch*38.0-t*7.0)*exp(-distTouch*5.0)*force*active;
+  vec2 wake=vel*exp(-distTouch*4.5)*active*4.0;
+  float audioPulse=1.0+audio*1.8+bass*1.2;
+  vec3 col=u_colorA;
 
-      vec2 rotate2D(vec2 p, float a){
-        float c = cos(a);
-        float s = sin(a);
-        return vec2(c*p.x - s*p.y, s*p.x + c*p.y);
-      }
-
-      void main(){
-        vec2 px = gl_FragCoord.xy;
-        float aspect = max(u_resolution.x / max(u_resolution.y, 1.0), 0.001);
-        vec2 st = (px / max(u_resolution, vec2(1.0))) * 2.0 - 1.0;
-        st.x *= aspect;
-
-        vec2 mouse = (u_mouse / max(u_resolution, vec2(1.0))) * 2.0 - 1.0;
-        mouse.x *= aspect;
-        vec2 touch = (u_touch / max(u_resolution, vec2(1.0))) * 2.0 - 1.0;
-        touch.x *= aspect;
-
-        float t = u_time * max(u_speed, 0.05);
-        float force = clamp(u_touchForce, 0.0, 1.8);
-        float active = clamp(u_touchActive, 0.0, 1.0);
-        float audio = clamp(u_audioLevel, 0.0, 1.0);
-        float bass = clamp(u_bass, 0.0, 1.0);
-        float mid = clamp(u_mid, 0.0, 1.0);
-        float treble = clamp(u_treble, 0.0, 1.0);
-        float glow = max(u_glow, 0.1);
-
-        vec2 d = st - touch;
-        float distTouch = length(d);
-        vec2 radial = d / max(distTouch, 0.0005);
-        vec2 tangent = vec2(-radial.y, radial.x);
-        vec2 vel = u_touchVelocity / max(u_resolution, vec2(1.0)) * 2.0;
-        float field = exp(-distTouch * 3.5) * force * active;
-        float ring = sin(distTouch * 38.0 - t * 7.0) * exp(-distTouch * 5.0) * force * active;
-        vec2 wake = vel * exp(-distTouch * 4.5) * active * 4.0;
-        float audioPulse = 1.0 + audio * 1.8 + bass * 1.2;
-        vec3 col = u_colorA;
-
-        if(u_mode < 0.5){
-          vec2 p = st * vec2(2.1, 2.7);
-          p += radial * field * 0.75;
-          p += tangent * ring * 0.18;
-          p += wake * 0.65;
-          float v = 0.0;
-          for(int i=0;i<5;i++){
-            float fi = float(i) + 1.0;
-            p += vec2(sin(p.y * (1.15 + fi*0.08) + t*0.35*fi), cos(p.x * (1.05 + fi*0.07) - t*0.28*fi)) * 0.06;
-            v += sin(p.x*(1.9+fi*0.2) + p.y*(1.2+fi*0.12) + t*0.35*fi) / fi;
-          }
-          v = 0.5 + 0.5 * sin(v * 3.3 + ring * 1.2);
-          float sheen = smoothstep(0.22,0.88,v);
-          float spec = pow(max(v-0.48,0.0)*2.0,5.0) * glow;
-          col = mix(u_colorA, mix(u_colorB,u_colorC,sheen), sheen);
-          col += u_colorC * (spec + field*0.12);
-        }
-        else if(u_mode < 1.5){
-          float core = 0.0;
-          float haze = 0.0;
-          vec2 steer = radial * field * 0.28 + wake * 0.35;
-          for(int i=0;i<7;i++){
-            float fi = float(i);
-            vec2 p = (st + steer) * (2.2 + fi*0.11);
-            p = rotate2D(p, fi*0.65 + t*0.035);
-            float n = fbm(p*2.4 + vec2(t*0.35,-t*0.2) + fi*3.0);
-            float path = sin(p.y*5.5 + n*4.5 + t*(1.0+fi*0.08) + fi) * 0.22;
-            float branch = sin(p.y*15.0 + n*6.0 - t*1.7) * 0.045;
-            float line = abs(p.x - path - branch - sin(touch.y*4.0 + fi)*field*0.15);
-            float g = glowLine(line,0.012);
-            core += pow(g,1.35) * (0.5 + 0.5*noise(p*7.0));
-            haze += glowLine(line,0.08) * 0.08;
-          }
-          float discharge = exp(-distTouch*8.0) * force * active;
-          float tendrils = pow(max(noise((st-touch)*18.0 + vec2(t*1.6,-t*1.1))-0.5,0.0),3.0) * discharge * 5.0;
-          float flash = pow(max(sin(t*3.0 + noise(st*6.0)*6.0),0.0),18.0) * treble * 3.5;
-          col = u_colorA + u_colorB * (core * (0.8 + glow*0.25)) + u_colorC * (haze + tendrils + flash + discharge*1.6) * audioPulse;
-        }
-        else if(u_mode < 2.5){
-          vec2 p = st * 1.8;
-          p += radial * field * 0.55;
-          p += wake * 0.55;
-          p = rotate2D(p, t*0.03);
-          float n = fbm(p*1.7 + vec2(t*0.08,-t*0.11));
-          n += 0.35*fbm(p*3.2 - vec2(t*0.16,t*0.06));
-          n += field * 0.35 + dot(vel,radial) * exp(-distTouch*4.0) * 2.0;
-          n = clamp(n,0.0,1.0);
-          float smoke = smoothstep(0.2,0.78,n);
-          col = mix(u_colorA,u_colorB,smoke);
-          col += u_colorC * pow(n,3.0) * glow * 0.32;
-        }
-        else if(u_mode < 3.5){
-          vec2 p = st * 2.25;
-          p += radial * field * 0.95;
-          p += tangent * ring * 0.20;
-          p += wake * 0.45;
-          p.y += sin(p.x*2.4+t*0.35)*0.18;
-          float n = fbm(p*1.35 + vec2(t*0.11,-t*0.08));
-          float ridges = abs(sin(p.x*5.0 + n*7.0 + t*0.45));
-          float liquid = clamp(0.22 + n*0.35 + ridges*0.48 + field*0.4,0.0,1.0);
-          float spec = pow(max(0.0,1.0-abs(fract(n*4.0)-0.5)*2.0),8.0);
-          col = mix(u_colorA,u_colorB,liquid);
-          col = mix(col,u_colorC,spec*0.8);
-          col += u_colorC * field * 0.22 * audioPulse;
-        }
-        else if(u_mode < 4.5){
-          vec2 p = st * 2.6;
-          float swirl = exp(-distTouch*3.0) * force * active;
-          p += wake * 0.8;
-          p += radial * swirl * 0.45;
-          p = rotate2D(p, swirl*2.0 + dot(vel,tangent)*3.0);
-          float n = fbm(p + vec2(t*0.07,-t*0.1));
-          float ribbons = 0.5 + 0.5*sin(n*10.0 + p.x*2.5 + t*0.22);
-          float sheen = pow(smoothstep(0.42,0.9,ribbons),2.5);
-          col = mix(u_colorA,u_colorB,0.16+0.38*n);
-          col = mix(col,u_colorC,sheen*0.72);
-          col += u_colorC * sheen * glow * 0.18;
-        }
-        else if(u_mode < 5.5){
-          vec2 p = st * 2.6;
-          p -= radial * field * 0.48;
-          p += tangent * ring * 0.1;
-          p = rotate2D(p, t*0.045 + field*0.65);
-          float neb = fbm(p + vec2(t*0.06,-t*0.05));
-          float stars = pow(hash21(floor(st*55.0)),24.0);
-          float stars2 = pow(hash21(floor((st+vec2(3.7,1.9))*95.0)),34.0) * 0.7;
-          float core = exp(-length(st)*2.6);
-          col = mix(u_colorA,u_colorB,neb*0.82);
-          col += u_colorC * (stars + stars2 + core*0.22) * (0.8 + glow*0.35 + treble*1.5);
-          col += u_colorC * exp(-distTouch*4.0) * force * active * 0.55;
-        }
-        else{
-          vec2 p = st * 1.9;
-          float r = length(p);
-          float a = atan(p.y,p.x);
-          float swirl = sin(a*8.0 - r*15.0 - t*1.4 + fbm(p*2.6)*4.0);
-          p += wake * 0.45;
-          p += radial * field * 0.3;
-          float band = smoothstep(1.0,0.05,r) * (0.5 + 0.5*swirl);
-          float flare = pow(max(0.0,1.0-r),3.0) * (1.0+bass*2.0);
-          float burst = exp(-distTouch*5.0) * field;
-          col = mix(u_colorA,u_colorB,band*0.82);
-          col += u_colorC * (band*0.85 + flare + burst) * (0.55+glow*0.25);
-        }
-
-        float vignette = smoothstep(1.55,0.45,length(st));
-        col *= (0.72 + 0.28*vignette);
-        col += (hash21(px + t) - 0.5) * 0.008;
-        gl_FragColor = vec4(max(col,vec3(0.0)),1.0);
-      }
-    `;
-
-    // --- THREE.JS ENGINE SETUP ---
-    const canvas = document.getElementById('webglCanvas');
-    const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: "high-performance", preserveDrawingBuffer: false });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight, false);
-
-    const uniforms = {
-      u_resolution: { value: new THREE.Vector2(window.innerWidth * Math.min(window.devicePixelRatio || 1, 2), window.innerHeight * Math.min(window.devicePixelRatio || 1, 2)) },
-      u_mouse: { value: new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2) },
-      u_touch: { value: new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2) },
-      u_touchVelocity: { value: new THREE.Vector2(0, 0) },
-      u_touchForce: { value: 0.0 },
-      u_touchActive: { value: 0.0 },
-      u_time: { value: 0.0 },
-      u_speed: { value: 1.0 },
-      u_glow: { value: 2.0 },
-      u_audioLevel: { value: 0.0 },
-      u_bass: { value: 0.0 },
-      u_mid: { value: 0.0 },
-      u_treble: { value: 0.0 },
-      u_mode: { value: 0.0 },
-      u_colorA: { value: new THREE.Color("#080705") },
-      u_colorB: { value: new THREE.Color("#4a3810") },
-      u_colorC: { value: new THREE.Color("#f59e0b") }
-    };
-
-    const material = new THREE.ShaderMaterial({
-      vertexShader: vertexShader,
-      fragmentShader: fragmentShader,
-      uniforms: uniforms
-    });
-    material.extensions.derivatives = false;
-    if (renderer.debug) renderer.debug.checkShaderErrors = true;
-
-    const geometry = new THREE.PlaneGeometry(2, 2);
-    const mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-
-    // --- PRESETS CONFIGURATION ---
-    const presets = {
-      whiteVoidDark: { mode: 0, colorA: "#0a0a0c", colorB: "#2c2d30", colorC: "#ffffff", name: "White Void" },
-      goldDark: { mode: 0, colorA: "#080705", colorB: "#4a3810", colorC: "#f59e0b", name: "Black & Gold" },
-      oceanDeep: { mode: 0, colorA: "#020b14", colorB: "#0c3854", colorC: "#06b6d4", name: "Abyss" },
-      crimsonBlood: { mode: 0, colorA: "#0f0204", colorB: "#540c18", colorC: "#ef4444", name: "Crimson" },
-      multiLightning: { mode: 1, colorA: "#030712", colorB: "#0284c7", colorC: "#38bdf8", name: "Plasma" },
-      purpleLightning: { mode: 1, colorA: "#090314", colorB: "#6b21a8", colorC: "#c084fc", name: "Void Ray" },
-      goldLightning: { mode: 1, colorA: "#0c0802", colorB: "#854d0e", colorC: "#facc15", name: "Zeus" },
-      matrixLightning: { mode: 1, colorA: "#020d04", colorB: "#15803d", colorC: "#4ade80", name: "Matrix" },
-      silkSmoke: { mode: 2, colorA: "#090514", colorB: "#581c87", colorC: "#d8b4fe", name: "Violet Fog" },
-      toxicSmoke: { mode: 2, colorA: "#040d04", colorB: "#166534", colorC: "#86efac", name: "Biohazard" },
-      ghostSmoke: { mode: 2, colorA: "#080a0f", colorB: "#334155", colorC: "#cbd5e1", name: "Phantom" },
-      fireSmoke: { mode: 2, colorA: "#140502", colorB: "#9a3412", colorC: "#fdba74", name: "Inferno" },
-      mercuryLiquid: { mode: 3, colorA: "#0a0a0c", colorB: "#475569", colorC: "#f8fafc", name: "Mercury" },
-      chromeFlow: { mode: 3, colorA: "#0f172a", colorB: "#64748b", colorC: "#e2e8f0", name: "Chrome Flow" },
-      blackOil: { mode: 4, colorA: "#020203", colorB: "#1e293b", colorC: "#94a3b8", name: "Black Oil" },
-      teslaCoil: { mode: 1, colorA: "#030712", colorB: "#1d4ed8", colorC: "#60a5fa", name: "Tesla Coil" },
-      voidLightning: { mode: 1, colorA: "#000000", colorB: "#3f3f46", colorC: "#ffffff", name: "Void Lightning" },
-      plasmaStorm: { mode: 1, colorA: "#0e0214", colorB: "#86198f", colorC: "#f0abfc", name: "Plasma Storm" },
-      electricVeins: { mode: 1, colorA: "#080314", colorB: "#4c1d95", colorC: "#a78bfa", name: "Electric Veins" },
-      cosmicDust: { mode: 5, colorA: "#03030e", colorB: "#312e81", colorC: "#818cf8", name: "Cosmic Dust" },
-      solarFlare: { mode: 6, colorA: "#120302", colorB: "#9a3412", colorC: "#fb923c", name: "Solar Flare" }
-    };
-
-    function applyPreset(key) {
-      const p = presets[key];
-      if (!p) return;
-      uniforms.u_mode.value = p.mode;
-      uniforms.u_colorA.value.set(p.colorA);
-      uniforms.u_colorB.value.set(p.colorB);
-      uniforms.u_colorC.value.set(p.colorC);
-      document.getElementById('activeSceneName').textContent = p.name;
-      showToast(`Loaded "${p.name}" preset`);
+  if(u_mode<0.5){
+    vec2 p=st*vec2(2.1,2.7);
+    p+=radial*field*0.75+tangent*ring*0.18+wake*0.65;
+    float v=0.0;
+    for(int i=0;i<5;i++){
+      float fi=float(i)+1.0;
+      p+=vec2(sin(p.y*(1.15+fi*0.08)+t*0.35*fi),cos(p.x*(1.05+fi*0.07)-t*0.28*fi))*0.06;
+      v+=sin(p.x*(1.9+fi*0.2)+p.y*(1.2+fi*0.12)+t*0.35*fi)/fi;
     }
-
-    // --- CLOCK & TYPOGRAPHY ---
-    let is24Hour = true;
-    function updateClock() {
-      const now = new Date();
-      let hours = now.getHours();
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      if (!is24Hour) {
-        hours = hours % 12 || 12;
-      }
-      const hoursStr = String(hours).padStart(2, '0');
-      document.getElementById('lockscreenClock').textContent = `${hoursStr}:${minutes}`;
-      
-      const options = { weekday: 'short', month: 'short', day: 'numeric' };
-      document.getElementById('lockscreenDate').textContent = now.toLocaleDateString('en-US', options).toUpperCase();
+    v=0.5+0.5*sin(v*3.3+ring*1.2);
+    float sheen=smoothstep(0.22,0.88,v);
+    float spec=pow(max(v-0.48,0.0)*2.0,5.0)*glow;
+    col=mix(u_colorA,mix(u_colorB,u_colorC,sheen),sheen);
+    col+=u_colorC*(spec+field*0.12);
+  }else if(u_mode<1.5){
+    float core=0.0,haze=0.0;
+    vec2 steer=radial*field*0.28+wake*0.35;
+    for(int i=0;i<7;i++){
+      float fi=float(i);
+      vec2 p=(st+steer)*(2.2+fi*0.11);
+      p=rotate2D(p,fi*0.65+t*0.035);
+      float n=fbm(p*2.4+vec2(t*0.35,-t*0.2)+vec2(fi*3.0));
+      float path=sin(p.y*5.5+n*4.5+t*(1.0+fi*0.08)+fi)*0.22;
+      float branch=sin(p.y*15.0+n*6.0-t*1.7)*0.045;
+      float line=abs(p.x-path-branch-sin(touch.y*4.0+fi)*field*0.15);
+      float g=glowLine(line,0.012);
+      core+=pow(g,1.35)*(0.5+0.5*noise(p*7.0));
+      haze+=glowLine(line,0.08)*0.08;
     }
-    setInterval(updateClock, 1000);
-    updateClock();
+    float discharge=exp(-distTouch*8.0)*force*active;
+    float tendrils=pow(max(noise((st-touch)*18.0+vec2(t*1.6,-t*1.1))-0.5,0.0),3.0)*discharge*5.0;
+    float flash=pow(max(sin(t*3.0+noise(st*6.0)*6.0),0.0),18.0)*treble*3.5;
+    col=u_colorA+u_colorB*(core*(0.8+glow*0.25))+u_colorC*(haze+tendrils+flash+discharge*1.6)*audioPulse;
+  }else if(u_mode<2.5){
+    vec2 p=st*1.8;
+    p+=radial*field*0.55+wake*0.55;
+    p=rotate2D(p,t*0.03);
+    float n=fbm(p*1.7+vec2(t*0.08,-t*0.11));
+    n+=0.35*fbm(p*3.2-vec2(t*0.16,t*0.06));
+    n+=field*0.35+dot(vel,radial)*exp(-distTouch*4.0)*2.0;
+    n=clamp(n,0.0,1.0);
+    float smoke=smoothstep(0.2,0.78,n);
+    col=mix(u_colorA,u_colorB,smoke);
+    col+=u_colorC*pow(n,3.0)*glow*0.32;
+  }else if(u_mode<3.5){
+    vec2 p=st*2.25;
+    p+=radial*field*0.95+tangent*ring*0.20+wake*0.45;
+    p.y+=sin(p.x*2.4+t*0.35)*0.18;
+    float n=fbm(p*1.35+vec2(t*0.11,-t*0.08));
+    float ridges=abs(sin(p.x*5.0+n*7.0+t*0.45));
+    float liquid=clamp(0.22+n*0.35+ridges*0.48+field*0.4,0.0,1.0);
+    float spec=pow(max(0.0,1.0-abs(fract(n*4.0)-0.5)*2.0),8.0);
+    col=mix(u_colorA,u_colorB,liquid);
+    col=mix(col,u_colorC,spec*0.8);
+    col+=u_colorC*field*0.22*audioPulse;
+  }else if(u_mode<4.5){
+    vec2 p=st*2.6;
+    float swirl=exp(-distTouch*3.0)*force*active;
+    p+=wake*0.8+radial*swirl*0.45;
+    p=rotate2D(p,swirl*2.0+dot(vel,tangent)*3.0);
+    float n=fbm(p+vec2(t*0.07,-t*0.1));
+    float ribbons=0.5+0.5*sin(n*10.0+p.x*2.5+t*0.22);
+    float sheen=pow(smoothstep(0.42,0.9,ribbons),2.5);
+    col=mix(u_colorA,u_colorB,0.16+0.38*n);
+    col=mix(col,u_colorC,sheen*0.72);
+    col+=u_colorC*sheen*glow*0.18;
+  }else if(u_mode<5.5){
+    vec2 p=st*2.6;
+    p-=radial*field*0.48;
+    p+=tangent*ring*0.1;
+    p=rotate2D(p,t*0.045+field*0.65);
+    float neb=fbm(p+vec2(t*0.06,-t*0.05));
+    float stars=pow(hash21(floor(st*55.0)),24.0);
+    float stars2=pow(hash21(floor((st+vec2(3.7,1.9))*95.0)),34.0)*0.7;
+    float core=exp(-length(st)*2.6);
+    col=mix(u_colorA,u_colorB,neb*0.82);
+    col+=u_colorC*(stars+stars2+core*0.22)*(0.8+glow*0.35+treble*1.5);
+    col+=u_colorC*exp(-distTouch*4.0)*force*active*0.55;
+  }else{
+    vec2 p=st*1.9;
+    float r=length(p);
+    float a=atan(p.y,p.x);
+    float swirl=sin(a*8.0-r*15.0-t*1.4+fbm(p*2.6)*4.0);
+    p+=wake*0.45+radial*field*0.3;
+    float band=(1.0-smoothstep(0.05,1.0,r))*(0.5+0.5*swirl);
+    float flare=pow(max(0.0,1.0-r),3.0)*(1.0+bass*2.0);
+    float burst=exp(-distTouch*5.0)*field;
+    col=mix(u_colorA,u_colorB,band*0.82);
+    col+=u_colorC*(band*0.85+flare+burst)*(0.55+glow*0.25);
+  }
 
-    function toggleTimeFormat() {
-      is24Hour = !is24Hour;
-      document.getElementById('timeFormatBtn').textContent = is24Hour ? '24H' : '12H';
-      updateClock();
-    }
+  float vignette=1.0-smoothstep(0.45,1.55,length(st));
+  col*=0.72+0.28*vignette;
+  col+=vec3((hash21(px+vec2(t))-0.5)*0.008);
+  gl_FragColor=vec4(max(col,vec3(0.0)),1.0);
+}
+`;
 
-    function setFont(fontClass) {
-      const clock = document.getElementById('lockscreenClock');
-      clock.className = `text-7xl sm:text-9xl font-extralight tracking-tight text-white drop-shadow-2xl ${fontClass}`;
-    }
+if(!window.THREE){document.getElementById('toast').textContent='Three.js did not load. Check your internet connection and refresh.';throw new Error('Three.js CDN failed to load');}
 
-    // --- TAB & UI CONTROLS ---
-    function switchTab(tab) {
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('bg-amber-400', 'text-black', 'font-bold');
-        btn.classList.add('text-slate-400', 'font-semibold');
-      });
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+const canvas=document.getElementById('webglCanvas');
+const scene=new THREE.Scene();
+const camera=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+const renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'high-performance'});
+let pixelRatio=Math.min(window.devicePixelRatio||1,2);
+renderer.setPixelRatio(pixelRatio);
+renderer.setSize(window.innerWidth,window.innerHeight,false);
 
-      const activeBtn = document.getElementById(`tabBtn-${tab}`);
-      const activeContent = document.getElementById(`tabContent-${tab}`);
-      if (activeBtn) {
-        activeBtn.classList.add('bg-amber-400', 'text-black', 'font-bold');
-        activeBtn.classList.remove('text-slate-400', 'font-semibold');
-      }
-      if (activeContent) activeContent.classList.remove('hidden');
-    }
+const uniforms={
+  u_resolution:{value:new THREE.Vector2(renderer.domElement.width,renderer.domElement.height)},
+  u_mouse:{value:new THREE.Vector2(renderer.domElement.width/2,renderer.domElement.height/2)},
+  u_touch:{value:new THREE.Vector2(renderer.domElement.width/2,renderer.domElement.height/2)},
+  u_touchVelocity:{value:new THREE.Vector2(0,0)},
+  u_touchForce:{value:0},
+  u_touchActive:{value:0},
+  u_time:{value:0},
+  u_speed:{value:1},
+  u_glow:{value:2},
+  u_audioLevel:{value:0},
+  u_bass:{value:0},
+  u_mid:{value:0},
+  u_treble:{value:0},
+  u_mode:{value:0},
+  u_colorA:{value:new THREE.Color('#0a0a0c')},
+  u_colorB:{value:new THREE.Color('#2c2d30')},
+  u_colorC:{value:new THREE.Color('#ffffff')}
+};
 
-    function updateUniforms() {
-      uniforms.u_speed.value = parseFloat(document.getElementById('sliderSpeed').value);
-      uniforms.u_glow.value = parseFloat(document.getElementById('sliderGlow').value);
-    }
+const material=new THREE.ShaderMaterial({vertexShader,fragmentShader,uniforms});
+material.toneMapped=false;
+const mesh=new THREE.Mesh(new THREE.PlaneGeometry(2,2),material);
+scene.add(mesh);
 
-    function setRenderQuality(val) {
-      const qualities = { performance: 0.75, balanced: 1.0, high: 1.5, ultra: 2.0 };
-      const dpr = Math.min((window.devicePixelRatio || 1) * (qualities[val] || 1.0), val === 'ultra' ? 2.5 : 2.0);
-      renderer.setPixelRatio(dpr);
-      renderer.setSize(window.innerWidth, window.innerHeight, false);
-      uniforms.u_resolution.value.set(renderer.domElement.width, renderer.domElement.height);
-      const label = document.getElementById('qualityLabel');
-      if (label) label.textContent = val === 'performance' ? 'Performance' : val === 'balanced' ? 'Balanced' : val === 'ultra' ? 'Ultra' : 'High';
-    }
+renderer.debug.checkShaderErrors=true;
+renderer.info.autoReset=true;
+renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();showToast('Graphics context lost. Refresh AURA to restart the visuals.');});
+renderer.domElement.addEventListener('webglcontextrestored',()=>location.reload());
 
-    // --- BOTTOM SHEET COLLAPSIBLE / DRAG CONTROL ---
-    const panel = document.getElementById('controlPanel');
-    const handle = document.getElementById('panelHandle');
-    let isOpen = false;
+const presets={
+ whiteVoidDark:{mode:0,a:'#050506',b:'#292b30',c:'#ffffff',name:'White Void',desc:'Minimal · Silk'},
+ goldDark:{mode:0,a:'#080705',b:'#4a3810',c:'#f59e0b',name:'Black & Gold',desc:'Signature · Silk'},
+ oceanDeep:{mode:0,a:'#020b14',b:'#0c3854',c:'#06b6d4',name:'Abyss',desc:'Deep · Silk'},
+ crimsonBlood:{mode:0,a:'#0f0204',b:'#540c18',c:'#ef4444',name:'Crimson',desc:'Bold · Silk'},
+ multiLightning:{mode:1,a:'#030712',b:'#0284c7',c:'#38bdf8',name:'Plasma',desc:'Energy · Lightning'},
+ purpleLightning:{mode:1,a:'#090314',b:'#6b21a8',c:'#c084fc',name:'Void Ray',desc:'Neon · Lightning'},
+ goldLightning:{mode:1,a:'#0c0802',b:'#854d0e',c:'#facc15',name:'Zeus',desc:'Energy · Lightning'},
+ matrixLightning:{mode:1,a:'#020d04',b:'#15803d',c:'#4ade80',name:'Matrix',desc:'Cyber · Lightning'},
+ silkSmoke:{mode:2,a:'#090514',b:'#581c87',c:'#d8b4fe',name:'Violet Fog',desc:'Dream · Nebula'},
+ toxicSmoke:{mode:2,a:'#040d04',b:'#166534',c:'#86efac',name:'Biohazard',desc:'Acid · Nebula'},
+ ghostSmoke:{mode:2,a:'#080a0f',b:'#334155',c:'#cbd5e1',name:'Phantom',desc:'Ghost · Nebula'},
+ fireSmoke:{mode:2,a:'#140502',b:'#9a3412',c:'#fdba74',name:'Inferno',desc:'Fire · Nebula'},
+ mercuryLiquid:{mode:3,a:'#0a0a0c',b:'#475569',c:'#f8fafc',name:'Mercury',desc:'Liquid · Chrome'},
+ chromeFlow:{mode:3,a:'#0f172a',b:'#64748b',c:'#e2e8f0',name:'Chrome Flow',desc:'Liquid · Reflective'},
+ blackOil:{mode:4,a:'#020203',b:'#1e293b',c:'#94a3b8',name:'Black Oil',desc:'Liquid · Gloss'},
+ teslaCoil:{mode:1,a:'#030712',b:'#1d4ed8',c:'#60a5fa',name:'Tesla Coil',desc:'Electric · Arc'},
+ voidLightning:{mode:1,a:'#000000',b:'#3f3f46',c:'#ffffff',name:'Void Lightning',desc:'Electric · Razor'},
+ plasmaStorm:{mode:1,a:'#0e0214',b:'#86198f',c:'#f0abfc',name:'Plasma Storm',desc:'Electric · Filaments'},
+ electricVeins:{mode:1,a:'#080314',b:'#4c1d95',c:'#a78bfa',name:'Electric Veins',desc:'Electric · Organic'},
+ cosmicDust:{mode:5,a:'#03030e',b:'#312e81',c:'#818cf8',name:'Cosmic Dust',desc:'Cosmic · Particles'},
+ solarFlare:{mode:6,a:'#120302',b:'#9a3412',c:'#fb923c',name:'Solar Flare',desc:'Cosmic · Energy'}
+};
 
-    handle.addEventListener('click', () => {
-      isOpen = !isOpen;
-      panel.classList.toggle('panel-open', isOpen);
-    });
+const presetGrid=document.getElementById('presetGrid');
+presetGrid.innerHTML=Object.entries(presets).map(([key,p])=>`
+<button data-preset="${key}" onclick="applyPreset('${key}')" class="preset-card p-3 bg-white/5 border border-white/10 rounded-2xl text-left">
+<span class="text-xs font-bold block">${p.name}</span><span class="text-[9px] text-slate-500">${p.desc}</span>
+</button>`).join('');
 
-    // --- TOUCH & MOUSE INTERACTION ---
-    let lastPos = { x: 0, y: 0 };
-    let isTouching = false;
+let currentPresetName='whiteVoidDark';
+function applyPreset(key){
+ const p=presets[key];if(!p)return;
+ currentPresetName=key;
+ uniforms.u_mode.value=p.mode;
+ uniforms.u_colorA.value.set(p.a);
+ uniforms.u_colorB.value.set(p.b);
+ uniforms.u_colorC.value.set(p.c);
+ document.getElementById('activeSceneName').textContent=p.name;
+ document.querySelectorAll('[data-preset]').forEach(b=>b.classList.toggle('ring-1',b.dataset.preset===key));
+ toast('Loaded "'+p.name+'"');
+}
 
-    function handlePointerMove(x, y) {
-      const rect = canvas.getBoundingClientRect();
-      const px = x - rect.left;
-      const py = rect.height - (y - rect.top);
-      
-      uniforms.u_mouse.value.set(px, py);
-      uniforms.u_touch.value.set(px, py);
-      
-      const vx = px - lastPos.x;
-      const vy = py - lastPos.y;
-      uniforms.u_touchVelocity.value.set(vx * 0.1, vy * 0.1);
-      
-      lastPos = { x: px, y: py };
-    }
+function updateClock(){
+ const now=new Date();let h=now.getHours();const m=String(now.getMinutes()).padStart(2,'0');
+ if(!is24HourFormat)h=h%12||12;
+ document.getElementById('lockscreenClock').textContent=String(h).padStart(2,'0')+':'+m;
+ document.getElementById('lockscreenDate').textContent=now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}).toUpperCase();
+}
+let is24HourFormat=true;
+setInterval(updateClock,1000);updateClock();
 
-    window.addEventListener('mousemove', (e) => handlePointerMove(e.clientX, e.clientY));
+function toggleTimeFormat(){is24HourFormat=!is24HourFormat;document.getElementById('timeFormatBtn').textContent=is24HourFormat?'24H':'12H';updateClock();}
+function setFont(fontClass){document.getElementById('lockscreenClock').className=`text-7xl sm:text-9xl font-extralight tracking-tight text-white drop-shadow-2xl ${fontClass}`;}
+function switchTab(tab){
+ document.querySelectorAll('.tab-content').forEach(c=>c.classList.add('hidden'));
+ document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('bg-amber-400','text-black','font-bold');b.classList.add('text-slate-400');});
+ document.getElementById('tabContent-'+tab).classList.remove('hidden');
+ const btn=document.getElementById('tabBtn-'+tab);btn.classList.add('bg-amber-400','text-black','font-bold');btn.classList.remove('text-slate-400');
+}
+function updateUniforms(){
+ uniforms.u_speed.value=parseFloat(document.getElementById('sliderSpeed').value);
+ uniforms.u_glow.value=parseFloat(document.getElementById('sliderGlow').value);
+ document.getElementById('speedLabel').textContent=uniforms.u_speed.value.toFixed(1)+'×';
+ document.getElementById('glowLabel').textContent=uniforms.u_glow.value.toFixed(1);
+}
+document.getElementById('sliderSpeed').addEventListener('input',updateUniforms);
+document.getElementById('sliderGlow').addEventListener('input',updateUniforms);
 
-    canvas.addEventListener('pointerdown', (e) => {
-      isTouching = true;
-      uniforms.u_touchActive.value = 1.0;
-      uniforms.u_touchForce.value = 1.2;
-      handlePointerMove(e.clientX, e.clientY);
-    });
+function setRenderQuality(level){
+ const q={performance:.75,balanced:1,high:1.5,ultra:2};
+ pixelRatio=Math.min((window.devicePixelRatio||1)*(q[level]||1),level==='ultra'?2.5:2);
+ renderer.setPixelRatio(pixelRatio);renderer.setSize(window.innerWidth,window.innerHeight,false);
+ uniforms.u_resolution.value.set(renderer.domElement.width,renderer.domElement.height);
+ document.getElementById('qualityLabel').textContent=level.charAt(0).toUpperCase()+level.slice(1);
+ try{localStorage.setItem('auraQuality',level);}catch(e){}
+}
+document.getElementById('qualitySelect').addEventListener('change',e=>setRenderQuality(e.target.value));
+try{const savedQuality=localStorage.getItem('auraQuality');if(savedQuality){document.getElementById('qualitySelect').value=savedQuality;setRenderQuality(savedQuality);}}catch(e){}
 
-    window.addEventListener('pointerup', () => {
-      isTouching = false;
-      uniforms.u_touchActive.value = 0.0;
-    });
+const panel=document.getElementById('controlPanel');
+const handle=document.getElementById('panelHandle');
+const panelToggleBtn=document.getElementById('panelToggleBtn');
+let panelOpen=true;
 
-    // --- AUDIO REACTIVITY ---
-    let audioCtx, analyser, dataArray;
-    let isAudioActive = false;
+function syncPanelButton(){
+ panelToggleBtn.textContent=panelOpen?'⌄ HIDE CONTROLS':'⌃ SHOW CONTROLS';
+ panelToggleBtn.setAttribute('aria-expanded',String(panelOpen));
+ panelToggleBtn.style.bottom=panelOpen?Math.max(12,Math.min(58,window.innerHeight-panel.getBoundingClientRect().top+7))+'px':'12px';
+}
+function setPanelOpen(open){
+ panelOpen=Boolean(open);panel.classList.toggle('panel-closed',!panelOpen);
+ requestAnimationFrame(syncPanelButton);
+}
+handle.addEventListener('click',()=>setPanelOpen(!panelOpen));
+panelToggleBtn.addEventListener('click',()=>setPanelOpen(!panelOpen));
+window.addEventListener('resize',()=>requestAnimationFrame(syncPanelButton));
+setPanelOpen(true);
 
-    async function toggleAudioSync() {
-      if (isAudioActive) {
-        isAudioActive = false;
-        document.getElementById('micText').textContent = 'Audio React';
-        showToast('Audio Sync Disabled');
-        return;
-      }
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 128;
-        const source = audioCtx.createMediaStreamSource(stream);
-        source.connect(analyser);
-        dataArray = new Uint8Array(analyser.frequencyBinCount);
-        isAudioActive = true;
-        document.getElementById('micText').textContent = 'Audio Active';
-        showToast('Microphone Connected');
-      } catch (err) {
-        showToast('Audio access denied');
-      }
-    }
+let lastPos={x:0,y:0};
+let isTouching=false;
+function handlePointerMove(x,y){
+ const rect=canvas.getBoundingClientRect(),ratio=renderer.getPixelRatio();
+ const px=(x-rect.left)*ratio,py=(rect.height-(y-rect.top))*ratio;
+ uniforms.u_mouse.value.set(px,py);uniforms.u_touch.value.set(px,py);
+ uniforms.u_touchVelocity.value.set((px-lastPos.x)*.1,(py-lastPos.y)*.1);
+ lastPos={x:px,y:py};
+}
+canvas.addEventListener('pointerdown',e=>{
+ isTouching=true;uniforms.u_touchActive.value=1;uniforms.u_touchForce.value=1.2;
+ handlePointerMove(e.clientX,e.clientY);
+ try{canvas.setPointerCapture(e.pointerId);}catch(_){}
+});
+canvas.addEventListener('pointermove',e=>{if(isTouching)handlePointerMove(e.clientX,e.clientY);});
+function endTouch(){isTouching=false;uniforms.u_touchActive.value=0;}
+canvas.addEventListener('pointerup',endTouch);canvas.addEventListener('pointercancel',endTouch);
+window.addEventListener('mousemove',e=>{if(!isTouching)handlePointerMove(e.clientX,e.clientY);});
 
-    function processAudio() {
-      if (!isAudioActive || !analyser) {
-        uniforms.u_audioLevel.value *= 0.9;
-        uniforms.u_bass.value *= 0.9;
-        uniforms.u_mid.value *= 0.9;
-        uniforms.u_treble.value *= 0.9;
-        return;
-      }
-      analyser.getByteFrequencyData(dataArray);
-      let sum = 0, bassSum = 0, midSum = 0, trebleSum = 0;
-      const len = dataArray.length;
-      for (let i = 0; i < len; i++) {
-        const v = dataArray[i] / 255.0;
-        sum += v;
-        if (i < len * 0.25) bassSum += v;
-        else if (i < len * 0.65) midSum += v;
-        else trebleSum += v;
-      }
-      uniforms.u_audioLevel.value = sum / len;
-      uniforms.u_bass.value = bassSum / (len * 0.25);
-      uniforms.u_mid.value = midSum / (len * 0.4);
-      uniforms.u_treble.value = trebleSum / (len * 0.35);
-    }
+let audioCtx=null,analyser=null,dataArray=null,audioSource=null,isAudioActive=false;
+async function toggleAudioSync(){
+ const btn=document.getElementById('audioBtn');
+ if(isAudioActive){
+  isAudioActive=false;
+  if(audioSource){try{audioSource.disconnect();}catch(e){}}
+  if(audioCtx){try{await audioCtx.close();}catch(e){}}
+  audioCtx=null;analyser=null;
+  document.getElementById('micText').textContent='Audio React';
+  btn.classList.remove('text-amber-300','border-amber-500/50');
+  toast('Audio sync disabled');return;
+ }
+ try{
+  const stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended')await audioCtx.resume();
+  analyser=audioCtx.createAnalyser();analyser.fftSize=128;
+  dataArray=new Uint8Array(analyser.frequencyBinCount);
+  audioSource=audioCtx.createMediaStreamSource(stream);audioSource.connect(analyser);
+  isAudioActive=true;document.getElementById('micText').textContent='Audio Active';
+  btn.classList.add('text-amber-300','border-amber-500/50');toast('Microphone connected');
+ }catch(e){toast('Audio access denied. Allow microphone access.');}
+}
+function processAudio(){
+ if(!isAudioActive||!analyser){uniforms.u_audioLevel.value*=.92;uniforms.u_bass.value*=.92;uniforms.u_mid.value*=.92;uniforms.u_treble.value*=.92;return;}
+ analyser.getByteFrequencyData(dataArray);
+ let sum=0,bass=0,mid=0,treble=0;const n=dataArray.length;
+ for(let i=0;i<n;i++){const v=dataArray[i]/255;sum+=v;if(i<n*.25)bass+=v;else if(i<n*.65)mid+=v;else treble+=v;}
+ uniforms.u_audioLevel.value=sum/n;
+ uniforms.u_bass.value=bass/(n*.25);
+ uniforms.u_mid.value=mid/(n*.4);
+ uniforms.u_treble.value=treble/(n*.35);
+}
 
-    // --- MODALS & UTILITIES ---
-    function openScenes() {
-      document.getElementById('scenesModal').classList.remove('hidden');
-      document.getElementById('scenesModal').classList.add('flex');
-      setTimeout(() => document.getElementById('scenesCard').classList.remove('opacity-0', 'translate-y-4'), 10);
-      renderSavedScenes();
-    }
-    function closeScenes() {
-      document.getElementById('scenesCard').classList.add('opacity-0', 'translate-y-4');
-      setTimeout(() => {
-        document.getElementById('scenesModal').classList.add('hidden');
-        document.getElementById('scenesModal').classList.remove('flex');
-      }, 300);
-    }
+function openScenes(){renderScenes();document.getElementById('scenesModal').classList.remove('hidden');document.getElementById('scenesModal').classList.add('flex');requestAnimationFrame(()=>document.getElementById('scenesCard').classList.remove('opacity-0','translate-y-4'));}
+function closeScenes(){document.getElementById('scenesModal').classList.add('hidden');document.getElementById('scenesModal').classList.remove('flex');}
+function openPaywall(){document.getElementById('paywallModal').classList.remove('hidden');document.getElementById('paywallModal').classList.add('flex');}
+function closePaywall(){document.getElementById('paywallModal').classList.add('hidden');document.getElementById('paywallModal').classList.remove('flex');}
+function showUpgrade(){openPaywall();}
+function closeWelcome(){document.getElementById('welcomeModal').classList.add('hidden');try{localStorage.setItem('aura_welcomed','1');}catch(e){}}
+function toggleFullscreen(){if(!document.fullscreenElement)document.documentElement.requestFullscreen?.().catch(()=>{});else document.exitFullscreen?.().catch(()=>{});}
+function toggleOverlay(){document.getElementById('lockscreenOverlay').classList.toggle('opacity-0');}
+let canvasVisible=true;
+function toggleCanvas(){canvasVisible=!canvasVisible;canvas.style.opacity=canvasVisible?'1':'0';canvas.style.pointerEvents=canvasVisible?'auto':'none';document.getElementById('canvasToggleBtn').textContent=canvasVisible?'◉ Canvas':'◯ Canvas';toast(canvasVisible?'Canvas on':'Canvas off');}
+function shareScene(){
+ const params=new URLSearchParams({p:currentPresetName,s:document.getElementById('sliderSpeed').value,g:document.getElementById('sliderGlow').value});
+ const url=location.origin+location.pathname+'?'+params.toString();
+ if(navigator.share){navigator.share({title:'AURA PRO Studio',url}).catch(()=>{});}
+ else if(navigator.clipboard?.writeText){navigator.clipboard.writeText(url).then(()=>toast('Share link copied')).catch(()=>prompt('Copy your scene link:',url));}
+ else prompt('Copy your scene link:',url);
+}
+function toast(message){
+ const t=document.getElementById('toast');t.textContent=message;t.classList.remove('opacity-0','translate-y-2');
+ clearTimeout(window.__auraToast);window.__auraToast=setTimeout(()=>t.classList.add('opacity-0','translate-y-2'),2000);
+}
 
-    function openPaywall() {
-      document.getElementById('paywallModal').classList.remove('hidden');
-      document.getElementById('paywallModal').classList.add('flex');
-    }
-    function closePaywall() {
-      document.getElementById('paywallModal').classList.add('hidden');
-      document.getElementById('paywallModal').classList.remove('flex');
-    }
-    function showUpgrade() { openPaywall(); }
+let savedScenes=[];
+try{savedScenes=JSON.parse(localStorage.getItem('auraScenes')||'[]');if(!Array.isArray(savedScenes))savedScenes=[];}catch(e){savedScenes=[];}
+document.getElementById('saveSceneBtn').addEventListener('click',()=>{
+ const name=prompt('Name your AURA scene:',presets[currentPresetName]?.name||'My AURA');
+ if(!name)return;
+ savedScenes.unshift({id:Date.now(),name,preset:currentPresetName,speed:document.getElementById('sliderSpeed').value,glow:document.getElementById('sliderGlow').value,font:document.getElementById('lockscreenClock').className.match(/font-[a-z]+/)?.[0]||'font-syne',format:is24HourFormat?'24H':'12H'});
+ savedScenes=savedScenes.slice(0,12);
+ try{localStorage.setItem('auraScenes',JSON.stringify(savedScenes));}catch(e){}
+ toast('Scene saved');
+});
+function renderScenes(){
+ const box=document.getElementById('sceneList');
+ if(!savedScenes.length){box.innerHTML='<div class="py-10 text-center text-slate-500 text-sm">No saved scenes yet.<br><span class="text-slate-600">Build an atmosphere and save it.</span></div>';return;}
+ box.innerHTML=savedScenes.map(s=>`<div class="flex items-center justify-between gap-3 p-3 rounded-2xl bg-white/[.04] border border-white/10"><div class="min-w-0"><div class="font-semibold text-white truncate">${escapeHTML(s.name)}</div><div class="text-[10px] text-slate-500 uppercase tracking-widest">${escapeHTML(presets[s.preset]?.name||s.preset)}</div></div><div class="flex gap-2 shrink-0"><button onclick="loadScene(${s.id})" class="px-3 py-1.5 rounded-xl bg-white/10 text-xs">Load</button><button onclick="deleteScene(${s.id})" class="px-2.5 py-1.5 rounded-xl text-slate-500 text-xs">×</button></div></div>`).join('');
+}
+function escapeHTML(v){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function loadScene(id){
+ const s=savedScenes.find(x=>x.id===id);if(!s)return;
+ applyPreset(s.preset);document.getElementById('sliderSpeed').value=s.speed;document.getElementById('sliderGlow').value=s.glow;updateUniforms();setFont(s.font);
+ const want24=s.format==='24H';if(is24HourFormat!==want24)toggleTimeFormat();closeScenes();toast('Loaded '+s.name);
+}
+function deleteScene(id){savedScenes=savedScenes.filter(x=>x.id!==id);try{localStorage.setItem('auraScenes',JSON.stringify(savedScenes));}catch(e){}renderScenes();}
 
-    function closeWelcome() {
-      document.getElementById('welcomeCard').classList.add('opacity-0', 'translate-y-4');
-      setTimeout(() => {
-        document.getElementById('welcomeModal').classList.add('hidden');
-        document.getElementById('welcomeModal').classList.remove('flex');
-      }, 300);
-    }
+function skipSplash(){
+ const splash=document.getElementById('auraSplash');if(!splash)return;
+ splash.style.opacity='0';splash.style.visibility='hidden';setTimeout(()=>splash.remove(),850);
+ try{
+  if(!localStorage.getItem('aura_welcomed')){
+   localStorage.setItem('aura_welcomed','1');
+   setTimeout(()=>{document.getElementById('welcomeModal').classList.remove('hidden');document.getElementById('welcomeModal').classList.add('flex');requestAnimationFrame(()=>document.getElementById('welcomeCard').classList.remove('opacity-0','translate-y-4'));},350);
+  }
+ }catch(e){}
+}
+window.addEventListener('load',()=>setTimeout(skipSplash,3800));
 
-    function skipSplash() {
-      const splash = document.getElementById('auraSplash');
-      splash.style.opacity = '0';
-      setTimeout(() => splash.style.display = 'none', 900);
-      
-      if (!localStorage.getItem('aura_welcomed')) {
-        localStorage.setItem('aura_welcomed', 'true');
-        setTimeout(() => {
-          document.getElementById('welcomeModal').classList.remove('hidden');
-          document.getElementById('welcomeModal').classList.add('flex');
-          setTimeout(() => document.getElementById('welcomeCard').classList.remove('opacity-0', 'translate-y-4'), 50);
-        }, 400);
-      }
-    }
-    setTimeout(skipSplash, 3800);
+window.addEventListener('resize',()=>{
+ renderer.setSize(window.innerWidth,window.innerHeight,false);
+ uniforms.u_resolution.value.set(renderer.domElement.width,renderer.domElement.height);
+ requestAnimationFrame(syncPanelButton);
+});
 
-    function toggleFullscreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      } else {
-        document.exitFullscreen().catch(() => {});
-      }
-    }
+const clock=new THREE.Clock();
+function animate(){
+ requestAnimationFrame(animate);
+ const delta=Math.min(clock.getDelta(),.05);
+ uniforms.u_time.value+=delta;
+ uniforms.u_touchVelocity.value.multiplyScalar(.9);
+ if(!isTouching){uniforms.u_touchForce.value*=.94;uniforms.u_touchActive.value*=.88;}
+ processAudio();
+ try{renderer.render(scene,camera);}
+ catch(err){if(!window.__auraRenderErrorShown){window.__auraRenderErrorShown=true;console.error('AURA render error:',err);toast('Visual engine error — refresh AURA');}}
+}
+window.addEventListener('error',e=>{console.error('AURA error:',e.message,e.filename,e.lineno);});
+window.addEventListener('unhandledrejection',e=>console.error('AURA async error:',e.reason));
 
-    let overlayVisible = true;
-    function toggleOverlay() {
-      overlayVisible = !overlayVisible;
-      document.getElementById('lockscreenOverlay').style.opacity = overlayVisible ? '1' : '0';
-    }
-
-    let canvasVisible = true;
-    function toggleCanvas() {
-      canvasVisible = !canvasVisible;
-      canvas.style.display = canvasVisible ? 'block' : 'none';
-      document.getElementById('canvasToggleBtn').textContent = canvasVisible ? '◉ Canvas' : '◯ Canvas';
-    }
-
-    // Saved Scenes Manager
-    const savedScenesKey = 'aura_saved_scenes';
-    function getSavedScenes() {
-      return JSON.parse(localStorage.getItem(savedScenesKey) || '[]');
-    }
-    document.getElementById('saveSceneBtn').addEventListener('click', () => {
-      const name = prompt('Name your custom scene:', 'Custom Mood ' + (getSavedScenes().length + 1));
-      if (!name) return;
-      const sceneData = {
-        name,
-        mode: uniforms.u_mode.value,
-        colorA: '#' + uniforms.u_colorA.value.getHexString(),
-        colorB: '#' + uniforms.u_colorB.value.getHexString(),
-        colorC: '#' + uniforms.u_colorC.value.getHexString(),
-        speed: uniforms.u_speed.value,
-        glow: uniforms.u_glow.value
-      };
-      const list = getSavedScenes();
-      list.push(sceneData);
-      localStorage.setItem(savedScenesKey, JSON.stringify(list));
-      showToast(`Saved "${name}"`);
-    });
-
-    function renderSavedScenes() {
-      const container = document.getElementById('sceneList');
-      const scenes = getSavedScenes();
-      if (scenes.length === 0) {
-        container.innerHTML = `<div class="text-xs text-slate-500 py-6 text-center">No saved scenes yet. Customize your settings and click "+ Save".</div>`;
-        return;
-      }
-      container.innerHTML = scenes.map((s, idx) => `
-        <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10">
-          <div>
-            <div class="text-xs font-bold text-white">${s.name}</div>
-            <div class="text-[9px] text-slate-500 font-mono">Mode: ${s.mode} · Glow: ${s.glow}</div>
-          </div>
-          <div class="flex gap-2">
-            <button onclick="loadSavedScene(${idx})" class="px-3 py-1 rounded-xl bg-amber-400 text-black text-xs font-bold">Load</button>
-            <button onclick="deleteSavedScene(${idx})" class="px-2 py-1 rounded-xl bg-red-500/20 text-red-300 text-xs">✕</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    window.loadSavedScene = function(idx) {
-      const s = getSavedScenes()[idx];
-      if (!s) return;
-      uniforms.u_mode.value = s.mode;
-      uniforms.u_colorA.value.set(s.colorA);
-      uniforms.u_colorB.value.set(s.colorB);
-      uniforms.u_colorC.value.set(s.colorC);
-      uniforms.u_speed.value = s.speed;
-      uniforms.u_glow.value = s.glow;
-      document.getElementById('sliderSpeed').value = s.speed;
-      document.getElementById('sliderGlow').value = s.glow;
-      document.getElementById('speedLabel').textContent = s.speed + '×';
-      document.getElementById('glowLabel').textContent = s.glow;
-      document.getElementById('activeSceneName').textContent = s.name;
-      closeScenes();
-      showToast(`Loaded "${s.name}"`);
-    };
-
-    window.deleteSavedScene = function(idx) {
-      const scenes = getSavedScenes();
-      scenes.splice(idx, 1);
-      localStorage.setItem(savedScenesKey, JSON.stringify(scenes));
-      renderSavedScenes();
-    };
-
-    function shareScene() {
-      if (navigator.share) {
-        navigator.share({ title: 'AURA PRO Studio', text: 'Check out this live atmospheric atmosphere on AURA!', url: window.location.href }).catch(() => {});
-      } else {
-        navigator.clipboard.writeText(window.location.href);
-        showToast('Link copied to clipboard!');
-      }
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.remove('opacity-0', 'translate-y-2');
-      setTimeout(() => toast.classList.add('opacity-0', 'translate-y-2'), 2500);
-    }
-
-    // --- RESIZE HANDLER ---
-    window.addEventListener('resize', () => {
-      const w = Math.max(1, window.innerWidth);
-      const h = Math.max(1, window.innerHeight);
-      renderer.setSize(w, h, false);
-      uniforms.u_resolution.value.set(renderer.domElement.width, renderer.domElement.height);
-    });
-
-    // --- RENDER LOOP ---
-    const clock = new THREE.Clock();
-    function animate() {
-      requestAnimationFrame(animate);
-      const delta = Math.min(clock.getDelta(), 0.05);
-
-      uniforms.u_time.value += delta;
-      uniforms.u_touchVelocity.value.multiplyScalar(0.90);
-      if (!isTouching) {
-        uniforms.u_touchForce.value *= 0.94;
-        uniforms.u_touchActive.value *= 0.88;
-      }
-
-      processAudio();
-
-      try {
-        renderer.render(scene, camera);
-      } catch (err) {
-        if (!window.__auraRenderErrorShown) {
-          window.__auraRenderErrorShown = true;
-          console.error('AURA render error:', err);
-          showToast('Visual engine error — refresh AURA');
-        }
-      }
-    }
-    animate();
+const shared=new URLSearchParams(location.search);
+if(shared.get('p')&&presets[shared.get('p')])applyPreset(shared.get('p'));else applyPreset('whiteVoidDark');
+if(shared.get('s'))document.getElementById('sliderSpeed').value=shared.get('s');
+if(shared.get('g'))document.getElementById('sliderGlow').value=shared.get('g');
+updateUniforms();
+animate();
 </script>
 </body>
 </html>
