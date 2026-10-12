@@ -178,7 +178,7 @@ void main(){
 
   float t=u_time*max(u_speed,0.05);
   float force=clamp(u_touchForce,0.0,1.8);
-  float active=clamp(u_touchActive,0.0,1.0);
+  float touchEnabled=clamp(u_touchActive,0.0,1.0);
   float audio=clamp(u_audioLevel,0.0,1.0);
   float bass=clamp(u_bass,0.0,1.0);
   float mid=clamp(u_mid,0.0,1.0);
@@ -190,9 +190,9 @@ void main(){
   vec2 radial=d/max(distTouch,0.0005);
   vec2 tangent=vec2(-radial.y,radial.x);
   vec2 vel=u_touchVelocity/res*2.0;
-  float field=exp(-distTouch*3.5)*force*active;
-  float ring=sin(distTouch*38.0-t*7.0)*exp(-distTouch*5.0)*force*active;
-  vec2 wake=vel*exp(-distTouch*4.5)*active*4.0;
+  float field=exp(-distTouch*3.5)*force*touchEnabled;
+  float ring=sin(distTouch*38.0-t*7.0)*exp(-distTouch*5.0)*force*touchEnabled;
+  vec2 wake=vel*exp(-distTouch*4.5)*touchEnabled*4.0;
   float audioPulse=1.0+audio*1.8+bass*1.2;
   vec3 col=u_colorA;
 
@@ -225,7 +225,7 @@ void main(){
       core+=pow(g,1.35)*(0.5+0.5*noise(p*7.0));
       haze+=glowLine(line,0.08)*0.08;
     }
-    float discharge=exp(-distTouch*8.0)*force*active;
+    float discharge=exp(-distTouch*8.0)*force*touchEnabled;
     float tendrils=pow(max(noise((st-touch)*18.0+vec2(t*1.6,-t*1.1))-0.5,0.0),3.0)*discharge*5.0;
     float flash=pow(max(sin(t*3.0+noise(st*6.0)*6.0),0.0),18.0)*treble*3.5;
     col=u_colorA+u_colorB*(core*(0.8+glow*0.25))+u_colorC*(haze+tendrils+flash+discharge*1.6)*audioPulse;
@@ -253,7 +253,7 @@ void main(){
     col+=u_colorC*field*0.22*audioPulse;
   }else if(u_mode<4.5){
     vec2 p=st*2.6;
-    float swirl=exp(-distTouch*3.0)*force*active;
+    float swirl=exp(-distTouch*3.0)*force*touchEnabled;
     p+=wake*0.8+radial*swirl*0.45;
     p=rotate2D(p,swirl*2.0+dot(vel,tangent)*3.0);
     float n=fbm(p+vec2(t*0.07,-t*0.1));
@@ -262,7 +262,7 @@ void main(){
     col=mix(u_colorA,u_colorB,0.16+0.38*n);
     col=mix(col,u_colorC,sheen*0.72);
     col+=u_colorC*sheen*glow*0.18;
-  }else{
+  }else if(u_mode<5.5){
     vec2 p=st*2.6;
     p-=radial*field*0.48;
     p+=tangent*ring*0.1;
@@ -273,7 +273,18 @@ void main(){
     float core=exp(-length(st)*2.6);
     col=mix(u_colorA,u_colorB,neb*0.82);
     col+=u_colorC*(stars+stars2+core*0.22)*(0.8+glow*0.35+treble*1.5);
-    col+=u_colorC*exp(-distTouch*4.0)*force*active*0.55;
+    col+=u_colorC*exp(-distTouch*4.0)*force*touchEnabled*0.55;
+  }else{
+    vec2 p=st*1.9;
+    float r=length(p);
+    float a=atan(p.y,p.x);
+    float swirl=sin(a*8.0-r*15.0-t*1.4+fbm(p*2.6)*4.0);
+    p+=wake*0.45+radial*field*0.3;
+    float band=(1.0-smoothstep(0.05,1.0,r))*(0.5+0.5*swirl);
+    float flare=pow(max(0.0,1.0-r),3.0)*(1.0+bass*2.0);
+    float burst=exp(-distTouch*5.0)*field;
+    col=mix(u_colorA,u_colorB,band*0.82);
+    col+=u_colorC*(band*0.85+flare+burst)*(0.55+glow*0.25);
   }
 
   float vignette=1.0-smoothstep(0.45,1.55,length(st));
@@ -347,7 +358,7 @@ const presets={
  plasmaStorm:{mode:1,a:'#0e0214',b:'#86198f',c:'#f0abfc',name:'Plasma Storm',desc:'Electric · Filaments'},
  electricVeins:{mode:1,a:'#080314',b:'#4c1d95',c:'#a78bfa',name:'Electric Veins',desc:'Electric · Organic'},
  cosmicDust:{mode:5,a:'#03030e',b:'#312e81',c:'#818cf8',name:'Cosmic Dust',desc:'Cosmic · Particles'},
- solarFlare:{mode:5,a:'#120302',b:'#9a3412',c:'#fb923c',name:'Solar Flare',desc:'Cosmic · Energy'}
+ solarFlare:{mode:6,a:'#120302',b:'#9a3412',c:'#fb923c',name:'Solar Flare',desc:'Cosmic · Energy'}
 };
 
 const presetGrid=document.getElementById('presetGrid');
