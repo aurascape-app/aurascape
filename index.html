@@ -262,7 +262,7 @@ void main(){
     col=mix(u_colorA,u_colorB,0.16+0.38*n);
     col=mix(col,u_colorC,sheen*0.72);
     col+=u_colorC*sheen*glow*0.18;
-  }else if(u_mode<5.5){
+  }else{
     vec2 p=st*2.6;
     p-=radial*field*0.48;
     p+=tangent*ring*0.1;
@@ -274,17 +274,6 @@ void main(){
     col=mix(u_colorA,u_colorB,neb*0.82);
     col+=u_colorC*(stars+stars2+core*0.22)*(0.8+glow*0.35+treble*1.5);
     col+=u_colorC*exp(-distTouch*4.0)*force*active*0.55;
-  }else{
-    vec2 p=st*1.9;
-    float r=length(p);
-    float a=atan(p.y,p.x);
-    float swirl=sin(a*8.0-r*15.0-t*1.4+fbm(p*2.6)*4.0);
-    p+=wake*0.45+radial*field*0.3;
-    float band=(1.0-smoothstep(0.05,1.0,r))*(0.5+0.5*swirl);
-    float flare=pow(max(0.0,1.0-r),3.0)*(1.0+bass*2.0);
-    float burst=exp(-distTouch*5.0)*field;
-    col=mix(u_colorA,u_colorB,band*0.82);
-    col+=u_colorC*(band*0.85+flare+burst)*(0.55+glow*0.25);
   }
 
   float vignette=1.0-smoothstep(0.45,1.55,length(st));
@@ -358,7 +347,7 @@ const presets={
  plasmaStorm:{mode:1,a:'#0e0214',b:'#86198f',c:'#f0abfc',name:'Plasma Storm',desc:'Electric · Filaments'},
  electricVeins:{mode:1,a:'#080314',b:'#4c1d95',c:'#a78bfa',name:'Electric Veins',desc:'Electric · Organic'},
  cosmicDust:{mode:5,a:'#03030e',b:'#312e81',c:'#818cf8',name:'Cosmic Dust',desc:'Cosmic · Particles'},
- solarFlare:{mode:6,a:'#120302',b:'#9a3412',c:'#fb923c',name:'Solar Flare',desc:'Cosmic · Energy'}
+ solarFlare:{mode:5,a:'#120302',b:'#9a3412',c:'#fb923c',name:'Solar Flare',desc:'Cosmic · Energy'}
 };
 
 const presetGrid=document.getElementById('presetGrid');
