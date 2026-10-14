@@ -30,6 +30,12 @@ input[type=range]{-webkit-appearance:none;background:rgba(255,255,255,.15);heigh
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;width:16px;border-radius:50%;background:#fbbf24;cursor:pointer;box-shadow:0 0 12px rgba(251,191,36,.7)}
 .preset-card{transition:.2s transform,.2s border-color,.2s background}
 .preset-card:hover{transform:translateY(-1px)}
+.preset-card-wrap{position:relative;min-width:0}.preset-card-wrap .preset-card{width:100%;min-height:66px;padding-right:31px}.preset-favorite{position:absolute;top:7px;right:7px;width:24px;height:24px;border-radius:8px;background:rgba(0,0,0,.32);color:#9ca3af;border:1px solid rgba(255,255,255,.1);font-size:14px;line-height:1;cursor:pointer}.preset-favorite.is-favorite{color:#fbbf24;border-color:rgba(251,191,36,.4)}
+.preset-filter.active{background:rgba(251,191,36,.14);border-color:rgba(251,191,36,.3);color:#fde68a}
+#lockscreenClock{animation:auraClockBreath 8s ease-in-out infinite;letter-spacing:-.045em}
+@keyframes auraClockBreath{0%,100%{text-shadow:0 0 18px rgba(255,255,255,.08)}50%{text-shadow:0 0 30px rgba(255,255,255,.2)}}
+body.immersive-mode header,body.immersive-mode #controlPanel,body.immersive-mode .aura-panel-toggle{opacity:0!important;pointer-events:none!important;transition:opacity .25s ease}
+@media(prefers-reduced-motion:reduce){.splash-brand,.mercury-mercury:before,.mercury-mercury span,#lockscreenClock{animation:none!important}*{scroll-behavior:auto!important}}
 .aura-panel-toggle{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:45;display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 17px;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:rgba(5,5,8,.9);color:#f8fafc;font:700 10px/1 'Space Mono',monospace;letter-spacing:.12em;box-shadow:0 8px 28px rgba(0,0,0,.35);backdrop-filter:blur(16px);cursor:pointer;touch-action:manipulation}
 #auraSplash{transition:opacity .8s ease,visibility .8s}
 .splash-brand{position:relative;z-index:4;text-align:center;opacity:0;animation:splashBrand 1s 1.6s forwards}
@@ -63,17 +69,31 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
 </header>
 
 <div id="lockscreenOverlay" class="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-6 pt-24 pb-40 font-syne transition-opacity duration-300">
-  <div class="text-center space-y-1 my-auto"><p id="lockscreenDate" class="text-xs font-semibold tracking-[.3em] uppercase text-amber-300/90 font-mono">LOADING...</p><h1 id="lockscreenClock" class="text-7xl sm:text-9xl font-extralight tracking-tight text-white drop-shadow-2xl font-syne">00:00</h1></div>
+  <div id="clockBlock" class="text-center space-y-1 my-auto"><p id="lockscreenDate" class="text-xs font-semibold tracking-[.3em] uppercase text-amber-300/90 font-mono">LOADING...</p><h1 id="lockscreenClock" class="text-7xl sm:text-9xl font-extralight tracking-tight text-white drop-shadow-2xl font-syne">00:00</h1><p id="weatherDisplay" class="hidden text-xs tracking-widest text-slate-300/80 font-mono mt-3"></p></div>
 </div>
 
 <div id="controlPanel" class="absolute bottom-0 left-1/2 -translate-x-1/2 z-30 w-[94%] max-w-3xl glass-card rounded-[28px] p-4 shadow-2xl space-y-3 pointer-events-auto border border-white/15 max-h-[58vh] overflow-y-auto touch-scroll">
   <div id="panelHandle" class="flex justify-center items-center -mx-2 -mt-2 h-10 select-none" aria-label="Tap to hide or show controls"><div id="panelHandleBar" class="w-9 h-1.5 rounded-full bg-white/30"></div></div>
   <div class="flex items-center justify-between border-b border-white/10 pb-3">
     <div class="flex gap-1.5"><button onclick="switchTab('presets')" id="tabBtn-presets" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-400 text-black">Explore</button><button onclick="switchTab('optics')" id="tabBtn-optics" class="tab-btn px-3 py-1.5 rounded-xl text-xs text-slate-400">Tuning</button><button onclick="switchTab('style')" id="tabBtn-style" class="tab-btn px-3 py-1.5 rounded-xl text-xs text-slate-400">Clock</button></div>
-    <div class="flex gap-1.5"><button id="saveSceneBtn" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10">＋ Save</button><button onclick="shareScene()" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10">↗ Share</button><button onclick="toggleFullscreen()" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10">⛶</button><button onclick="toggleCanvas()" id="canvasToggleBtn" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10">◉ Canvas</button><button onclick="toggleOverlay()" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10">👁</button></div>
+    <div class="flex gap-1.5"><button id="saveSceneBtn" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10">＋ Save</button><button onclick="shareScene()" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10">↗ Share</button><button title="Fullscreen (press Esc to exit)" onclick="toggleFullscreen()" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10">⛶</button><button title="Show or hide the animated background" onclick="toggleCanvas()" id="canvasToggleBtn" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10">◉ Canvas</button><button title="Show or hide the clock overlay" onclick="toggleOverlay()" class="px-2.5 py-1.5 rounded-xl text-[10px] bg-white/5 border border-white/10">👁 Clock</button></div>
   </div>
   <div id="tabContent-presets" class="tab-content space-y-3">
-    <div class="flex items-end justify-between"><div><div class="text-white font-syne font-bold">Choose an atmosphere</div><div class="text-[10px] text-slate-500">Start with a mood, then make it yours.</div></div><button onclick="openPaywall()" class="text-[9px] text-amber-300 uppercase tracking-widest">Unlock all ✦</button></div>
+    <div class="flex items-end justify-between gap-3"><div><div class="text-white font-syne font-bold">Choose an atmosphere</div><div class="text-[10px] text-slate-500">One tap changes the entire mood.</div></div><button onclick="randomizeScene()" class="shrink-0 text-[10px] rounded-xl px-3 py-2 border border-amber-400/25 bg-amber-400/10 text-amber-200 font-bold">✦ Surprise me</button></div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2" id="quickMoodGrid">
+      <button onclick="applyPreset('rainyNight')" class="p-3 rounded-2xl border border-sky-300/15 bg-sky-400/10 text-left"><span class="block text-xs font-bold text-sky-100">Rainy Night</span><span class="text-[9px] text-slate-400">Quiet · Rain-soaked</span></button>
+      <button onclick="applyPreset('cyberpunk')" class="p-3 rounded-2xl border border-fuchsia-300/15 bg-fuchsia-400/10 text-left"><span class="block text-xs font-bold text-fuchsia-100">Cyberpunk</span><span class="text-[9px] text-slate-400">Electric · Neon</span></button>
+      <button onclick="applyPreset('oceanDepths')" class="p-3 rounded-2xl border border-cyan-300/15 bg-cyan-400/10 text-left"><span class="block text-xs font-bold text-cyan-100">Ocean Depths</span><span class="text-[9px] text-slate-400">Blue · Deep</span></button>
+      <button onclick="applyPreset('sunset')" class="p-3 rounded-2xl border border-orange-300/15 bg-orange-400/10 text-left"><span class="block text-xs font-bold text-orange-100">Sunset</span><span class="text-[9px] text-slate-400">Warm · Flowing</span></button>
+      <button onclick="applyPreset('space')" class="p-3 rounded-2xl border border-indigo-300/15 bg-indigo-400/10 text-left"><span class="block text-xs font-bold text-indigo-100">Space</span><span class="text-[9px] text-slate-400">Cosmic · Stars</span></button>
+      <button onclick="applyPreset('dreamscape')" class="p-3 rounded-2xl border border-purple-300/15 bg-purple-400/10 text-left"><span class="block text-xs font-bold text-purple-100">Dreamscape</span><span class="text-[9px] text-slate-400">Soft · Nebula</span></button>
+      <button onclick="applyPreset('minimalFocus')" class="p-3 rounded-2xl border border-white/15 bg-white/5 text-left"><span class="block text-xs font-bold text-white">Minimal Focus</span><span class="text-[9px] text-slate-400">Subtle · Calm</span></button>
+    </div>
+    <div class="flex flex-wrap items-center gap-2 pt-1">
+      <button data-preset-filter="all" onclick="setPresetFilter('all')" class="preset-filter active px-3 py-1.5 rounded-full text-[10px] border border-white/15 bg-white/10 text-white">All scenes</button>
+      <button data-preset-filter="favorites" onclick="setPresetFilter('favorites')" class="preset-filter px-3 py-1.5 rounded-full text-[10px] border border-white/10 text-slate-400">☆ Favorites</button>
+      <button data-preset-filter="recent" onclick="setPresetFilter('recent')" class="preset-filter px-3 py-1.5 rounded-full text-[10px] border border-white/10 text-slate-400">Recently played</button>
+    </div>
     <div id="presetGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2"></div>
   </div>
   <div id="tabContent-optics" class="tab-content hidden space-y-4 text-xs">
@@ -82,12 +102,18 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;widt
       <div><div class="flex justify-between text-slate-300 mb-2"><span>Glow</span><span id="glowLabel" class="font-mono text-slate-500">2.0</span></div><input type="range" id="sliderGlow" min=".5" max="8" step=".2" value="2" class="w-full"></div>
       <div><div class="flex justify-between text-slate-300 mb-2"><span>Render Quality</span><span id="qualityLabel" class="font-mono text-slate-500">High</span></div><select id="qualitySelect" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-slate-200"><option value="performance">Performance</option><option value="balanced">Balanced</option><option value="high" selected>High</option><option value="ultra">Ultra</option></select><p class="text-[9px] text-slate-600 mt-2">Higher quality uses more GPU power.</p></div>
     </div>
-    <div class="rounded-2xl bg-amber-400/5 border border-amber-400/10 p-3 flex items-center justify-between"><div><div class="font-semibold text-amber-200">Audio-reactive visuals</div><div class="text-[10px] text-slate-500 mt-0.5">Let music drive the atmosphere.</div></div><button onclick="toggleAudioSync()" class="px-3 py-1.5 rounded-xl bg-amber-400 text-black text-[10px] font-bold">Enable</button></div>
+    <div class="rounded-2xl bg-amber-400/5 border border-amber-400/10 p-3 space-y-3">
+      <div class="flex items-center justify-between gap-3"><div><div class="font-semibold text-amber-200">Audio-reactive visuals</div><div class="text-[10px] text-slate-500 mt-0.5">Uses your microphone only after you enable it.</div></div><button onclick="toggleAudioSync()" class="px-3 py-1.5 rounded-xl bg-amber-400 text-black text-[10px] font-bold">Enable / Stop</button></div>
+      <div class="grid grid-cols-2 gap-3"><div><label for="audioDrive" class="block text-[10px] text-slate-400 mb-1">Audio drive</label><select id="audioDrive" class="w-full bg-black/40 border border-white/10 rounded-xl px-2 py-2 text-xs text-slate-200"><option value="overall">Overall volume</option><option value="bass">Bass emphasis</option><option value="treble">Highs / detail</option><option value="beat">Beat pulses</option></select></div><div><label for="audioSensitivity" class="block text-[10px] text-slate-400 mb-1">Sensitivity <span id="audioSensitivityLabel">1.5×</span></label><input type="range" id="audioSensitivity" min="0.5" max="3" step="0.1" value="1.5" class="w-full mt-3"></div></div>
+    </div>
+    <div class="grid sm:grid-cols-2 gap-3"><label class="flex items-center gap-2 text-[10px] text-slate-300 rounded-xl bg-white/5 border border-white/10 p-3"><input id="adaptiveQualityToggle" type="checkbox" checked class="accent-amber-400"> Auto-adjust quality when performance drops</label><label class="flex items-center gap-2 text-[10px] text-slate-300 rounded-xl bg-white/5 border border-white/10 p-3"><input id="reducedMotionToggle" type="checkbox" class="accent-amber-400"> Reduced motion</label></div>
   </div>
   <div id="tabContent-style" class="tab-content hidden space-y-3 text-xs">
     <label class="block text-slate-400 mb-1.5 font-semibold">Clock typography</label>
     <div class="grid grid-cols-3 gap-2"><button onclick="setFont('font-syne')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-syne font-bold">Syne</button><button onclick="setFont('font-cinzel')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-cinzel font-bold">Cinzel</button><button onclick="setFont('font-outfit')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-outfit font-bold">Outfit</button><button onclick="setFont('font-space')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-space font-bold">Space</button><button onclick="setFont('font-playfair')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-playfair font-bold">Playfair</button><button onclick="setFont('font-mono')" class="p-2 bg-white/5 border border-white/10 rounded-xl font-mono font-bold">Mono</button></div>
-    <div class="flex items-center justify-between pt-1"><span class="text-slate-400 font-semibold">Time format</span><button onclick="toggleTimeFormat()" id="timeFormatBtn" class="px-3 py-1 rounded-xl bg-white/10 border border-white/15 font-mono">24H</button></div>
+    <div class="flex items-center justify-between pt-1 gap-3"><span class="text-slate-400 font-semibold">Time format</span><button onclick="toggleTimeFormat()" id="timeFormatBtn" class="px-3 py-1 rounded-xl bg-white/10 border border-white/15 font-mono">24H</button></div>
+    <div class="grid grid-cols-2 gap-3"><div><label for="clockPosition" class="block text-slate-400 mb-1.5 font-semibold">Clock placement</label><select id="clockPosition" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-slate-200"><option value="center">Center</option><option value="top-left">Top left</option><option value="top-right">Top right</option><option value="bottom-center">Bottom center</option></select></div><div class="flex flex-col gap-2 justify-end"><label class="flex items-center gap-2 text-slate-300"><input id="showDateToggle" type="checkbox" checked class="accent-amber-400"> Show date</label><button id="weatherBtn" onclick="toggleWeather()" class="px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-left text-slate-300">＋ Local weather</button></div></div>
+    <p class="text-[9px] text-slate-600">Weather is optional and requests location only when you turn it on.</p>
   </div>
 </div>
 <button id="panelToggleBtn" type="button" aria-expanded="true" aria-controls="controlPanel" class="aura-panel-toggle">⌄ HIDE CONTROLS</button>
@@ -262,7 +288,7 @@ void main(){
     col=mix(u_colorA,u_colorB,0.16+0.38*n);
     col=mix(col,u_colorC,sheen*0.72);
     col+=u_colorC*sheen*glow*0.18;
-  }else if(u_mode<5.5){
+  }else{
     vec2 p=st*2.6;
     p-=radial*field*0.48;
     p+=tangent*ring*0.1;
@@ -274,17 +300,6 @@ void main(){
     col=mix(u_colorA,u_colorB,neb*0.82);
     col+=u_colorC*(stars+stars2+core*0.22)*(0.8+glow*0.35+treble*1.5);
     col+=u_colorC*exp(-distTouch*4.0)*force*touchEnabled*0.55;
-  }else{
-    vec2 p=st*1.9;
-    float r=length(p);
-    float a=atan(p.y,p.x);
-    float swirl=sin(a*8.0-r*15.0-t*1.4+fbm(p*2.6)*4.0);
-    p+=wake*0.45+radial*field*0.3;
-    float band=(1.0-smoothstep(0.05,1.0,r))*(0.5+0.5*swirl);
-    float flare=pow(max(0.0,1.0-r),3.0)*(1.0+bass*2.0);
-    float burst=exp(-distTouch*5.0)*field;
-    col=mix(u_colorA,u_colorB,band*0.82);
-    col+=u_colorC*(band*0.85+flare+burst)*(0.55+glow*0.25);
   }
 
   float vignette=1.0-smoothstep(0.45,1.55,length(st));
@@ -338,7 +353,7 @@ renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();t
 renderer.domElement.addEventListener('webglcontextrestored',()=>location.reload());
 
 const presets={
- whiteVoidDark:{mode:0,a:'#050506',b:'#292b30',c:'#ffffff',name:'White Void',desc:'Minimal · Silk'},
+ whiteVoidDark:{mode:0,a:'#050506',b:'#555b65',c:'#ffffff',name:'White Void',desc:'Minimal · Silk'},
  goldDark:{mode:0,a:'#080705',b:'#4a3810',c:'#f59e0b',name:'Black & Gold',desc:'Signature · Silk'},
  oceanDeep:{mode:0,a:'#020b14',b:'#0c3854',c:'#06b6d4',name:'Abyss',desc:'Deep · Silk'},
  crimsonBlood:{mode:0,a:'#0f0204',b:'#540c18',c:'#ef4444',name:'Crimson',desc:'Bold · Silk'},
@@ -358,16 +373,41 @@ const presets={
  plasmaStorm:{mode:1,a:'#0e0214',b:'#86198f',c:'#f0abfc',name:'Plasma Storm',desc:'Electric · Filaments'},
  electricVeins:{mode:1,a:'#080314',b:'#4c1d95',c:'#a78bfa',name:'Electric Veins',desc:'Electric · Organic'},
  cosmicDust:{mode:5,a:'#03030e',b:'#312e81',c:'#818cf8',name:'Cosmic Dust',desc:'Cosmic · Particles'},
- solarFlare:{mode:6,a:'#120302',b:'#9a3412',c:'#fb923c',name:'Solar Flare',desc:'Cosmic · Energy'}
+ solarFlare:{mode:6,a:'#120302',b:'#9a3412',c:'#fb923c',name:'Solar Flare',desc:'Cosmic · Energy'},
+ rainyNight:{mode:2,a:'#030712',b:'#18364b',c:'#91d5e8',name:'Rainy Night',desc:'Quiet · Rain-soaked',mood:true,speed:0.58,glow:1.5},
+ cyberpunk:{mode:1,a:'#080014',b:'#701a75',c:'#ff56cc',name:'Cyberpunk',desc:'Electric · Neon',mood:true,speed:1.25,glow:3.5},
+ oceanDepths:{mode:0,a:'#010914',b:'#07506a',c:'#36e4ed',name:'Ocean Depths',desc:'Blue · Deep',mood:true,speed:0.72,glow:2.0},
+ sunset:{mode:6,a:'#170302',b:'#ae3519',c:'#ffbd58',name:'Sunset',desc:'Warm · Flowing',mood:true,speed:0.62,glow:2.3},
+ space:{mode:5,a:'#02020b',b:'#30216f',c:'#a9b5ff',name:'Space',desc:'Cosmic · Stars',mood:true,speed:0.48,glow:2.0},
+ dreamscape:{mode:2,a:'#080519',b:'#593b88',c:'#e7a9ff',name:'Dreamscape',desc:'Soft · Nebula',mood:true,speed:0.48,glow:2.4},
+ minimalFocus:{mode:0,a:'#030304',b:'#22252a',c:'#b7c4d8',name:'Minimal Focus',desc:'Subtle · Calm',mood:true,speed:0.32,glow:1.15}
 };
 
 const presetGrid=document.getElementById('presetGrid');
-presetGrid.innerHTML=Object.entries(presets).map(([key,p])=>`
-<button data-preset="${key}" onclick="applyPreset('${key}')" class="preset-card p-3 bg-white/5 border border-white/10 rounded-2xl text-left cursor-pointer">
-<span class="text-xs font-bold block text-white">${p.name}</span><span class="text-[9px] text-slate-500">${p.desc}</span>
-</button>`).join('');
-
 let currentPresetName='whiteVoidDark';
+let presetFilter='all';
+let favoritePresets=[];
+let recentPresets=[];
+try{favoritePresets=JSON.parse(localStorage.getItem('auraFavoritePresets')||'[]');if(!Array.isArray(favoritePresets))favoritePresets=[];}catch(e){favoritePresets=[];}
+try{recentPresets=JSON.parse(localStorage.getItem('auraRecentPresets')||'[]');if(!Array.isArray(recentPresets))recentPresets=[];}catch(e){recentPresets=[];}
+function renderPresetGrid(){
+ let entries=Object.entries(presets);
+ if(presetFilter==='favorites')entries=entries.filter(([key])=>favoritePresets.includes(key));
+ if(presetFilter==='recent')entries=recentPresets.map(key=>[key,presets[key]]).filter(([,p])=>!!p);
+ if(!entries.length){presetGrid.innerHTML='<div class="col-span-full py-5 text-center text-xs text-slate-500">'+(presetFilter==='favorites'?'Tap the ☆ on any scene to save it here.':'Choose a scene to start your recent list.')+'</div>';return;}
+ presetGrid.innerHTML=entries.map(([key,p])=>`<div class="preset-card-wrap"><button data-preset="${key}" onclick="applyPreset('${key}')" title="Use ${p.name}" class="preset-card p-3 bg-white/5 border border-white/10 rounded-2xl text-left ${currentPresetName===key?'ring-1 ring-amber-300/50':''}"><span class="text-xs font-bold block text-white">${p.name}</span><span class="text-[9px] text-slate-500">${p.desc}</span></button><button class="preset-favorite ${favoritePresets.includes(key)?'is-favorite':''}" title="${favoritePresets.includes(key)?'Remove favorite':'Add favorite'}" aria-label="${favoritePresets.includes(key)?'Remove favorite':'Add favorite'} ${p.name}" onclick="toggleFavorite('${key}',event)">${favoritePresets.includes(key)?'★':'☆'}</button></div>`).join('');
+}
+function setPresetFilter(filter){
+ presetFilter=filter;
+ document.querySelectorAll('[data-preset-filter]').forEach(btn=>btn.classList.toggle('active',btn.dataset.presetFilter===filter));
+ renderPresetGrid();
+}
+function toggleFavorite(key,event){
+ if(event){event.preventDefault();event.stopPropagation();}
+ if(favoritePresets.includes(key))favoritePresets=favoritePresets.filter(x=>x!==key);else favoritePresets.unshift(key);
+ try{localStorage.setItem('auraFavoritePresets',JSON.stringify(favoritePresets));}catch(e){}
+ renderPresetGrid();toast(favoritePresets.includes(key)?'Added to favorites':'Removed from favorites');
+}
 function applyPreset(key){
  const p=presets[key];if(!p)return;
  currentPresetName=key;
@@ -375,10 +415,29 @@ function applyPreset(key){
  uniforms.u_colorA.value.set(p.a);
  uniforms.u_colorB.value.set(p.b);
  uniforms.u_colorC.value.set(p.c);
+ if(p.mood){
+   document.getElementById('sliderSpeed').value=String(p.speed||1);
+   document.getElementById('sliderGlow').value=String(p.glow||2);
+   updateUniforms();
+ }
+ recentPresets=[key,...recentPresets.filter(x=>x!==key)].slice(0,8);
+ try{localStorage.setItem('auraRecentPresets',JSON.stringify(recentPresets));}catch(e){}
  document.getElementById('activeSceneName').textContent=p.name;
- document.querySelectorAll('[data-preset]').forEach(b=>b.classList.toggle('ring-1',b.dataset.preset===key));
+ renderPresetGrid();
  toast('Loaded "'+p.name+'"');
 }
+function randomizeScene(){
+ const keys=Object.keys(presets).filter(key=>key!==currentPresetName);
+ const key=keys[Math.floor(Math.random()*keys.length)];
+ applyPreset(key);
+ if(!presets[key].mood){
+   document.getElementById('sliderSpeed').value=(0.45+Math.random()*1.2).toFixed(1);
+   document.getElementById('sliderGlow').value=(1.0+Math.random()*3.5).toFixed(1);
+   updateUniforms();
+ }
+ toast('A new atmosphere, generated');
+}
+renderPresetGrid();
 
 function updateClock(){
  const now=new Date();let h=now.getHours();const m=String(now.getMinutes()).padStart(2,'0');
@@ -390,7 +449,41 @@ let is24HourFormat=true;
 setInterval(updateClock,1000);updateClock();
 
 function toggleTimeFormat(){is24HourFormat=!is24HourFormat;document.getElementById('timeFormatBtn').textContent=is24HourFormat?'24H':'12H';updateClock();}
-function setFont(fontClass){document.getElementById('lockscreenClock').className=`text-7xl sm:text-9xl font-extralight tracking-tight text-white drop-shadow-2xl ${fontClass}`;}
+function setFont(fontClass){document.getElementById('lockscreenClock').className=`text-7xl sm:text-9xl font-extralight tracking-tight text-white drop-shadow-2xl ${fontClass}`;try{localStorage.setItem('auraClockFont',fontClass);}catch(e){}}
+try{const savedClockFont=localStorage.getItem('auraClockFont');if(savedClockFont&&/^font-(syne|cinzel|outfit|space|playfair|mono)$/.test(savedClockFont))setFont(savedClockFont);}catch(e){}
+const clockBlock=document.getElementById('clockBlock');
+function setClockPosition(position){
+ const css={center:{top:'50%',left:'50%',right:'auto',bottom:'auto',transform:'translate(-50%,-50%)',textAlign:'center'},'top-left':{top:'18%',left:'6%',right:'auto',bottom:'auto',transform:'none',textAlign:'left'},'top-right':{top:'18%',right:'6%',left:'auto',bottom:'auto',transform:'none',textAlign:'right'},'bottom-center':{bottom:'17%',left:'50%',right:'auto',top:'auto',transform:'translateX(-50%)',textAlign:'center'}};
+ const selected=css[position]||css.center;
+ Object.assign(clockBlock.style,{position:'absolute',top:selected.top||'auto',left:selected.left||'auto',right:selected.right||'auto',bottom:selected.bottom||'auto',transform:selected.transform,textAlign:selected.textAlign,margin:'0',width:'max-content',maxWidth:'88vw'});
+ try{localStorage.setItem('auraClockPosition',position);}catch(e){}
+}
+document.getElementById('clockPosition').addEventListener('change',e=>setClockPosition(e.target.value));
+try{const savedClockPosition=localStorage.getItem('auraClockPosition')||'center';document.getElementById('clockPosition').value=savedClockPosition;setClockPosition(savedClockPosition);}catch(e){setClockPosition('center');}
+document.getElementById('showDateToggle').addEventListener('change',e=>{document.getElementById('lockscreenDate').style.display=e.target.checked?'':'none';try{localStorage.setItem('auraShowDate',e.target.checked?'1':'0');}catch(err){}});
+try{const showDate=localStorage.getItem('auraShowDate')!=='0';document.getElementById('showDateToggle').checked=showDate;document.getElementById('lockscreenDate').style.display=showDate?'':'none';}catch(e){}
+let weatherEnabled=false,weatherBusy=false;
+function weatherLabel(code){if(code===0)return 'Clear';if([1,2,3].includes(code))return 'Cloudy';if([45,48].includes(code))return 'Fog';if([51,53,55,56,57].includes(code))return 'Drizzle';if([61,63,65,66,67,80,81,82].includes(code))return 'Rain';if([71,73,75,77,85,86].includes(code))return 'Snow';if([95,96,99].includes(code))return 'Thunderstorm';return 'Weather';}
+async function toggleWeather(){
+ const out=document.getElementById('weatherDisplay'),btn=document.getElementById('weatherBtn');
+ if(weatherEnabled){weatherEnabled=false;out.classList.add('hidden');btn.textContent='＋ Local weather';toast('Weather hidden');try{localStorage.setItem('auraWeather','0');}catch(e){}return;}
+ if(weatherBusy)return;
+ if(!navigator.geolocation){toast('Location is not available in this browser');return;}
+ weatherBusy=true;btn.textContent='Locating…';
+ navigator.geolocation.getCurrentPosition(async pos=>{
+   try{
+     const lat=pos.coords.latitude,lon=pos.coords.longitude;
+     const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`;
+     const response=await fetch(url);if(!response.ok)throw new Error('Weather request failed');
+     const data=await response.json();const cur=data.current;
+     out.textContent=`${weatherLabel(cur.weather_code)} · ${Math.round(cur.temperature_2m)}°${data.current_units?.temperature_2m==='°F'?'F':'C'}`;
+     out.classList.remove('hidden');weatherEnabled=true;btn.textContent='− Hide weather';
+
+   }catch(err){btn.textContent='＋ Local weather';toast('Weather could not load. Check internet and try again.');}
+   finally{weatherBusy=false;}
+ },err=>{weatherBusy=false;btn.textContent='＋ Local weather';toast('Allow location access to show local weather');},{enableHighAccuracy:false,timeout:10000,maximumAge:600000});
+}
+
 function switchTab(tab){
  document.querySelectorAll('.tab-content').forEach(c=>c.classList.add('hidden'));
  document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('bg-amber-400','text-black','font-bold');b.classList.add('text-slate-400');});
@@ -406,16 +499,36 @@ function updateUniforms(){
 document.getElementById('sliderSpeed').addEventListener('input',updateUniforms);
 document.getElementById('sliderGlow').addEventListener('input',updateUniforms);
 
-function setRenderQuality(level){
- const q={performance:.75,balanced:1,high:1.5,ultra:2};
- pixelRatio=Math.min((window.devicePixelRatio||1)*(q[level]||1),level==='ultra'?2.5:2);
+let selectedQuality='high',adaptiveScale=1,baseQualityScale=1.5;
+function applyRendererSize(){
+ const maxPixel=selectedQuality==='ultra'?2.5:2;
+ pixelRatio=Math.max(0.65,Math.min((window.devicePixelRatio||1)*baseQualityScale*adaptiveScale,maxPixel));
  renderer.setPixelRatio(pixelRatio);renderer.setSize(window.innerWidth,window.innerHeight,false);
  uniforms.u_resolution.value.set(renderer.domElement.width,renderer.domElement.height);
+}
+function setRenderQuality(level){
+ const q={performance:.75,balanced:1,high:1.5,ultra:2};
+ selectedQuality=level;baseQualityScale=q[level]||1.5;adaptiveScale=1;applyRendererSize();
  document.getElementById('qualityLabel').textContent=level.charAt(0).toUpperCase()+level.slice(1);
  try{localStorage.setItem('auraQuality',level);}catch(e){}
 }
 document.getElementById('qualitySelect').addEventListener('change',e=>setRenderQuality(e.target.value));
-try{const savedQuality=localStorage.getItem('auraQuality');if(savedQuality){document.getElementById('qualitySelect').value=savedQuality;setRenderQuality(savedQuality);}}catch(e){}
+try{const savedQuality=localStorage.getItem('auraQuality');if(savedQuality){document.getElementById('qualitySelect').value=savedQuality;setRenderQuality(savedQuality);}else{setRenderQuality('high');}}catch(e){setRenderQuality('high');}
+const reduceMotionToggle=document.getElementById('reducedMotionToggle');
+let reducedMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+try{if(localStorage.getItem('auraReducedMotion')!==null)reducedMotion=localStorage.getItem('auraReducedMotion')==='1';}catch(e){}
+reduceMotionToggle.checked=reducedMotion;
+reduceMotionToggle.addEventListener('change',e=>{reducedMotion=e.target.checked;try{localStorage.setItem('auraReducedMotion',reducedMotion?'1':'0');}catch(err){}toast(reducedMotion?'Reduced motion enabled':'Full motion enabled');});
+const adaptiveToggle=document.getElementById('adaptiveQualityToggle');
+try{adaptiveToggle.checked=localStorage.getItem('auraAdaptiveQuality')!=='0';}catch(e){}
+adaptiveToggle.addEventListener('change',e=>{try{localStorage.setItem('auraAdaptiveQuality',e.target.checked?'1':'0');}catch(err){}if(!e.target.checked){adaptiveScale=1;applyRendererSize();}});
+const audioSensitivity=document.getElementById('audioSensitivity');
+const audioDrive=document.getElementById('audioDrive');
+try{audioDrive.value=localStorage.getItem('auraAudioDrive')||'overall';}catch(e){}
+audioDrive.addEventListener('change',()=>{try{localStorage.setItem('auraAudioDrive',audioDrive.value);}catch(e){}});
+audioSensitivity.addEventListener('input',()=>document.getElementById('audioSensitivityLabel').textContent=Number(audioSensitivity.value).toFixed(1)+'×');
+try{const savedAudioSensitivity=localStorage.getItem('auraAudioSensitivity');if(savedAudioSensitivity){audioSensitivity.value=savedAudioSensitivity;document.getElementById('audioSensitivityLabel').textContent=Number(savedAudioSensitivity).toFixed(1)+'×';}}catch(e){}
+audioSensitivity.addEventListener('change',()=>{try{localStorage.setItem('auraAudioSensitivity',audioSensitivity.value);}catch(e){}});
 
 const panel=document.getElementById('controlPanel');
 const handle=document.getElementById('panelHandle');
@@ -425,7 +538,7 @@ let panelOpen=true;
 function syncPanelButton(){
  panelToggleBtn.textContent=panelOpen?'⌄ HIDE CONTROLS':'⌃ SHOW CONTROLS';
  panelToggleBtn.setAttribute('aria-expanded',String(panelOpen));
- panelToggleBtn.style.bottom=panelOpen?Math.max(12,Math.min(58,window.innerHeight-panel.getBoundingClientRect().top+7))+'px':'12px';
+ panelToggleBtn.style.bottom=panelOpen?Math.max(12,window.innerHeight-panel.getBoundingClientRect().top+10)+'px':'12px';
 }
 function setPanelOpen(open){
  panelOpen=Boolean(open);panel.classList.toggle('panel-closed',!panelOpen);
@@ -453,31 +566,38 @@ canvas.addEventListener('pointerdown',e=>{
 });
 window.addEventListener('pointerup',()=>{isTouching=false;uniforms.u_touchActive.value=0.0;});
 
-let audioCtx,analyser,dataArray,isAudioActive=false;
+let audioCtx=null,analyser=null,dataArray=null,audioSource=null,audioStream=null,isAudioActive=false,lastAudioLevel=0,audioBeatPulse=0;
 async function toggleAudioSync(){
  const btn=document.getElementById('audioBtn');
  if(isAudioActive){
   isAudioActive=false;
+  try{if(audioSource)audioSource.disconnect();}catch(e){}
+  if(audioStream)audioStream.getTracks().forEach(track=>track.stop());
+  if(audioCtx){try{await audioCtx.close();}catch(e){}}
+  audioCtx=null;analyser=null;dataArray=null;audioSource=null;audioStream=null;
   document.getElementById('micText').textContent='Audio React';
   btn.classList.remove('bg-amber-500/20','border-amber-500/50','text-amber-300');
-  toast('Audio Sync Disabled');return;
+  toast('Audio sync disabled');return;
  }
  try{
-  const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  audioStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
   audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  analyser=audioCtx.createAnalyser();analyser.fftSize=128;
-  const source=audioCtx.createMediaStreamSource(stream);
-  source.connect(analyser);dataArray=new Uint8Array(analyser.frequencyBinCount);
+  if(audioCtx.state==='suspended')await audioCtx.resume();
+  analyser=audioCtx.createAnalyser();analyser.fftSize=128;analyser.smoothingTimeConstant=0.72;
+  dataArray=new Uint8Array(analyser.frequencyBinCount);
+  audioSource=audioCtx.createMediaStreamSource(audioStream);audioSource.connect(analyser);
   isAudioActive=true;document.getElementById('micText').textContent='Audio Active';
   btn.classList.add('bg-amber-500/20','border-amber-500/50','text-amber-300');
-  toast('Microphone Connected');
- }catch(err){toast('Microphone access denied or blocked');}
+  toast('Microphone connected');
+ }catch(err){
+  if(audioStream)audioStream.getTracks().forEach(track=>track.stop());
+  audioStream=null;toast('Microphone access denied or blocked');
+ }
 }
-
 function processAudio(){
- if(!isAudioActive||!analyser){
+ if(!isAudioActive||!analyser||!dataArray){
   uniforms.u_audioLevel.value*=0.9;uniforms.u_bass.value*=0.9;
-  uniforms.u_mid.value*=0.9;uniforms.u_treble.value*=0.9;return;
+  uniforms.u_mid.value*=0.9;uniforms.u_treble.value*=0.9;audioBeatPulse*=0.85;return;
  }
  analyser.getByteFrequencyData(dataArray);
  let sum=0,bassSum=0,midSum=0,trebleSum=0;const len=dataArray.length;
@@ -487,10 +607,24 @@ function processAudio(){
   else if(i<len*0.65)midSum+=v;
   else trebleSum+=v;
  }
- uniforms.u_audioLevel.value=sum/len;
- uniforms.u_bass.value=bassSum/(len*0.25);
- uniforms.u_mid.value=midSum/(len*0.4);
- uniforms.u_treble.value=trebleSum/(len*0.35);
+ const overall=sum/len;
+ const bass=Math.min(1,bassSum/(len*0.25));
+ const mid=Math.min(1,midSum/(len*0.4));
+ const treble=Math.min(1,trebleSum/(len*0.35));
+ const sensitivity=Math.max(0.5,Math.min(3,Number(audioSensitivity.value)||1.5));
+ const drive=audioDrive.value;
+ const beatRise=Math.max(0,overall-lastAudioLevel);
+ if(beatRise>0.035)audioBeatPulse=Math.min(1,audioBeatPulse+beatRise*6.0);
+ else audioBeatPulse*=0.88;
+ lastAudioLevel=overall;
+ let driven=overall;
+ if(drive==='bass')driven=bass;
+ else if(drive==='treble')driven=treble;
+ else if(drive==='beat')driven=audioBeatPulse;
+ uniforms.u_audioLevel.value=Math.min(1,driven*sensitivity);
+ uniforms.u_bass.value=Math.min(1,bass*sensitivity);
+ uniforms.u_mid.value=Math.min(1,mid*sensitivity);
+ uniforms.u_treble.value=Math.min(1,treble*sensitivity);
 }
 
 function openScenes(){
@@ -534,6 +668,7 @@ function toggleFullscreen(){
  if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});
  else document.exitFullscreen().catch(()=>{});
 }
+document.addEventListener('fullscreenchange',()=>document.body.classList.toggle('immersive-mode',!!document.fullscreenElement));
 let overlayVisible=true;
 function toggleOverlay(){
  overlayVisible=!overlayVisible;
@@ -542,12 +677,12 @@ function toggleOverlay(){
 let canvasVisible=true;
 function toggleCanvas(){
  canvasVisible=!canvasVisible;
- canvas.style.display=canvasVisible?'block':'none';
+ canvas.style.opacity=canvasVisible?'1':'0';canvas.style.pointerEvents=canvasVisible?'auto':'none';
  document.getElementById('canvasToggleBtn').textContent=canvasVisible?'◉ Canvas':'◯ Canvas';
 }
 
 const savedScenesKey='aura_saved_scenes';
-function getSavedScenes(){return JSON.parse(localStorage.getItem(savedScenesKey)||'[]');}
+function getSavedScenes(){try{const v=JSON.parse(localStorage.getItem(savedScenesKey)||'[]');return Array.isArray(v)?v:[];}catch(e){return [];}}
 document.getElementById('saveSceneBtn').addEventListener('click',()=>{
  const name=prompt('Name your custom scene:','Custom Mood '+(getSavedScenes().length+1));
  if(!name)return;
@@ -559,10 +694,11 @@ document.getElementById('saveSceneBtn').addEventListener('click',()=>{
   speed:uniforms.u_speed.value,glow:uniforms.u_glow.value
  };
  const list=getSavedScenes();list.push(sceneData);
- localStorage.setItem(savedScenesKey,JSON.stringify(list));
+ try{localStorage.setItem(savedScenesKey,JSON.stringify(list));}catch(e){toast('Could not save scene in this browser');return;}
  toast(`Saved "${name}"`);
 });
 
+function escapeSceneText(v){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function renderSavedScenes(){
  const container=document.getElementById('sceneList');
  const scenes=getSavedScenes();
@@ -572,7 +708,7 @@ function renderSavedScenes(){
  }
  container.innerHTML=scenes.map((s,idx)=>`
   <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10">
-   <div><div class="text-xs font-bold text-white">${s.name}</div><div class="text-[9px] text-slate-500 font-mono">Mode: ${s.mode} · Glow: ${s.glow}</div></div>
+   <div><div class="text-xs font-bold text-white">${escapeSceneText(s.name)}</div><div class="text-[9px] text-slate-500 font-mono">Mode: ${s.mode} · Glow: ${s.glow}</div></div>
    <div class="flex gap-2"><button onclick="loadSavedScene(${idx})" class="px-3 py-1 rounded-xl bg-amber-400 text-black text-xs font-bold cursor-pointer">Load</button><button onclick="deleteSavedScene(${idx})" class="px-2 py-1 rounded-xl bg-red-500/20 text-red-300 text-xs cursor-pointer">✕</button></div>
   </div>
  `).join('');
@@ -589,37 +725,97 @@ window.loadSavedScene=function(idx){
 };
 window.deleteSavedScene=function(idx){
  const scenes=getSavedScenes();scenes.splice(idx,1);
- localStorage.setItem(savedScenesKey,JSON.stringify(scenes));
+ try{localStorage.setItem(savedScenesKey,JSON.stringify(scenes));}catch(e){}
  renderSavedScenes();
 };
 
 function shareScene(){
- if(navigator.share){navigator.share({title:'AURA PRO Studio',text:'Check out this atmosphere on AURA!',url:window.location.href}).catch(()=>{});}
- else{navigator.clipboard.writeText(window.location.href);toast('Link copied to clipboard!');}
+ const shareURL=new URL(window.location.href);
+ shareURL.searchParams.set('p',currentPresetName);
+ shareURL.searchParams.set('s',document.getElementById('sliderSpeed').value);
+ shareURL.searchParams.set('g',document.getElementById('sliderGlow').value);
+ shareURL.searchParams.set('clock',document.getElementById('clockPosition').value);
+ shareURL.searchParams.set('date',document.getElementById('showDateToggle').checked?'1':'0');
+ shareURL.searchParams.set('font',document.getElementById('lockscreenClock').className.match(/font-[a-z]+/)?.[0]||'font-syne');
+ const shareLink=shareURL.toString();
+ if(navigator.share){navigator.share({title:'AURA PRO Studio',text:'Open this AURA atmosphere',url:shareLink}).catch(()=>{});}
+ else if(navigator.clipboard?.writeText){navigator.clipboard.writeText(shareLink).then(()=>toast('Scene link copied')).catch(()=>prompt('Copy your AURA scene link:',shareLink));}
+ else{prompt('Copy your AURA scene link:',shareLink);}
 }
 
 function toast(msg){
- const t=document.getElementById('toast');t.textContent=msg;
+ const t=document.getElementById('toast');if(!t){console.log(msg);return;}t.textContent=msg;
  t.classList.remove('opacity-0','translate-y-2');
- setTimeout(()=>t.classList.add('opacity-0','translate-y-2'),2500);
+ clearTimeout(window.__auraToastTimer);
+ window.__auraToastTimer=setTimeout(()=>t.classList.add('opacity-0','translate-y-2'),3500);
+}
+
+// Compile the exact visual shaders once up front so a future GLSL error is visible
+// instead of silently leaving the user with a black canvas.
+function diagnoseShaderProgram(){
+ const gl=renderer.getContext();
+ const compile=(type,source)=>{
+  const shader=gl.createShader(type);gl.shaderSource(shader,source);gl.compileShader(shader);
+  return {shader,ok:gl.getShaderParameter(shader,gl.COMPILE_STATUS),log:gl.getShaderInfoLog(shader)||''};
+ };
+ const vertexSource='attribute vec3 position;\nattribute vec2 uv;\n'+vertexShader;
+ const vertex=compile(gl.VERTEX_SHADER,vertexSource);
+ const fragment=compile(gl.FRAGMENT_SHADER,fragmentShader);
+ if(!vertex.ok||!fragment.ok){
+  const details='AURA shader preflight failed. '+(!vertex.ok?'VERTEX: '+vertex.log:'')+(!fragment.ok?' FRAGMENT: '+fragment.log:'');
+  console.error(details);toast('Canvas shader error: '+(!vertex.ok?vertex.log:fragment.log).replace(/\s+/g,' ').slice(0,150));
+  gl.deleteShader(vertex.shader);gl.deleteShader(fragment.shader);return false;
+ }
+ const program=gl.createProgram();gl.attachShader(program,vertex.shader);gl.attachShader(program,fragment.shader);gl.linkProgram(program);
+ const linked=gl.getProgramParameter(program,gl.LINK_STATUS);
+ if(!linked){const log=gl.getProgramInfoLog(program)||'Unknown program link error';console.error('AURA shader link failed:',log);toast('Canvas link error: '+log.slice(0,150));}
+ gl.deleteProgram(program);gl.deleteShader(vertex.shader);gl.deleteShader(fragment.shader);
+ return linked;
 }
 
 window.addEventListener('resize',()=>{
- renderer.setSize(window.innerWidth,window.innerHeight,false);
- uniforms.u_resolution.value.set(renderer.domElement.width,renderer.domElement.height);
+ applyRendererSize();
  syncPanelButton();
 });
 
 const clockTimer=new THREE.Clock();
+let fpsFrames=0,fpsWindowStart=performance.now();
 function animate(){
  requestAnimationFrame(animate);
- const delta=clockTimer.getDelta();
+ const rawDelta=Math.min(clockTimer.getDelta(),0.05);
+ if(document.hidden)return;
+ const delta=reducedMotion?rawDelta*0.22:rawDelta;
  uniforms.u_time.value+=delta;
  uniforms.u_touchVelocity.value.multiplyScalar(0.92);
- if(!isTouching)uniforms.u_touchForce.value*=0.95;
+ if(!isTouching){uniforms.u_touchForce.value*=0.95;uniforms.u_touchActive.value*=0.9;}
  processAudio();
- renderer.render(scene,camera);
+ try{renderer.render(scene,camera);}catch(err){console.error('AURA render failed:',err);if(!window.__auraRenderErrorShown){window.__auraRenderErrorShown=true;toast('Visual rendering failed. Open the browser console for the shader error.');}}
+ fpsFrames++;
+ const now=performance.now();
+ if(now-fpsWindowStart>=1800){
+   const fps=fpsFrames*1000/(now-fpsWindowStart);fpsFrames=0;fpsWindowStart=now;
+   if(adaptiveToggle.checked){
+     let next=adaptiveScale;
+     if(fps<27)next=Math.max(0.5,adaptiveScale*0.82);
+     else if(fps>52)next=Math.min(1,adaptiveScale+0.08);
+     if(Math.abs(next-adaptiveScale)>0.04){adaptiveScale=next;applyRendererSize();}
+   }
+ }
 }
+document.addEventListener('visibilitychange',()=>{clockTimer.getDelta();fpsFrames=0;fpsWindowStart=performance.now();});
+// Restore a shared scene from its URL without removing the normal default scene.
+try{
+ const sharedParams=new URLSearchParams(location.search);
+ const sharedPreset=sharedParams.get('p');
+ applyPreset(sharedPreset&&presets[sharedPreset]?sharedPreset:'whiteVoidDark');
+ if(sharedParams.has('s'))document.getElementById('sliderSpeed').value=String(Math.max(0.1,Math.min(3,Number(sharedParams.get('s'))||1)));
+ if(sharedParams.has('g'))document.getElementById('sliderGlow').value=String(Math.max(0.5,Math.min(8,Number(sharedParams.get('g'))||2)));
+ if(sharedParams.has('clock')&&['center','top-left','top-right','bottom-center'].includes(sharedParams.get('clock'))){document.getElementById('clockPosition').value=sharedParams.get('clock');setClockPosition(sharedParams.get('clock'));}
+ if(sharedParams.has('date')){const show=sharedParams.get('date')!=='0';document.getElementById('showDateToggle').checked=show;document.getElementById('lockscreenDate').style.display=show?'':'none';}
+ if(sharedParams.has('font')&&/^font-(syne|cinzel|outfit|space|playfair|mono)$/.test(sharedParams.get('font')))setFont(sharedParams.get('font'));
+ updateUniforms();
+}catch(err){console.error('Could not restore shared AURA scene:',err);applyPreset('whiteVoidDark');}
+diagnoseShaderProgram();
 animate();
 syncPanelButton();
 </script>
